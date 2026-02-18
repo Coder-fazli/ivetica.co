@@ -7,7 +7,9 @@ import "swiper/css/effect-fade";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-export default function ReviewsCarousel() {
+import { TestimonialType } from "@/types";
+
+export default function ReviewsCarousel({ testimonials }: { testimonials?: TestimonialType[] }) {
   return (
     <section className="mil-soft-bg">
       <div className="container mil-p-120-120">
@@ -54,55 +56,15 @@ export default function ReviewsCarousel() {
                 prevEl: ".mil-revi-prev",
               }}
             >
-              <SwiperSlide>
-                <div className="mil-review-frame mil-center" data-swiper-parallax="-200" data-swiper-parallax-opacity="0">
-                  <h5 className="mil-up mil-mb-10">Sarah Newman</h5>
-                  <p className="mil-mb-5 mil-upper mil-up mil-mb-30">Envato market</p>
-                  <p className="mil-text-xl mil-up">This creative agency stands out with their exceptional talent and expertise. Their ability to think outside the box and bring unique ideas to life is truly impressive. With meticulous attention to detail, they consistently deliver visually stunning and impactful work.</p>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="mil-review-frame mil-center" data-swiper-parallax="-200" data-swiper-parallax-opacity="0">
-                  <h5 className="mil-up mil-mb-10">Emma Trueman</h5>
-                  <p className="mil-mb-5 mil-upper mil-up mil-mb-30">Envato market</p>
-                  <p className="mil-text-xl mil-up">I had the pleasure of working with this creative agency, and I must say, they truly impressed me. They consistently think outside the box, resulting in impressive and impactful work. I highly recommend this agency for their consistent delivery of exceptional creative solutions.</p>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="mil-review-frame mil-center" data-swiper-parallax="-200" data-swiper-parallax-opacity="0">
-                  <h5 className="mil-up mil-mb-10">Sarah Newman</h5>
-                  <p className="mil-mb-5 mil-upper mil-up mil-mb-30">Envato market</p>
-                  <p className="mil-text-xl mil-up">This creative agency stands out with their exceptional talent and expertise. Their ability to think outside the box and bring unique ideas to life is truly impressive. With meticulous attention to detail, they consistently deliver visually stunning and impactful work.</p>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="mil-review-frame mil-center" data-swiper-parallax="-200" data-swiper-parallax-opacity="0">
-                  <h5 className="mil-up mil-mb-10">Emma Trueman</h5>
-                  <p className="mil-mb-5 mil-upper mil-up mil-mb-30">Envato market</p>
-                  <p className="mil-text-xl mil-up">I had the pleasure of working with this creative agency, and I must say, they truly impressed me. They consistently think outside the box, resulting in impressive and impactful work. I highly recommend this agency for their consistent delivery of exceptional creative solutions.</p>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="mil-review-frame mil-center" data-swiper-parallax="-200" data-swiper-parallax-opacity="0">
-                  <h5 className="mil-up mil-mb-10">Sarah Newman</h5>
-                  <p className="mil-mb-5 mil-upper mil-up mil-mb-30">Envato market</p>
-                  <p className="mil-text-xl mil-up">This creative agency stands out with their exceptional talent and expertise. Their ability to think outside the box and bring unique ideas to life is truly impressive. With meticulous attention to detail, they consistently deliver visually stunning and impactful work.</p>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="mil-review-frame mil-center" data-swiper-parallax="-200" data-swiper-parallax-opacity="0">
-                  <h5 className="mil-up mil-mb-10">Emma Trueman</h5>
-                  <p className="mil-mb-5 mil-upper mil-up mil-mb-30">Envato market</p>
-                  <p className="mil-text-xl mil-up">I had the pleasure of working with this creative agency, and I must say, they truly impressed me. They consistently think outside the box, resulting in impressive and impactful work. I highly recommend this agency for their consistent delivery of exceptional creative solutions.</p>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="mil-review-frame mil-center" data-swiper-parallax="-200" data-swiper-parallax-opacity="0">
-                  <h5 className="mil-up mil-mb-10">Sarah Newman</h5>
-                  <p className="mil-mb-5 mil-upper mil-up mil-mb-30">Envato market</p>
-                  <p className="mil-text-xl mil-up">This creative agency stands out with their exceptional talent and expertise. Their ability to think outside the box and bring unique ideas to life is truly impressive. With meticulous attention to detail, they consistently deliver visually stunning and impactful work.</p>
-                </div>
-              </SwiperSlide>
+              {testimonials?.map((item, index) => (
+                <SwiperSlide key={index}>
+                  <div className="mil-review-frame mil-center" data-swiper-parallax="-200" data-swiper-parallax-opacity="0">
+                    <h5 className="mil-up mil-mb-10">{item.name}</h5>
+                    <p className="mil-mb-5 mil-upper mil-up mil-mb-30">{item.company}</p>
+                    <p className="mil-text-xl mil-up">{item.quote}</p>
+                  </div>
+                </SwiperSlide>
+              ))}
             </Swiper>
           </div>
         </div>

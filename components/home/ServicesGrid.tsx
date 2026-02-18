@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { ServiceType } from "@/types";
 
-export default function ServicesGrid() {
+export default function ServicesGrid({ services }: { services?: ServiceType[] }) {
   return (
     <section className="mil-dark-bg">
       <div className="mi-invert-fix">
@@ -29,34 +30,15 @@ export default function ServicesGrid() {
           </div>
 
           <div className="row mil-services-grid m-0">
-            <div className="col-md-6 col-lg-3 mil-services-grid-item p-0">
-              <Link href="/services" className="mil-service-card-sm mil-up">
-                <h5 className="mil-muted mil-mb-30">Branding and <br />Identity Design</h5>
-                <p className="mil-light-soft mil-mb-30">Our creative agency is a team of professionals focused on helping your brand grow.</p>
-                <div className="mil-button mil-icon-button-sm mil-arrow-place"></div>
-              </Link>
-            </div>
-            <div className="col-md-6 col-lg-3 mil-services-grid-item p-0">
-              <Link href="/services" className="mil-service-card-sm mil-up">
-                <h5 className="mil-muted mil-mb-30">Website Design <br />and Development</h5>
-                <p className="mil-light-soft mil-mb-30">Our creative agency is a team of professionals focused on helping your brand grow.</p>
-                <div className="mil-button mil-icon-button-sm mil-arrow-place"></div>
-              </Link>
-            </div>
-            <div className="col-md-6 col-lg-3 mil-services-grid-item p-0">
-              <Link href="/services" className="mil-service-card-sm mil-up">
-                <h5 className="mil-muted mil-mb-30">Advertising and <br />Marketing Campaigns</h5>
-                <p className="mil-light-soft mil-mb-30">Our creative agency is a team of professionals focused on helping your brand grow.</p>
-                <div className="mil-button mil-icon-button-sm mil-arrow-place"></div>
-              </Link>
-            </div>
-            <div className="col-md-6 col-lg-3 mil-services-grid-item p-0">
-              <Link href="/services" className="mil-service-card-sm mil-up">
-                <h5 className="mil-muted mil-mb-30">Creative Consulting <br />and Development</h5>
-                <p className="mil-light-soft mil-mb-30">Our creative agency is a team of professionals focused on helping your brand grow.</p>
-                <div className="mil-button mil-icon-button-sm mil-arrow-place"></div>
-              </Link>
-            </div>
+            {services?.map((service, index) => (
+              <div key={index} className="col-md-6 col-lg-3 mil-services-grid-item p-0">
+                <Link href={service.link || "/services" } className="mil-service-card-sm mil-up">
+                  <h5 className="mil-muted mil-mb-30"  dangerouslySetInnerHTML={{ __html: service.title }} />
+                  <p className="mil-light-soft mil-mb-30">{service.description}</p>
+                  <div className="mil-button mil-icon-button-sm mil-arrow-place"></div>
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
       </div>

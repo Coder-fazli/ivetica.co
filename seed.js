@@ -54,37 +54,36 @@ const homepageData = {
     cta2Link: "/portfolio",
   },
   about: {
-    title: "About our agency",
+    title: "Discover <br />Our <span class='mil-thin'>Studio</span>",
     description1:
       "A digital agency is a business you hire to outsource your digital marketing efforts, instead of handling in-house. They can provide your business with a variety of digital solutions to promote your product or service online and help you hit your marketing goals and grow your business.",
     description2:
       "Digital agencies can vary in size and can provide a wide array of services. Below are the most common types of agencies.",
     image: "/img/photo/2.jpg",
-    founderQuote:
-      "I think that community is key for any brand development. When we first started, it was just a small group of like-minded people working in the same field and inspiring each other.",
+  founderQuote: "Passionately Creating <span class='mil-thin'>Design Wonders:</span> Unleashing <span class='mil-thin'>Boundless Creativity</span>",
     founderAvatar: "/img/faces/1.jpg",
   },
   services: [
     {
-      title: "Branding and Identity Design",
+      title: "Branding and <br />Identity Design",
       description:
         "Our creative agency is a team of professionals focused on helping your brand grow.",
       link: "/services",
     },
     {
-      title: "Website Design and Development",
+      title: "Website Design and <br /> Development",
       description:
         "Our creative agency is a team of professionals focused on helping your brand grow.",
       link: "/services",
     },
     {
-      title: "Advertising and Marketing Campaigns",
+      title: "Advertising and <br /> Marketing Campaigns",
       description:
         "Our creative agency is a team of professionals focused on helping your brand grow.",
       link: "/services",
     },
     {
-      title: "Creative Consulting and Development",
+      title: "Creative Consulting and <br />Development",
       description:
         "Our creative agency is a team of professionals focused on helping your brand grow.",
       link: "/services",

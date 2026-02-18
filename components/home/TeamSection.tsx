@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { TeamMemberType } from "@/types";
 
-export default function TeamSection() {
+export default function TeamSection({ team }: { team?: TeamMemberType[] }) {
   return (
     <section>
       <div className="container mil-p-120-30">
@@ -25,75 +26,71 @@ export default function TeamSection() {
               <div className="mil-lines-place"></div>
               <div className="row mil-mb-60">
                 <div className="col-sm-6">
-                  <div className="mil-team-card mil-up mil-mb-30">
-                    <img src="/img/faces/1.jpg" alt="Team member" />
-                    <div className="mil-description">
-                      <div className="mil-secrc-text">
-                        <h5 className="mil-muted mil-mb-5"><a href="#">Anna Oldman</a></h5>
-                        <p className="mil-link mil-light-soft mil-mb-10">Art Director</p>
-                        <ul className="mil-social-icons mil-center">
-                          <li><a href="#." target="_blank" className="social-icon"><i className="fab fa-behance"></i></a></li>
-                          <li><a href="#." target="_blank" className="social-icon"><i className="fab fa-dribbble"></i></a></li>
-                          <li><a href="#." target="_blank" className="social-icon"><i className="fab fa-twitter"></i></a></li>
-                          <li><a href="#." target="_blank" className="social-icon"><i className="fab fa-github"></i></a></li>
-                        </ul>
+                  {team?.slice(0, 2).map((member, index) => (
+                    <div key={index} className="mil-team-card mil-up mil-mb-30">
+                      <img src={member.photo} alt={member.name} />
+                      <div className="mil-description">
+                        <div className="mil-secrc-text">
+                          <h5 className="mil-muted mil-mb-5"><a href="#">{member.name}</a></h5>
+                          <p className="mil-link mil-light-soft mil-mb-10">{member.role}</p>
+                          <ul className="mil-social-icons mil-center">
+                            {member.socials?.behance && (
+                              <li><a href={member.socials.behance} target="_blank" className="social-icon"><i className="fab fa-behance"></i></a></li>
+                            )}
+                            {member.socials?.dribbble && (
+                              <li><a href={member.socials.dribbble} target="_blank" className="social-icon"><i className="fab fa-dribbble"></i></a></li>
+                            )}
+                            {member.socials?.twitter && (
+                              <li><a href={member.socials.twitter} target="_blank" className="social-icon"><i className="fab fa-twitter"></i></a></li>
+                            )}
+                            {member.socials?.github && (
+                              <li><a href={member.socials.github} target="_blank" className="social-icon"><i className="fab fa-github"></i></a></li>
+                            )}
+                          </ul>
+                        </div>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="mil-team-card mil-up mil-mb-30">
-                    <img src="/img/faces/3.jpg" alt="Team member" />
-                    <div className="mil-description">
-                      <div className="mil-secrc-text">
-                        <h5 className="mil-muted mil-mb-5"><a href="#">Oscar Freeman</a></h5>
-                        <p className="mil-link mil-light-soft mil-mb-10">Frontend Dev</p>
-                        <ul className="mil-social-icons mil-center">
-                          <li><a href="#." target="_blank" className="social-icon"><i className="fab fa-behance"></i></a></li>
-                          <li><a href="#." target="_blank" className="social-icon"><i className="fab fa-dribbble"></i></a></li>
-                          <li><a href="#." target="_blank" className="social-icon"><i className="fab fa-twitter"></i></a></li>
-                          <li><a href="#." target="_blank" className="social-icon"><i className="fab fa-github"></i></a></li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-                <div className="col-sm-6">
-                  <p className="mil-mobile-hidden mil-text-sm mil-mb-30" style={{ height: "30px" }}>
-                    <span className="mil-accent">*</span> The founders of our agency
-                  </p>
-
-                  <div className="mil-team-card mil-up mil-mb-30">
-                    <img src="/img/faces/2.jpg" alt="Team member" />
-                    <div className="mil-description">
-                      <div className="mil-secrc-text">
-                        <h5 className="mil-muted mil-mb-5"><a href="#">Emma Newman</a></h5>
-                        <p className="mil-link mil-light-soft mil-mb-10">Founder</p>
-                        <ul className="mil-social-icons mil-center">
-                          <li><a href="#." target="_blank" className="social-icon"><i className="fab fa-behance"></i></a></li>
-                          <li><a href="#." target="_blank" className="social-icon"><i className="fab fa-dribbble"></i></a></li>
-                          <li><a href="#." target="_blank" className="social-icon"><i className="fab fa-twitter"></i></a></li>
-                          <li><a href="#." target="_blank" className="social-icon"><i className="fab fa-github"></i></a></li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mil-team-card mil-up mil-mb-30">
-                    <img src="/img/faces/4.jpg" alt="Team member" />
-                    <div className="mil-description">
-                      <div className="mil-secrc-text">
-                        <h5 className="mil-muted mil-mb-5"><a href="#">Lisa Trueman</a></h5>
-                        <p className="mil-link mil-light-soft mil-mb-10">UI/UX Designer</p>
-                        <ul className="mil-social-icons mil-center">
-                          <li><a href="#." target="_blank" className="social-icon"><i className="fab fa-behance"></i></a></li>
-                          <li><a href="#." target="_blank" className="social-icon"><i className="fab fa-dribbble"></i></a></li>
-                          <li><a href="#." target="_blank" className="social-icon"><i className="fab fa-twitter"></i></a></li>
-                          <li><a href="#." target="_blank" className="social-icon"><i className="fab fa-github"></i></a></li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                 <div className="col-sm-6">
+    <p className="mil-mobile-hidden mil-text-sm
+  mil-mb-30" style={{ height: "30px" }}>
+      <span className="mil-accent">*</span> The founders
+  of our agency
+    </p>
+    {team?.slice(2, 4).map((member, index) => (
+      <div key={index} className="mil-team-card mil-up
+  mil-mb-30">
+        <img src={member.photo} alt={member.name} />
+        <div className="mil-description">
+          <div className="mil-secrc-text">
+            <h5 className="mil-muted mil-mb-5"><a 
+  href="#">{member.name}</a></h5>
+            <p className="mil-link mil-light-soft
+  mil-mb-10">{member.role}</p>
+            <ul className="mil-social-icons mil-center">
+              {member.socials?.behance && <li><a 
+  href={member.socials.behance} target="_blank" 
+  className="social-icon"><i className="fab
+  fa-behance"></i></a></li>}
+              {member.socials?.dribbble && <li><a 
+  href={member.socials.dribbble} target="_blank" 
+  className="social-icon"><i className="fab
+  fa-dribbble"></i></a></li>}
+              {member.socials?.twitter && <li><a 
+  href={member.socials.twitter} target="_blank" 
+  className="social-icon"><i className="fab
+  fa-twitter"></i></a></li>}
+              {member.socials?.github && <li><a 
+  href={member.socials.github} target="_blank" 
+  className="social-icon"><i className="fab
+  fa-github"></i></a></li>}
+            </ul>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
               </div>
             </div>
           </div>

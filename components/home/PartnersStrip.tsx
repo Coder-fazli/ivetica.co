@@ -5,7 +5,9 @@ import { Autoplay, FreeMode } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/free-mode";
 
-export default function PartnersStrip() {
+import { PartnerType } from "@/types";
+
+export default function PartnersStrip({ partners }: { partners?: PartnerType[] }) {
   return (
     <div className="mil-soft-bg">
       <div className="container mil-p-0-120">
@@ -22,26 +24,13 @@ export default function PartnersStrip() {
             992: { slidesPerView: 4 },
           }}
         >
-          <SwiperSlide>
-            <a href="#." className="mil-partner-frame" style={{ width: "60px" }}>
-              <img src="/img/partners/1.svg" alt="logo" />
-            </a>
-          </SwiperSlide>
-          <SwiperSlide>
-            <a href="#." className="mil-partner-frame" style={{ width: "100px" }}>
-              <img src="/img/partners/2.svg" alt="logo" />
-            </a>
-          </SwiperSlide>
-          <SwiperSlide>
-            <a href="#." className="mil-partner-frame" style={{ width: "60px" }}>
-              <img src="/img/partners/1.svg" alt="logo" />
-            </a>
-          </SwiperSlide>
-          <SwiperSlide>
-            <a href="#." className="mil-partner-frame" style={{ width: "100px" }}>
-              <img src="/img/partners/2.svg" alt="logo" />
-            </a>
-          </SwiperSlide>
+          {partners?.map((partner, index) => (
+            <SwiperSlide key={index}>
+              <a href={partner.link} className="mil-partner-frame" style={{ width: "60px" }}>
+                <img src={partner.logo} alt={partner.name} />
+              </a>
+            </SwiperSlide>
+          ))}
         </Swiper>
       </div>
     </div>
