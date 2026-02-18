@@ -10,6 +10,8 @@ import PartnersStrip from "@/components/home/PartnersStrip";
 import BlogPreview from "@/components/home/BlogPreview";
 import { getHomepage } from "@/actions/homepage";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const data = await getHomepage();
   return (
