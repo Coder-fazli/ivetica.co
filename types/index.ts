@@ -54,3 +54,13 @@ export type HomepageType = {
   testimonials: TestimonialType[];
   partners: PartnerType[];
 };
+
+export type ServiceDetailType = {
+  title: string;
+  slug: string;
+  description: string;
+  shortDescription: string;
+  features: string[];
+  icon?: string;
+  image?: string;
+};

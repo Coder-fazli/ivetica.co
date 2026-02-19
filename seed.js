@@ -42,6 +42,50 @@ const HomePageSchema = new mongoose.Schema({
 
 const Homepage = mongoose.model("Homepage", HomePageSchema);
 
+// Service detail schema (separate collection for full service pages)
+const ServiceSchema = new mongoose.Schema({
+  title: String,
+  slug: { type: String, unique: true },
+  description: String,
+  shortDescription: String,
+  features: [String],
+  icon: String,
+  image: String,
+});
+
+const Service = mongoose.model("Service", ServiceSchema);
+
+const servicesData = [
+  {
+    title: "Branding and <br>Identity Design",
+    slug: "branding",
+    description: "At our agency, we craft powerful brand identities that resonate with your audience. We believe in creating brands that not only look great but also communicate your values, story, and vision effectively across all touchpoints.",
+    shortDescription: "Our creative agency is a team of professionals focused on helping your brand grow.",
+    features: ["Brand Strategy", "Visual Identity", "UX Audits", "Design thinking"],
+  },
+  {
+    title: "Website Design <br>and Development",
+    slug: "web-development",
+    description: "At our agency, we have a unique approach to web design and development. We believe in creating websites that not only look great but also perform well in terms of user experience, functionality, and search engine optimization.",
+    shortDescription: "Our creative agency is a team of professionals focused on helping your brand grow.",
+    features: ["UX Audits", "Design thinking", "Wireframing", "Aesthetics", "Methodologies"],
+  },
+  {
+    title: "Advertising and <br>Marketing Campaigns",
+    slug: "marketing",
+    description: "We develop strategic advertising and marketing campaigns that cut through the noise and connect with your target audience. Our data-driven approach ensures maximum impact and measurable results for every campaign.",
+    shortDescription: "Our creative agency is a team of professionals focused on helping your brand grow.",
+    features: ["Campaign Planning", "Market Research", "Content Strategy", "Performance Analytics"],
+  },
+  {
+    title: "Creative Consulting <br>and Development",
+    slug: "consulting",
+    description: "Our creative consulting services help businesses unlock their full creative potential. We work closely with your team to develop innovative strategies, refine concepts, and bring ambitious ideas to life.",
+    shortDescription: "Our creative agency is a team of professionals focused on helping your brand grow.",
+    features: ["Creative Direction", "Concept Development", "Workshop Facilitation", "Methodologies"],
+  },
+];
+
 // This is the actual data — same content that is hardcoded in your components right now
 const homepageData = {
   hero: {
@@ -68,25 +112,25 @@ const homepageData = {
       title: "Branding and <br />Identity Design",
       description:
         "Our creative agency is a team of professionals focused on helping your brand grow.",
-      link: "/services",
+      link: "/services/branding",
     },
     {
       title: "Website Design and <br /> Development",
       description:
         "Our creative agency is a team of professionals focused on helping your brand grow.",
-      link: "/services",
+      link: "/services/web-development",
     },
     {
       title: "Advertising and <br /> Marketing Campaigns",
       description:
         "Our creative agency is a team of professionals focused on helping your brand grow.",
-      link: "/services",
+      link: "/services/marketing",
     },
     {
       title: "Creative Consulting and <br />Development",
       description:
         "Our creative agency is a team of professionals focused on helping your brand grow.",
-      link: "/services",
+      link: "/services/consulting",
     },
   ],
   team: [
@@ -145,9 +189,15 @@ async function seed() {
     await Homepage.deleteMany({});
     console.log("Cleared old homepage data");
 
+    await Service.deleteMany({});
+    console.log("Cleared old services data");
+
     // Insert the new data
     await Homepage.create(homepageData);
     console.log("Homepage seeded!");
+
+    await Service.insertMany(servicesData);
+    console.log("Services seeded!");
 
     await mongoose.disconnect();
     console.log("Disconnected from MongoDB");
