@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 
-
-
 export const HomePageSchema = new mongoose.Schema({
     hero: {
       headline: { type: String, required: true },
@@ -50,4 +48,4 @@ export const HomePageSchema = new mongoose.Schema({
     }],
 });
 
-export const Homepage  = mongoose.models.Homepage || mongoose.model("Homepage", HomePageSchema);
+export const Homepage = mongoose.models.Homepage || mongoose.model("Homepage", HomePageSchema);

@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 
 export default function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
@@ -20,13 +18,10 @@ export default function Header() {
       </div>
 
       {/* menu */}
-      <div className={`mil-menu-frame ${menuOpen ? "mil-active" : ""}`}>
+      <div className="mil-menu-frame">
         <div className="mil-frame-top">
-          <Link href="/" className="mil-logo"><img src="/img/lvetica-logo.png" alt="lvetica" style={{ width: "90px" }} /></Link>
-          <div
-            className={`mil-menu-btn ${menuOpen ? "mil-active" : ""}`}
-            onClick={() => setMenuOpen(false)}
-          >
+          <Link href="/" className="mil-logo"><img src="/img/lvetica-logo.png" alt="lvetica" style={{ width: "180px" }} /></Link>
+          <div className="mil-menu-btn">
             <span></span>
           </div>
         </div>
@@ -39,32 +34,32 @@ export default function Header() {
                     <li className="mil-has-children mil-active">
                       <a href="#.">Homepage</a>
                       <ul className="mil-active">
-                        <li><Link href="/" onClick={() => setMenuOpen(false)}>Landing page</Link></li>
+                        <li><Link href="/">Landing page</Link></li>
                       </ul>
                     </li>
                     <li className="mil-has-children">
                       <a href="#.">Portfolio</a>
                       <ul>
-                        <li><Link href="/portfolio" onClick={() => setMenuOpen(false)}>Portfolio</Link></li>
+                        <li><Link href="/portfolio">Portfolio</Link></li>
                       </ul>
                     </li>
                     <li className="mil-has-children">
                       <a href="#.">Services</a>
                       <ul>
-                        <li><Link href="/services" onClick={() => setMenuOpen(false)}>Services List</Link></li>
+                        <li><Link href="/services">Services List</Link></li>
                       </ul>
                     </li>
                     <li className="mil-has-children">
                       <a href="#.">Newsletter</a>
                       <ul>
-                        <li><Link href="/blog" onClick={() => setMenuOpen(false)}>Blog List</Link></li>
+                        <li><Link href="/blog">Blog List</Link></li>
                       </ul>
                     </li>
                     <li className="mil-has-children">
                       <a href="#.">Other pages</a>
                       <ul>
-                        <li><Link href="/team" onClick={() => setMenuOpen(false)}>Team</Link></li>
-                        <li><Link href="/contact" onClick={() => setMenuOpen(false)}>Contact</Link></li>
+                        <li><Link href="/team">Team</Link></li>
+                        <li><Link href="/contact">Contact</Link></li>
                       </ul>
                     </li>
                   </ul>
@@ -82,12 +77,12 @@ export default function Header() {
                       <div className="col-lg-8 mil-mb-60">
                         <h6 className="mil-muted mil-mb-30">Projects</h6>
                         <ul className="mil-menu-list">
-                          <li><Link href="/portfolio/interior-design-studio" className="mil-light-soft" onClick={() => setMenuOpen(false)}>Interior design studio</Link></li>
-                          <li><Link href="/portfolio/home-security-camera" className="mil-light-soft" onClick={() => setMenuOpen(false)}>Home Security Camera</Link></li>
-                          <li><Link href="/portfolio/kemia-honest-skincare" className="mil-light-soft" onClick={() => setMenuOpen(false)}>Kemia Honest Skincare</Link></li>
-                          <li><Link href="/portfolio/cascade-of-lava" className="mil-light-soft" onClick={() => setMenuOpen(false)}>Cascade of Lava</Link></li>
-                          <li><Link href="/portfolio/air-pro-by-molekule" className="mil-light-soft" onClick={() => setMenuOpen(false)}>Air Pro by Molekule</Link></li>
-                          <li><Link href="/portfolio/tonys-chocolonely" className="mil-light-soft" onClick={() => setMenuOpen(false)}>Tony&apos;s Chocolonely</Link></li>
+                          <li><Link href="/portfolio/interior-design-studio" className="mil-light-soft">Interior design studio</Link></li>
+                          <li><Link href="/portfolio/home-security-camera" className="mil-light-soft">Home Security Camera</Link></li>
+                          <li><Link href="/portfolio/kemia-honest-skincare" className="mil-light-soft">Kemia Honest Skincare</Link></li>
+                          <li><Link href="/portfolio/cascade-of-lava" className="mil-light-soft">Cascade of Lava</Link></li>
+                          <li><Link href="/portfolio/air-pro-by-molekule" className="mil-light-soft">Air Pro by Molekule</Link></li>
+                          <li><Link href="/portfolio/tonys-chocolonely" className="mil-light-soft">Tony&apos;s Chocolonely</Link></li>
                         </ul>
                       </div>
                       <div className="col-lg-4 mil-mb-60">
@@ -125,11 +120,8 @@ export default function Header() {
       {/* frame */}
       <div className="mil-frame">
         <div className="mil-frame-top">
-          <Link href="/" className="mil-logo"><img src="/img/lvetica-logo.png" alt="lvetica" style={{ width: "90px" }} /></Link>
-          <div
-            className={`mil-menu-btn ${menuOpen ? "mil-active" : ""}`}
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
+          <Link href="/" className="mil-logo"><img src="/img/lvetica-logo.png" alt="lvetica" style={{ width: "180px" }} /></Link>
+          <div className="mil-menu-btn">
             <span></span>
           </div>
         </div>

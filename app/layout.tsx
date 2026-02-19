@@ -11,6 +11,7 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "Lvetica — Creative Studio",
   description: "We are a creative studio focused on designing a better world today.",
+  robots: "noindex, nofollow",
 };
 
 export default function RootLayout({

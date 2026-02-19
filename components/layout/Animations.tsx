@@ -38,16 +38,16 @@ export default function Animations() {
     timeline.fromTo(
       ".mil-animation-1 .mil-h3",
       { y: "30px", opacity: 0 },
-      { y: "0px", opacity: 1, stagger: 0.4 }
+      { y: "0px", opacity: 1, stagger: 0.2 }
     );
-    timeline.to(".mil-animation-1 .mil-h3", { opacity: 0, y: "-30" }, "+=.3");
-    timeline.fromTo(".mil-reveal-box", { opacity: 0 }, { opacity: 1, x: "-30", duration: 0.1 });
-    timeline.to(".mil-reveal-box", { width: "100%", x: 0, duration: 0.45 }, "+=.1");
+    timeline.to(".mil-animation-1 .mil-h3", { opacity: 0, y: "-30" }, "+=.1");
+    timeline.fromTo(".mil-reveal-box", { opacity: 0 }, { opacity: 1, x: "-30", duration: 0.05 });
+    timeline.to(".mil-reveal-box", { width: "100%", x: 0, duration: 0.25 }, "+=.05");
     timeline.to(".mil-reveal-box", { right: "0" });
-    timeline.to(".mil-reveal-box", { width: "0%", duration: 0.3 });
-    timeline.fromTo(".mil-animation-2 .mil-h3", { opacity: 0 }, { opacity: 1 }, "-=.5");
-    timeline.to(".mil-animation-2 .mil-h3", { opacity: 0, y: "-30", duration: 0.6 }, "+=.5");
-    timeline.to(".mil-preloader", { opacity: 0, ease: "sine", duration: 0.8 }, "+=.2");
+    timeline.to(".mil-reveal-box", { width: "0%", duration: 0.15 });
+    timeline.fromTo(".mil-animation-2 .mil-h3", { opacity: 0 }, { opacity: 1 }, "-=.25");
+    timeline.to(".mil-animation-2 .mil-h3", { opacity: 0, y: "-30", duration: 0.3 }, "+=.2");
+    timeline.to(".mil-preloader", { opacity: 0, ease: "sine", duration: 0.4 }, "+=.1");
     timeline.fromTo(
       ".mil-up",
       { opacity: 0, y: 40, scale: 0.98, ease: "sine" },
@@ -55,13 +55,13 @@ export default function Animations() {
         y: 0,
         opacity: 1,
         scale: 1,
-        duration: 0.8,
+        duration: 0.4,
         onComplete: () => {
           const preloader = document.querySelector(".mil-preloader");
           if (preloader) preloader.classList.add("mil-hidden");
         },
       },
-      "-=1"
+      "-=.5"
     );
 
     // Progress bar
@@ -203,6 +203,25 @@ export default function Animations() {
             behavior: "smooth",
           });
         }
+      });
+    });
+
+    // Menu toggle
+    document.querySelectorAll(".mil-menu-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".mil-menu-btn").forEach((b) => b.classList.toggle("mil-active"));
+        document.querySelector(".mil-menu-frame")?.classList.toggle("mil-active");
+      });
+    });
+
+    // Submenu toggle
+    document.querySelectorAll(".mil-has-children > a").forEach((link) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        document.querySelectorAll(".mil-has-children ul").forEach((ul) => ul.classList.remove("mil-active"));
+        document.querySelectorAll(".mil-has-children > a").forEach((a) => a.classList.remove("mil-active"));
+        (link as HTMLElement).classList.toggle("mil-active");
+        (link.nextElementSibling as HTMLElement)?.classList.toggle("mil-active");
       });
     });
 

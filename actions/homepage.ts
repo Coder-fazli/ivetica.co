@@ -22,3 +22,4 @@ export async function updateHomepage(data: HomepageType): Promise<{ success: boo
 
   return { success: true };
 }
+
