@@ -1,10 +1,12 @@
+"use client";
+
 import { useSignUp } from "@clerk/nextjs";
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import "../../auth.css";
 
 
-export default async function SignUpPage(){
+export default function SignUpPage(){
     const {signUp, isLoaded, setActive} = useSignUp();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
