@@ -27,7 +27,7 @@ export default function SignInPage() {
       });
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
-        router.push("/admin");
+        window.location.href = "/admin";
       }
     } catch (err: unknown) {
       const clerkError = err as { errors?: { message: string }[] };
