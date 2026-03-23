@@ -28,6 +28,8 @@ export default function SignInPage() {
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
         window.location.href = "/admin";
+      } else {
+        setError(`Unexpected status: ${result.status}`);
       }
     } catch (err: unknown) {
       const clerkError = err as { errors?: { message: string }[] };
