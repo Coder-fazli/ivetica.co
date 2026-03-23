@@ -45,6 +45,17 @@ export default function RootLayout({
     <ClerkProvider>
     <html lang="en">
       <head>
+        <script dangerouslySetInnerHTML={{ __html: `
+          window.addEventListener('error', function(e) {
+            var msg = e.message || '';
+            if (msg.indexOf('ChunkLoadError') !== -1 || msg.indexOf('Failed to load chunk') !== -1 || msg.indexOf('Loading chunk') !== -1) {
+              if (!sessionStorage.getItem('chunk_reload')) {
+                sessionStorage.setItem('chunk_reload', '1');
+                window.location.reload();
+              }
+            }
+          });
+        `}} />
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css"
