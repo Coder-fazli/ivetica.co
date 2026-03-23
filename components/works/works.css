@@ -1,0 +1,109 @@
+/* -------------------------------------------
+
+works filter bar
+
+------------------------------------------- */
+
+.mil-works-filter {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+}
+
+.mil-works-filter-btn {
+  padding: 8px 22px;
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  color: rgba(0, 0, 0, 0.4);
+  font-family: "Outfit", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  -webkit-transition: border-color 0.3s ease, color 0.3s ease;
+          transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.mil-works-filter-btn:hover {
+  border-color: rgba(255, 152, 0, 0.5);
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.mil-works-filter-btn.mil-active {
+  border-color: rgba(255, 152, 0, 1);
+  color: rgba(255, 152, 0, 1);
+}
+
+/* -------------------------------------------
+
+works detail — case study sections
+
+------------------------------------------- */
+
+.mil-case-item {
+  padding-top: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.mil-case-number {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: rgba(255, 152, 0, 1);
+  display: block;
+  margin-bottom: 12px;
+}
+
+.mil-case-item p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* -------------------------------------------
+
+works detail — metrics
+
+------------------------------------------- */
+
+.mil-metric-item {
+  border-left: 2px solid rgba(255, 152, 0, 1);
+  padding-left: 24px;
+}
+
+.mil-metric-value {
+  font-size: 48px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.87);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.mil-metric-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+@media screen and (max-width: 768px) {
+  .mil-metric-value {
+    font-size: 36px;
+  }
+
+  .mil-works-filter {
+    gap: 8px;
+  }
+
+  .mil-works-filter-btn {
+    padding: 7px 16px;
+    font-size: 10px;
+  }
+}

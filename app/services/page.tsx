@@ -1,10 +1,25 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Animations from "@/components/layout/Animations";
 import { getServices } from "@/actions/services";
+import { getPageSeo } from "@/actions/pageSeo";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getPageSeo("services");
+  return {
+    title: seo.metaTitle || "Services",
+    description: seo.metaDescription || "Explore Lvetica's services: influencer marketing, UGC production, social media management, content strategy, video production, and brand partnerships.",
+    openGraph: {
+      title: seo.metaTitle || "Services — Lvetica",
+      description: seo.metaDescription || "Influencer marketing, UGC production, social media management, and more.",
+      url: "/services",
+    },
+  };
+}
 
 export default async function ServicesPage() {
   const services = await getServices();

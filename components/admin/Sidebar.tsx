@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { UserButton } from "@clerk/nextjs";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -9,11 +10,11 @@ export default function Sidebar() {
   const links = [
     { href: "/admin/dashboard", label: "Dashboard", icon: "fas fa-th-large" },
     { href: "/admin/homepage", label: "Homepage", icon: "fas fa-home" },
-    { href: "/admin/portfolio", label: "Portfolio", icon: "fas fa-images" },
-    { href: "/admin/blog", label: "Blog", icon: "fas fa-pen" },
-    { href: "/admin/team", label: "Team", icon: "fas fa-users" },
+    { href: "/admin/works", label: "Works", icon: "fas fa-briefcase" },
     { href: "/admin/services", label: "Services", icon: "fas fa-cogs" },
-    { href: "/admin/settings", label: "Settings", icon: "fas fa-sliders-h" },
+    { href: "/admin/blog", label: "Blog", icon: "fas fa-pen" },
+    { href: "/admin/about", label: "About", icon: "fas fa-users" },
+    { href: "/admin/contact", label: "Contact", icon: "fas fa-envelope" },
   ];
 
   return (
@@ -37,6 +38,7 @@ export default function Sidebar() {
       </ul>
 
       <div className="admin-sidebar-bottom">
+        <UserButton />
         <a href="/">
           <i className="fas fa-sign-out-alt"></i>
           <span>Back to site</span>

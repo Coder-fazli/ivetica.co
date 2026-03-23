@@ -64,3 +64,21 @@ export type ServiceDetailType = {
   icon?: string;
   image?: string;
 };
+
+export type WorkMetricType = {
+  label: string;
+  value: string;
+};
+
+export type WorkType = {
+  title: string;
+  slug: string;
+  client: string;
+  tags: string[];
+  thumbnail?: string;
+  challenge?: string;
+  approach?: string;
+  results?: string;
+  gallery?: string[];
+  metrics?: WorkMetricType[];
+};

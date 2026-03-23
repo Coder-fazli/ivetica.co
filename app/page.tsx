@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Animations from "@/components/layout/Animations";
@@ -9,8 +10,22 @@ import ReviewsCarousel from "@/components/home/ReviewsCarousel";
 import PartnersStrip from "@/components/home/PartnersStrip";
 import BlogPreview from "@/components/home/BlogPreview";
 import { getHomepage } from "@/actions/homepage";
+import { getPageSeo } from "@/actions/pageSeo";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getPageSeo("homepage");
+  return {
+    title: seo.metaTitle || "Lvetica — Influencer Marketing & Content Studio",
+    description: seo.metaDescription || "Lvetica connects brands with top creators for influencer marketing, UGC production, social media management, and brand partnerships.",
+    openGraph: {
+      title: seo.metaTitle || "Lvetica — Influencer Marketing & Content Studio",
+      description: seo.metaDescription || "Connecting brands with creators. Influencer marketing, UGC, social media management.",
+      url: "/",
+    },
+  };
+}
 
 export default async function Home() {
   const data = await getHomepage();

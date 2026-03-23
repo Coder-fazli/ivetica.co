@@ -1,0 +1,140 @@
+/* ---- TipTap editor — light theme (WordPress-style) ---- */
+
+.tiptap-wrap {
+  background: #fff;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Toolbar */
+.tiptap-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  flex-shrink: 0;
+}
+
+.tiptap-toolbar button {
+  padding: 5px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #444;
+  font-size: 13px;
+  font-family: "Outfit", sans-serif;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  line-height: 1;
+}
+
+.tiptap-toolbar button:hover {
+  background: #f0f0f0;
+  border-color: #ddd;
+  color: #111;
+}
+
+.tiptap-toolbar button.active {
+  background: #1a1a1a;
+  border-color: #1a1a1a;
+  color: #fff;
+}
+
+.tiptap-toolbar-sep {
+  width: 1px;
+  height: 22px;
+  background: #e0e0e0;
+  margin: 0 4px;
+  align-self: center;
+}
+
+/* Editor content area */
+.tiptap-content {
+  flex: 1;
+  padding: 32px 48px;
+  color: #1a1a1a;
+  font-size: 15px;
+  line-height: 1.75;
+  outline: none;
+  max-width: 860px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.tiptap-content .tiptap {
+  outline: none;
+  min-height: 400px;
+}
+
+.tiptap-content p {
+  margin-bottom: 14px;
+  color: #2c2c2c;
+}
+
+.tiptap-content h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 28px 0 12px;
+  color: #1a1a1a;
+  border-bottom: 1px solid #ebebeb;
+  padding-bottom: 8px;
+}
+
+.tiptap-content h3 {
+  font-size: 19px;
+  font-weight: 600;
+  margin: 22px 0 10px;
+  color: #1a1a1a;
+}
+
+.tiptap-content blockquote {
+  border-left: 3px solid #e0a800;
+  padding: 8px 16px;
+  margin: 18px 0;
+  color: #666;
+  font-style: italic;
+  background: #fdf8ee;
+  border-radius: 0 4px 4px 0;
+}
+
+.tiptap-content ul,
+.tiptap-content ol {
+  padding-left: 22px;
+  margin-bottom: 14px;
+  color: #2c2c2c;
+}
+
+.tiptap-content li { margin-bottom: 4px; }
+
+.tiptap-content img {
+  max-width: 100%;
+  border-radius: 6px;
+  margin: 16px 0;
+  display: block;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.tiptap-content hr {
+  border: none;
+  border-top: 2px solid #f0f0f0;
+  margin: 28px 0;
+}
+
+.tiptap-content p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: #bdbdbd;
+  pointer-events: none;
+  float: left;
+  height: 0;
+  font-style: italic;
+}
+
+/* Selected text */
+.tiptap-content .tiptap ::selection {
+  background: rgba(255,152,0,0.2);
+}

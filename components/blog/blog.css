@@ -1,0 +1,133 @@
+/* ---- Blog card — vertical ---- */
+.mil-blog-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.mil-blog-card .mil-cover-frame {
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.mil-blog-card .mil-cover-frame img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.mil-blog-card:hover .mil-cover-frame img {
+  transform: scale(1.04);
+}
+
+.mil-post-text {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 14px;
+  line-height: 1.7;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ---- Blog card — horizontal ---- */
+.mil-blog-card-hori {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  padding-bottom: 60px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  margin-bottom: 60px;
+}
+
+.mil-blog-card-hori .mil-cover-frame {
+  flex-shrink: 0;
+  width: 280px;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+
+.mil-blog-card-hori .mil-cover-frame img {
+  width: 280px;
+  height: 200px;
+  object-fit: cover;
+}
+
+.mil-blog-card-hori .mil-post-descr {
+  flex: 1;
+}
+
+/* ---- Publication / single post content ---- */
+.mil-post-content {
+  font-size: 16px;
+  line-height: 1.8;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.mil-post-content h2 {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 40px 0 16px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.mil-post-content h3,
+.mil-post-content h5 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 32px 0 12px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.mil-post-content p {
+  margin-bottom: 20px;
+}
+
+.mil-post-content blockquote {
+  border-left: 3px solid rgba(255, 152, 0, 1);
+  padding: 12px 24px;
+  margin: 32px 0;
+  color: rgba(0, 0, 0, 0.5);
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.mil-post-content ul,
+.mil-post-content ol {
+  padding-left: 24px;
+  margin-bottom: 20px;
+}
+
+.mil-post-content li {
+  margin-bottom: 8px;
+}
+
+.mil-post-content img {
+  max-width: 100%;
+  border-radius: 4px;
+  margin: 20px 0;
+}
+
+.mil-post-content hr {
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  margin: 40px 0;
+}
+
+@media screen and (max-width: 768px) {
+  .mil-blog-card-hori {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .mil-blog-card-hori .mil-cover-frame {
+    width: 100%;
+  }
+
+  .mil-blog-card-hori .mil-cover-frame img {
+    width: 100%;
+  }
+}

@@ -31,37 +31,12 @@ export default function Header() {
               <div className="col-xl-5">
                 <nav className="mil-main-menu" id="swupMenu">
                   <ul>
-                    <li className="mil-has-children mil-active">
-                      <a href="#.">Homepage</a>
-                      <ul className="mil-active">
-                        <li><Link href="/">Landing page</Link></li>
-                      </ul>
-                    </li>
-                    <li className="mil-has-children">
-                      <a href="#.">Portfolio</a>
-                      <ul>
-                        <li><Link href="/portfolio">Portfolio</Link></li>
-                      </ul>
-                    </li>
-                    <li className="mil-has-children">
-                      <a href="#.">Services</a>
-                      <ul>
-                        <li><Link href="/services">Services List</Link></li>
-                      </ul>
-                    </li>
-                    <li className="mil-has-children">
-                      <a href="#.">Newsletter</a>
-                      <ul>
-                        <li><Link href="/blog">Blog List</Link></li>
-                      </ul>
-                    </li>
-                    <li className="mil-has-children">
-                      <a href="#.">Other pages</a>
-                      <ul>
-                        <li><Link href="/team">Team</Link></li>
-                        <li><Link href="/contact">Contact</Link></li>
-                      </ul>
-                    </li>
+                    <li><Link href="/">Homepage</Link></li>
+                    <li><Link href="/works">Works</Link></li>
+                    <li><Link href="/services">Services</Link></li>
+                    <li><Link href="/blog">Blog</Link></li>
+                    <li><Link href="/about">About</Link></li>
+                    <li><Link href="/contact">Contact</Link></li>
                   </ul>
                 </nav>
               </div>
@@ -75,23 +50,14 @@ export default function Header() {
                   <div className="mil-menu-right">
                     <div className="row">
                       <div className="col-lg-8 mil-mb-60">
-                        <h6 className="mil-muted mil-mb-30">Projects</h6>
+                        <h6 className="mil-muted mil-mb-30">Services</h6>
                         <ul className="mil-menu-list">
-                          <li><Link href="/portfolio/interior-design-studio" className="mil-light-soft">Interior design studio</Link></li>
-                          <li><Link href="/portfolio/home-security-camera" className="mil-light-soft">Home Security Camera</Link></li>
-                          <li><Link href="/portfolio/kemia-honest-skincare" className="mil-light-soft">Kemia Honest Skincare</Link></li>
-                          <li><Link href="/portfolio/cascade-of-lava" className="mil-light-soft">Cascade of Lava</Link></li>
-                          <li><Link href="/portfolio/air-pro-by-molekule" className="mil-light-soft">Air Pro by Molekule</Link></li>
-                          <li><Link href="/portfolio/tonys-chocolonely" className="mil-light-soft">Tony&apos;s Chocolonely</Link></li>
-                        </ul>
-                      </div>
-                      <div className="col-lg-4 mil-mb-60">
-                        <h6 className="mil-muted mil-mb-30">Useful links</h6>
-                        <ul className="mil-menu-list">
-                          <li><a href="#." className="mil-light-soft">Privacy Policy</a></li>
-                          <li><a href="#." className="mil-light-soft">Terms and conditions</a></li>
-                          <li><a href="#." className="mil-light-soft">Cookie Policy</a></li>
-                          <li><a href="#." className="mil-light-soft">Careers</a></li>
+                          <li><Link href="/services" className="mil-light-soft">Influencer Marketing</Link></li>
+                          <li><Link href="/services" className="mil-light-soft">UGC Production</Link></li>
+                          <li><Link href="/services" className="mil-light-soft">Social Media Management</Link></li>
+                          <li><Link href="/services" className="mil-light-soft">Content Strategy</Link></li>
+                          <li><Link href="/services" className="mil-light-soft">Video Production</Link></li>
+                          <li><Link href="/services" className="mil-light-soft">Brand Partnerships</Link></li>
                         </ul>
                       </div>
                     </div>

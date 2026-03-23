@@ -31,38 +31,66 @@ export default function Animations() {
       }
     });
 
-    // Preloader animation
-    const timeline = gsap.timeline();
+    // Preloader animation — only on first visit
+    const hasSeenPreloader = sessionStorage.getItem("preloaderShown");
 
-    timeline.to(".mil-preloader-animation", { opacity: 1 });
-    timeline.fromTo(
-      ".mil-animation-1 .mil-h3",
-      { y: "30px", opacity: 0 },
-      { y: "0px", opacity: 1, stagger: 0.2 }
-    );
-    timeline.to(".mil-animation-1 .mil-h3", { opacity: 0, y: "-30" }, "+=.1");
-    timeline.fromTo(".mil-reveal-box", { opacity: 0 }, { opacity: 1, x: "-30", duration: 0.05 });
-    timeline.to(".mil-reveal-box", { width: "100%", x: 0, duration: 0.25 }, "+=.05");
-    timeline.to(".mil-reveal-box", { right: "0" });
-    timeline.to(".mil-reveal-box", { width: "0%", duration: 0.15 });
-    timeline.fromTo(".mil-animation-2 .mil-h3", { opacity: 0 }, { opacity: 1 }, "-=.25");
-    timeline.to(".mil-animation-2 .mil-h3", { opacity: 0, y: "-30", duration: 0.3 }, "+=.2");
-    timeline.to(".mil-preloader", { opacity: 0, ease: "sine", duration: 0.4 }, "+=.1");
-    timeline.fromTo(
-      ".mil-up",
-      { opacity: 0, y: 40, scale: 0.98, ease: "sine" },
-      {
-        y: 0,
-        opacity: 1,
-        scale: 1,
-        duration: 0.4,
-        onComplete: () => {
-          const preloader = document.querySelector(".mil-preloader");
-          if (preloader) preloader.classList.add("mil-hidden");
+    if (!hasSeenPreloader) {
+      sessionStorage.setItem("preloaderShown", "true");
+
+      const timeline = gsap.timeline();
+      timeline.to(".mil-preloader", { opacity: 1, duration: 0.1 });
+      timeline.to(".mil-preloader-animation", { opacity: 1 });
+      timeline.fromTo(
+        ".mil-animation-1 .mil-h3",
+        { y: "30px", opacity: 0 },
+        { y: "0px", opacity: 1, stagger: 0.2 }
+      );
+      timeline.to(".mil-animation-1 .mil-h3", { opacity: 0, y: "-30" }, "+=.1");
+      timeline.fromTo(".mil-reveal-box", { opacity: 0 }, { opacity: 1, x: "-30", duration: 0.05 });
+      timeline.to(".mil-reveal-box", { width: "100%", x: 0, duration: 0.25 }, "+=.05");
+      timeline.to(".mil-reveal-box", { right: "0" });
+      timeline.to(".mil-reveal-box", { width: "0%", duration: 0.15 });
+      timeline.fromTo(".mil-animation-2 .mil-h3", { opacity: 0 }, { opacity: 1 }, "-=.25");
+      timeline.to(".mil-animation-2 .mil-h3", { opacity: 0, y: "-30", duration: 0.3 }, "+=.2");
+      timeline.to(".mil-preloader", { opacity: 0, ease: "sine", duration: 0.4 }, "+=.1");
+      timeline.fromTo(
+        ".mil-up",
+        { opacity: 0, y: 40, scale: 0.98, ease: "sine" },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.4,
+          onComplete: () => {
+            const preloader = document.querySelector(".mil-preloader");
+            if (preloader) preloader.classList.add("mil-hidden");
+          },
         },
-      },
-      "-=.5"
-    );
+        "-=.5"
+      );
+    } else {
+      gsap.set(".mil-preloader", { opacity: 0, pointerEvents: "none" });
+      const preloader = document.querySelector(".mil-preloader") as HTMLElement;
+      if (preloader) preloader.classList.add("mil-hidden");
+
+      // Run scroll reveal on every page after first visit
+      document.querySelectorAll(".mil-up").forEach((section) => {
+        gsap.fromTo(
+          section,
+          { opacity: 0, y: 40, scale: 0.98, ease: "sine" },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.4,
+            scrollTrigger: {
+              trigger: section,
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      });
+    }
 
     // Progress bar
     gsap.to(".mil-progress", {
@@ -88,23 +116,7 @@ export default function Animations() {
       });
     }
 
-    // Scroll reveal animations (.mil-up)
-    document.querySelectorAll(".mil-up").forEach((section) => {
-      gsap.fromTo(
-        section,
-        { opacity: 0, y: 40, scale: 0.98, ease: "sine" },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.4,
-          scrollTrigger: {
-            trigger: section,
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-    });
+    // Scroll reveal animations (.mil-up) — on first visit handled by preloader timeline above
 
     // Scale on scroll (.mil-scale)
     document.querySelectorAll(".mil-scale").forEach((section) => {
@@ -232,7 +244,7 @@ export default function Animations() {
   }, []);
 
   return (
-    <div className="mil-preloader">
+    <div className="mil-preloader" style={{ opacity: 0 }}>
       <div className="mil-preloader-animation">
         <div className="mil-pos-abs mil-animation-1">
           <p className="mil-h3 mil-muted mil-thin">Pioneering</p>

@@ -1,0 +1,207 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { getAbout, updateAbout, AboutData, ValueItem, TeamMember } from "@/actions/about";
+import ImageUpload from "@/components/admin/ImageUpload";
+import SeoMetabox from "@/components/admin/SeoMetabox";
+
+const emptyValue: ValueItem = { number: "", title: "", text: "" };
+const emptyMember: TeamMember = { name: "", role: "", photo: "" };
+
+const emptyData: AboutData = {
+  story: { title: "", description1: "", description2: "", image: "", founderQuote: "", founderAvatar: "" },
+  values: [],
+  team: [],
+};
+
+export default function AdminAbout() {
+  const [data, setData] = useState<AboutData>(emptyData);
+  const [openSection, setOpenSection] = useState<string | null>("story");
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+  const [dirty, setDirty] = useState(false);
+
+  useEffect(() => {
+    getAbout().then(setData);
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (dirty) e.preventDefault();
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [dirty]);
+
+  function updateStory(field: keyof AboutData["story"], value: string) {
+    setData((prev) => ({ ...prev, story: { ...prev.story, [field]: value } }));
+    setDirty(true);
+  }
+
+  function updateValue(i: number, field: keyof ValueItem, value: string) {
+    setData((prev) => {
+      const values = [...prev.values];
+      values[i] = { ...values[i], [field]: value };
+      return { ...prev, values };
+    });
+    setDirty(true);
+  }
+
+  function addValue() {
+    setData((prev) => ({ ...prev, values: [...prev.values, { ...emptyValue }] }));
+    setDirty(true);
+  }
+
+  function removeValue(i: number) {
+    setData((prev) => ({ ...prev, values: prev.values.filter((_, idx) => idx !== i) }));
+    setDirty(true);
+  }
+
+  function updateMember(i: number, field: keyof TeamMember, value: string) {
+    setData((prev) => {
+      const team = [...prev.team];
+      team[i] = { ...team[i], [field]: value };
+      return { ...prev, team };
+    });
+    setDirty(true);
+  }
+
+  function addMember() {
+    setData((prev) => ({ ...prev, team: [...prev.team, { ...emptyMember }] }));
+    setDirty(true);
+  }
+
+  function removeMember(i: number) {
+    setData((prev) => ({ ...prev, team: prev.team.filter((_, idx) => idx !== i) }));
+    setDirty(true);
+  }
+
+  async function save() {
+    setSaving(true);
+    setMessage("");
+    await updateAbout(data);
+    setSaving(false);
+    setDirty(false);
+    setMessage("Saved successfully.");
+    setTimeout(() => setMessage(""), 3000);
+  }
+
+  function toggle(section: string) {
+    setOpenSection((prev) => (prev === section ? null : section));
+  }
+
+  return (
+    <>
+      <div className="admin-page-header">
+        <div>
+          <h1>About Page</h1>
+          <p>Edit the about page content.</p>
+        </div>
+        <div className="admin-header-actions">
+          <button onClick={save} disabled={saving} className="admin-btn-primary">
+            {saving ? "Saving..." : "Save all"}
+          </button>
+          {message && <span className="admin-save-msg">{message}</span>}
+        </div>
+      </div>
+
+      {/* Our Story */}
+      <div className="admin-accordion-item">
+        <div className="admin-accordion-header" onClick={() => toggle("story")}>
+          <span>Our Story</span>
+          <i className={`fas fa-chevron-${openSection === "story" ? "up" : "down"}`}></i>
+        </div>
+        {openSection === "story" && (
+          <div className="admin-accordion-body">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <div className="admin-field-group" style={{ marginBottom: 0 }}>
+                <label>Section Title</label>
+                <input value={data.story.title} onChange={(e) => updateStory("title", e.target.value)} className="admin-input" />
+              </div>
+              <div className="admin-field-group" style={{ marginBottom: 0 }}>
+                <label>Founder Quote</label>
+                <input value={data.story.founderQuote} onChange={(e) => updateStory("founderQuote", e.target.value)} className="admin-input" />
+              </div>
+              <div className="admin-field-group" style={{ marginBottom: 0 }}>
+                <label>Paragraph 1</label>
+                <textarea value={data.story.description1} onChange={(e) => updateStory("description1", e.target.value)} className="admin-input" style={{ minHeight: "unset", height: 72, resize: "vertical" }} />
+              </div>
+              <div className="admin-field-group" style={{ marginBottom: 0 }}>
+                <label>Paragraph 2</label>
+                <textarea value={data.story.description2} onChange={(e) => updateStory("description2", e.target.value)} className="admin-input" style={{ minHeight: "unset", height: 72, resize: "vertical" }} />
+              </div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 16 }}>
+              <ImageUpload label="Section Image" value={data.story.image} onChange={(url) => { updateStory("image", url); setDirty(true); }} />
+              <ImageUpload label="Founder Avatar" value={data.story.founderAvatar} onChange={(url) => { updateStory("founderAvatar", url); setDirty(true); }} />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Mission & Values */}
+      <div className="admin-accordion-item">
+        <div className="admin-accordion-header" onClick={() => toggle("values")}>
+          <span>Mission &amp; Values</span>
+          <i className={`fas fa-chevron-${openSection === "values" ? "up" : "down"}`}></i>
+        </div>
+        {openSection === "values" && (
+          <div className="admin-accordion-body">
+            {data.values.map((v, i) => (
+              <div key={i} className="admin-list-item">
+                <div className="admin-list-item-header">
+                  <strong>{v.title || `Value ${i + 1}`}</strong>
+                  <button onClick={() => removeValue(i)} className="admin-btn-remove">Remove</button>
+                </div>
+                <div className="admin-field-group">
+                  <label>Number (e.g. 01)</label>
+                  <input value={v.number} onChange={(e) => updateValue(i, "number", e.target.value)} className="admin-input" />
+                </div>
+                <div className="admin-field-group">
+                  <label>Title</label>
+                  <input value={v.title} onChange={(e) => updateValue(i, "title", e.target.value)} className="admin-input" />
+                </div>
+                <div className="admin-field-group">
+                  <label>Description</label>
+                  <textarea value={v.text} onChange={(e) => updateValue(i, "text", e.target.value)} className="admin-input" rows={3} />
+                </div>
+              </div>
+            ))}
+            <button onClick={addValue} className="admin-btn-add">+ Add Value</button>
+          </div>
+        )}
+      </div>
+
+      {/* Team */}
+      <div className="admin-accordion-item">
+        <div className="admin-accordion-header" onClick={() => toggle("team")}>
+          <span>Team Members</span>
+          <i className={`fas fa-chevron-${openSection === "team" ? "up" : "down"}`}></i>
+        </div>
+        {openSection === "team" && (
+          <div className="admin-accordion-body">
+            {data.team.map((m, i) => (
+              <div key={i} className="admin-list-item">
+                <div className="admin-list-item-header">
+                  <strong>{m.name || `Member ${i + 1}`}</strong>
+                  <button onClick={() => removeMember(i)} className="admin-btn-remove">Remove</button>
+                </div>
+                <div className="admin-field-group">
+                  <label>Name</label>
+                  <input value={m.name} onChange={(e) => updateMember(i, "name", e.target.value)} className="admin-input" />
+                </div>
+                <div className="admin-field-group">
+                  <label>Role</label>
+                  <input value={m.role} onChange={(e) => updateMember(i, "role", e.target.value)} className="admin-input" />
+                </div>
+                <ImageUpload label="Photo" value={m.photo} onChange={(url) => { updateMember(i, "photo", url); setDirty(true); }} />
+              </div>
+            ))}
+            <button onClick={addMember} className="admin-btn-add">+ Add Member</button>
+          </div>
+        )}
+      </div>
+      <SeoMetabox page="about" />
+    </>
+  );
+}

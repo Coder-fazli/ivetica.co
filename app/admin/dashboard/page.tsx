@@ -12,25 +12,13 @@ export default function AdminDashboard() {
         <Link href="/admin/homepage" className="admin-dashboard-card">
           <i className="fas fa-home"></i>
           <h4>Homepage</h4>
-          <p>Edit hero, about, services, team</p>
+          <p>Edit hero, about, team, partners</p>
         </Link>
 
-        <Link href="/admin/portfolio" className="admin-dashboard-card">
-          <i className="fas fa-images"></i>
-          <h4>Portfolio</h4>
-          <p>Manage your projects</p>
-        </Link>
-
-        <Link href="/admin/blog" className="admin-dashboard-card">
-          <i className="fas fa-pen"></i>
-          <h4>Blog</h4>
-          <p>Write and manage posts</p>
-        </Link>
-
-        <Link href="/admin/team" className="admin-dashboard-card">
-          <i className="fas fa-users"></i>
-          <h4>Team</h4>
-          <p>Manage team members</p>
+        <Link href="/admin/works" className="admin-dashboard-card">
+          <i className="fas fa-briefcase"></i>
+          <h4>Works</h4>
+          <p>Manage portfolio projects</p>
         </Link>
 
         <Link href="/admin/services" className="admin-dashboard-card">
@@ -39,10 +27,16 @@ export default function AdminDashboard() {
           <p>Edit your services page</p>
         </Link>
 
-        <Link href="/admin/settings" className="admin-dashboard-card">
-          <i className="fas fa-sliders-h"></i>
-          <h4>Settings</h4>
-          <p>Logo, socials, contact info</p>
+        <Link href="/admin/about" className="admin-dashboard-card">
+          <i className="fas fa-users"></i>
+          <h4>About</h4>
+          <p>Edit story, values and team</p>
+        </Link>
+
+        <Link href="/admin/contact" className="admin-dashboard-card">
+          <i className="fas fa-envelope"></i>
+          <h4>Contact</h4>
+          <p>Edit contact info and map</p>
         </Link>
       </div>
     </>
