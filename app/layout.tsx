@@ -3,6 +3,7 @@ import { Outfit } from "next/font/google";
 import "./bootstrap-grid.css";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import ChunkErrorHandler from "@/components/ChunkErrorHandler";
 
 
 const outfit = Outfit({
@@ -50,6 +51,7 @@ export default function RootLayout({
         />
       </head>
       <body className={outfit.className}>
+        <ChunkErrorHandler />
         {children}
       </body>
     </html>
