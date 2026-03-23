@@ -3,11 +3,11 @@
 export const dynamic = "force-dynamic";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 import { getPosts, createPost, updatePost, deletePost, PostType } from "@/actions/posts";
 import SeoMetabox from "@/components/admin/SeoMetabox";
 
-const TipTapEditor = dynamic(() => import("@/components/blog/TipTapEditor"), { ssr: false });
+const TipTapEditor = nextDynamic(() => import("@/components/blog/TipTapEditor"), { ssr: false });
 
 function toSlug(str: string) {
   return str
