@@ -41,7 +41,6 @@ html, body {
   padding: 28px 20px 32px;
   flex-shrink: 0;
   text-align: center;
-  min-height: 220px;
 }
 
 .sidebar-topbar {
@@ -104,7 +103,7 @@ html, body {
 }
 
 .sidebar-about {
-  margin: 0 10px 2px;
+  margin: 0 10px 8px;
   padding: 14px 18px;
   border-radius: 10px;
   background: var(--card-bg);
@@ -342,15 +341,14 @@ html, body {
   font-family: inherit;
   padding: 4px 10px;
   border-radius: 20px;
-  border: 1px solid var(--border);
+  border: none;
   background: none;
   color: var(--text-muted);
   cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
+  transition: color 0.15s;
 }
 .about-tab.active {
   color: var(--text-primary);
-  border-color: var(--text-primary);
 }
 .about-clients-grid {
   display: grid;
@@ -371,7 +369,7 @@ html, body {
 /* Offices */
 .about-office-card { padding: 0; overflow: hidden; }
 .about-office-img {
-  width: 100%; height: 160px;
+  width: 100%; height: 220px;
   object-fit: cover; display: block;
 }
 .about-office-info { padding: 14px 16px; }
@@ -410,7 +408,7 @@ html, body {
 /* Founders */
 .about-founder-card { padding: 0; overflow: hidden; }
 .about-founder-img {
-  width: 100%; height: 220px;
+  width: 100%; height: 300px;
   object-fit: cover; display: block;
 }
 .about-founder-name {
@@ -455,3 +453,211 @@ html, body {
 .about-team-name { font-size: 13px; color: var(--text-primary); }
 .about-team-role { font-size: 12px; color: var(--text-dim); }
 .about-team-location { font-size: 11px; color: var(--text-muted); text-align: right; }
+
+/* ── Back button — hidden on desktop ── */
+.main-back-btn { display: none; }
+
+/* ── Main content wrapper ── */
+.main-content { display: contents; }
+
+/* ── Mobile-only slots hidden on desktop ── */
+.mobile-only-slot { display: none; }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: unset;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 0;
+  }
+
+  /* Hide desktop-only sections — replaced by mobile cards in the carousel */
+  aside > .sidebar-top { display: none; }
+  aside > .sidebar-about { display: none; }
+
+  /* Show mobile-only carousel cards */
+  .mobile-only-slot { display: block; }
+
+  /* Carousel — same behaviour as desktop */
+  .carousel-window {
+    flex: 1;
+    overflow: visible;
+    clip-path: inset(0 0 -30px 0);
+  }
+
+  /* Mobile hero — keeps exact sidebar-top look, no card background */
+  .mobile-hero-inner {
+    position: relative;
+    /* sidebar-top styles already apply via that class */
+  }
+
+  .mobile-hero-inner .sidebar-topbar {
+    margin-bottom: 28px;
+  }
+
+  .mobile-hero-inner .sidebar-theme-toggle {
+    /* size already overridden below */
+  }
+
+
+  /* Compact toggle on mobile */
+  .sidebar-theme-toggle {
+    width: 50px;
+    height: 28px;
+  }
+
+  .sidebar-theme-toggle::after {
+    width: 20px;
+    height: 20px;
+    top: 4px;
+    right: 4px;
+  }
+
+  /* Project cards — compact */
+  .proj-card {
+    padding: 10px 14px;
+  }
+
+  .proj-card-icon {
+    width: 52px;
+    height: 52px;
+  }
+
+  .proj-card-name {
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  .proj-card-desc {
+    font-size: 12px;
+  }
+
+  /* Main panel: full-screen overlay sliding in from right */
+  .main {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    background: var(--bg);
+  }
+
+  .main.main-open {
+    transform: translateX(0);
+  }
+
+  /* Back button */
+  .main-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text-dim);
+    background: var(--bg);
+    border: none;
+    cursor: pointer;
+    padding: 16px 16px 10px;
+    letter-spacing: 0.02em;
+    z-index: 1;
+  }
+  .main-back-btn:hover { color: var(--text-primary); }
+
+  /* Scrollable content below back button */
+  .main-content {
+    display: block;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* About layout: single column on mobile */
+  .about-layout {
+    grid-template-columns: 1fr;
+  }
+  .about-right {
+    display: contents;
+  }
+  .about-two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .about-left,
+  .about-card {
+    min-width: 0;
+  }
+
+  .about-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .about-tabs::-webkit-scrollbar { display: none; }
+}
+
+/* ── Light Theme Reveal ── */
+@keyframes lightReveal {
+  from { clip-path: circle(0% at 0% 0%); }
+  to   { clip-path: circle(200% at 0% 0%); }
+}
+
+.layout.light.spreading {
+  animation: lightReveal 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* ── Light Theme ── */
+.layout.light {
+  --bg: #f5f5f5;
+  --card-bg: #ebebeb;
+  --border: #e0e0e0;
+  --text-primary: #111111;
+  --text-muted: #999999;
+  --text-dim: #666666;
+  --start2: #d8d8d8;
+  --end2: #e8e8e8;
+}
+
+.layout.light html,
+.layout.light body {
+  background: var(--bg);
+}
+
+.layout.light .sidebar-theme-toggle {
+  background: #d0d0d0;
+}
+
+.layout.light .sidebar-theme-toggle::after {
+  left: 3px;
+  right: auto;
+  background: #555;
+}
+
+.layout.light .sidebar-theme-toggle.is-light {
+  background: #c8c8c8;
+}
+
+.layout.light .proj-card.visible:hover  { background: #f5f5f5; }
+.layout.light .proj-card.visible.active { background: #f5f5f5; }
+
+.layout.light .about-tab.active {
+  color: var(--text-primary);
+  border-color: var(--text-primary);
+}
+
+.layout.light .main-back-btn:hover { color: var(--text-primary); }
