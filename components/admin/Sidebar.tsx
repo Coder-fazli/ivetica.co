@@ -39,6 +39,7 @@ export default function Sidebar() {
 
       <div className="admin-sidebar-bottom">
         <UserButton />
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a href="/">
           <i className="fas fa-sign-out-alt"></i>
           <span>Back to site</span>

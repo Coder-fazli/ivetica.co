@@ -8,7 +8,7 @@ const CARD_SLOT_MOBILE = 84;
 const CARD_HEIGHT = 100;
 const TRACK_OFFSET = 2;
 const MOBILE_EXTRA = 2;   // hero (0) + about (1)
-const MOBILE_HERO_SLOT = 210; // taller slot for hero section
+const MOBILE_HERO_SLOT = 160; // hero slot: topbar + logo + tagline
 
 // Top position of a mobile slot given its index
 const mobileSlotTop = (idx: number) =>
@@ -25,30 +25,13 @@ const CARDS = Array.from({ length: 50 }, (_, i) => ({
   img: `/img/works/${(i % 6) + 1}.jpg`,
 }));
 
-function Clock() {
-  const [t, setT] = useState({ date: "", time: "" });
-  useEffect(() => {
-    const tick = () => {
-      const now = new Date();
-      setT({
-        date: now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }),
-        time: now.toLocaleTimeString("en-US", { hour12: false }),
-      });
-    };
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, []);
-  return <div className="sidebar-clock">{t.date}<br />New York, {t.time}</div>;
-}
 
 export default function TestPage() {
   const [active, setActive] = useState(0);
   const [fading, setFading] = useState(false);
-  const [view, setView] = useState<"work" | "about">("about");
+  const [view, setView] = useState<"home" | "work" | "about">("home");
   const [mainOpen, setMainOpen] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
-  const [spreading, setSpreading] = useState(false);
 
   const windowRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -246,19 +229,13 @@ export default function TestPage() {
   };
 
   const toggleTheme = () => {
-    if (theme === "dark") {
-      setSpreading(true);
-      setTheme("light");
-      setTimeout(() => setSpreading(false), 1400);
-    } else {
-      setTheme("dark");
-    }
+    setTheme(prev => prev === "dark" ? "light" : "dark");
   };
 
   const card = CARDS[active];
 
   return (
-    <div className={`layout${theme === "light" ? " light" : ""}${spreading ? " spreading" : ""}`}>
+    <div className={`layout${theme === "light" ? " light" : ""}`}>
       <aside className="sidebar">
 
         {/* Desktop-only top section */}
@@ -267,8 +244,8 @@ export default function TestPage() {
             <button className="sidebar-show-btn">Show all projects</button>
             <button className={`sidebar-theme-toggle${theme === "light" ? " is-light" : ""}`} onClick={toggleTheme} />
           </div>
-          <div className="sidebar-logo">Lvetica</div>
-          <Clock />
+          <img src="/img/lvetica-logo.png" alt="Lvetica" className="sidebar-logo-img" />
+          <div className="sidebar-tagline">DOING WHAT <span style={{ color: "#f4dc17" }}>MATTERS</span></div>
         </div>
 
         {/* Desktop-only about section */}
@@ -300,8 +277,8 @@ export default function TestPage() {
                     onClick={toggleTheme}
                   />
                 </div>
-                <div className="sidebar-logo">Lvetica</div>
-                <Clock />
+                <img src="/img/lvetica-logo.png" alt="Lvetica" className="sidebar-logo-img" />
+                <div className="sidebar-tagline">DOING WHAT <span style={{ color: "#f4dc17" }}>MATTERS</span></div>
               </div>
             </div>
 
@@ -348,10 +325,19 @@ export default function TestPage() {
         </div>
       </aside>
 
-      <main className={`main${mainOpen ? " main-open" : ""}`}>
-        <button className="main-back-btn" onClick={() => setMainOpen(false)}>← Back</button>
+      <main className={`main${mainOpen ? " main-open" : ""}${view === "home" ? " main-home" : ""}`}>
+        <button className="main-back-btn" onClick={() => { setMainOpen(false); setView("home"); }}>← Back</button>
         <div className="main-content" ref={mainContentRef}>
-          {view === "about" ? <AboutPage /> : (
+          {view === "home" ? (
+            <video
+              className="main-video"
+              src="/energy-ball.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+            />
+          ) : view === "about" ? <AboutPage /> : (
             <>
               <img src={card.img} alt={card.name} className={`main-hero${fading ? " fade" : ""}`} />
               <div className="main-body">

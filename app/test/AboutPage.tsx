@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const CLIENT_TABS = ["All", "Art & Culture", "Tech", "Fashion", "Entertainment", "Hospitality", "Retail", "Finance", "Non-profit"];
 
@@ -47,34 +47,32 @@ const OFFERINGS = [
 ];
 
 const TEAM = [
-  { name: "Alessandro De Vecchi", role: "Senior Brand Designer", location: "Milan" },
-  { name: "Andy Li", role: "Design Intern", location: "Baltimore" },
-  { name: "Anne Carmichael", role: "Producer", location: "New York" },
-  { name: "Ayo Fagbomi", role: "Senior Strategist", location: "London" },
-  { name: "Celia Mahieu", role: "Senior Interactive Designer", location: "Paris" },
-  { name: "Claren Walker", role: "Senior Strategist", location: "New York" },
-  { name: "Clarissa Svalter", role: "Senior Project Manager", location: "Rio de Janeiro" },
-  { name: "Connor Bannister", role: "Senior Motion Designer", location: "London" },
-  { name: "David Fiz", role: "Associate Interactive Design Director", location: "London" },
-  { name: "Elisa Bartolini", role: "Associate Project Management Director", location: "Milan" },
-  { name: "Felipe Rocha", role: "Founder & Creative Director", location: "New York" },
-  { name: "Leo Porto", role: "Founder & Creative Director", location: "New York" },
-];
-
-const OPENINGS = [
-  { title: "Senior Motion Designer", location: "New York, USA" },
-  { title: "Senior Brand Designer", location: "New York, USA" },
-  { title: "Senior Interactive Designer", location: "New York, USA" },
-  { title: "Senior Project Manager", location: "New York, USA" },
-  { title: "Senior Strategist", location: "New York, USA" },
-  { title: "Mid-Senior PR & Engagement Manager", location: "New York, USA" },
+  { name: "Felipe Rocha", role: "Founder & Creative Director", img: "/img/works/4.jpg", bio: "Felipe is a designer and creative director with over 18 years of experience shaping brands at the intersection of business, identity, and culture." },
+  { name: "Leo Porto", role: "Founder & Creative Director", img: "/img/works/5.jpg", bio: "Leo is a NY-based Brazilian creative director. His practice centers on brand identity systems built to scale and pulse with culture." },
+  { name: "Alessandro De Vecchi", role: "Senior Brand Designer", img: "/img/works/1.jpg", bio: "Brand designer with a decade of experience crafting visual identities for global clients across fashion, culture, and tech." },
+  { name: "Anne Carmichael", role: "Producer", img: "/img/works/2.jpg", bio: "Seasoned producer keeping complex multi-market projects on track and creative teams aligned." },
+  { name: "Ayo Fagbomi", role: "Senior Strategist", img: "/img/works/3.jpg", bio: "Strategic thinker with deep expertise in brand positioning, audience research, and cultural insight." },
+  { name: "Celia Mahieu", role: "Senior Interactive Designer", img: "/img/works/6.jpg", bio: "Interactive designer creating digital experiences that feel intuitive, human, and brand-true." },
+  { name: "Claren Walker", role: "Senior Strategist", img: "/img/works/1.jpg", bio: "Brand strategist focused on building lasting connections between brands and the cultures they operate in." },
+  { name: "Clarissa Svalter", role: "Senior Project Manager", img: "/img/works/2.jpg", bio: "Project manager with a talent for navigating complexity across global, cross-functional teams." },
+  { name: "Connor Bannister", role: "Senior Motion Designer", img: "/img/works/3.jpg", bio: "Motion designer bringing brands to life through dynamic animation, film, and immersive sequences." },
+  { name: "David Fiz", role: "Associate Interactive Design Director", img: "/img/works/4.jpg", bio: "Interactive design director bridging strategy and execution across web, app, and campaign platforms." },
+  { name: "Elisa Bartolini", role: "Associate Project Management Director", img: "/img/works/5.jpg", bio: "Director of project management ensuring studio excellence and client satisfaction across every engagement." },
+  { name: "Andy Li", role: "Design Intern", img: "/img/works/6.jpg", bio: "Emerging designer bringing fresh perspectives and energy to the studio's identity and digital projects." },
 ];
 
 export default function AboutPage() {
   const [clientTab, setClientTab] = useState("All");
   const [offeringTab, setOfferingTab] = useState("Visual Identity");
+  const teamScrollRef = useRef<HTMLDivElement>(null);
 
   const offering = OFFERINGS.find((o) => o.name === offeringTab)!;
+
+  const scrollTeam = (dir: "left" | "right") => {
+    const el = teamScrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === "right" ? el.clientWidth : -el.clientWidth, behavior: "smooth" });
+  };
 
   return (
     <div className="about-page">
@@ -82,19 +80,37 @@ export default function AboutPage() {
       {/* Hero */}
       <img src="/img/works/1.jpg" alt="Our Studio" className="about-hero-img" />
 
+      {/* Studio + Contact: same-height row */}
+      <div className="about-top-row">
+        <div className="about-card about-studio-card">
+          <div className="about-section-label">Our Studio</div>
+          <p className="about-studio-text">Lvetica connects brands with top creators for influencer marketing, UGC, and social growth.</p>
+          <p className="about-studio-text">We help brands navigate complex challenges through work that is strategically rigorous, emotionally resonant, and beautifully designed.</p>
+          <p className="about-studio-text">From large-scale rebrands to independent initiatives, our hard-working systems prove that craft and scale can coexist.</p>
+        </div>
+
+        <div className="about-card about-contact-card">
+          <div className="about-section-label">Contact</div>
+          <div className="about-contact-group">
+            <div className="about-contact-label">New Business</div>
+            <a className="about-contact-link" href="mailto:salam@lvetica.co">salam@lvetica.co</a>
+          </div>
+          <div className="about-contact-group">
+            <div className="about-contact-label">Influencer Inquiries</div>
+            <a className="about-contact-link" href="mailto:influencer@lvetica.co">influencer@lvetica.co</a>
+          </div>
+          <div className="about-contact-group">
+            <div className="about-contact-label">Call Us</div>
+            <a className="about-contact-link" href="tel:+994105050666">+994 10 505 06 66</a>
+          </div>
+        </div>
+      </div>
+
       {/* Two-column layout: left content | right rail */}
       <div className="about-layout">
 
         {/* LEFT column */}
         <div className="about-left">
-
-          {/* Studio */}
-          <div className="about-card about-studio-card">
-            <div className="about-section-label">Our Studio</div>
-            <p className="about-studio-text">Lvetica connects brands with top creators for influencer marketing, UGC, and social growth.</p>
-            <p className="about-studio-text">We help brands navigate complex challenges through work that is strategically rigorous, emotionally resonant, and beautifully designed.</p>
-            <p className="about-studio-text">From large-scale rebrands to independent initiatives, our hard-working systems prove that craft and scale can coexist.</p>
-          </div>
 
           {/* Clients */}
           <div className="about-card about-clients-card">
@@ -114,23 +130,6 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* Offices */}
-          <div className="about-two-col">
-            {[
-              { city: "New York", addr: "75 Stewart Ave Unit 315", sub: "Brooklyn, NY", img: "/img/works/2.jpg" },
-              { city: "London", addr: "436 Essex Rd Unit 221", sub: "London, UK", img: "/img/works/3.jpg" },
-            ].map((o) => (
-              <div key={o.city} className="about-card about-office-card">
-                <img src={o.img} alt={o.city} className="about-office-img" />
-                <div className="about-office-info">
-                  <div className="about-office-city">{o.city}</div>
-                  <div className="about-office-addr">{o.addr}</div>
-                  <div className="about-office-addr">{o.sub}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-
           {/* Offerings */}
           <div className="about-card about-offerings-card">
             <div className="about-section-label">Offerings</div>
@@ -144,31 +143,25 @@ export default function AboutPage() {
             <div className="about-offering-services">{offering.services}</div>
           </div>
 
-          {/* Founders */}
-          <div className="about-two-col">
-            {[
-              { name: "Felipe Rocha", title: "Founder & Creative Director", img: "/img/works/4.jpg", bio: "Felipe Rocha is a designer and creative director with over 18 years of experience shaping brands at the intersection of business, identity, and culture. His work spans global commercial and cultural contexts, partnering with companies and institutions to build brands that resonate at scale." },
-              { name: "Leo Porto", title: "Founder & Creative Director", img: "/img/works/5.jpg", bio: "Leo Porto is a NY-based Brazilian creative director and co-founder of Lvetica. His practice centers on brand identity systems, building robust frameworks that are both rigorous and expressive — designed to scale and pulse with culture." },
-            ].map((f) => (
-              <div key={f.name} className="about-card about-founder-card">
-                <img src={f.img} alt={f.name} className="about-founder-img" />
-                <div className="about-founder-name">{f.name}</div>
-                <div className="about-founder-title">{f.title}</div>
-                <p className="about-founder-bio">{f.bio}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Team */}
+          {/* Team — horizontal scroll */}
           <div className="about-card about-team-card">
-            <div className="about-section-label">Team</div>
-            {TEAM.map((m) => (
-              <div key={m.name} className="about-team-row">
-                <span className="about-team-name">{m.name}</span>
-                <span className="about-team-role">{m.role}</span>
-                <span className="about-team-location">{m.location}</span>
+            <div className="about-team-header">
+              <div className="about-section-label">Team</div>
+              <div className="about-team-arrows">
+                <button className="about-team-arrow" onClick={() => scrollTeam("left")}>←</button>
+                <button className="about-team-arrow" onClick={() => scrollTeam("right")}>→</button>
               </div>
-            ))}
+            </div>
+            <div className="about-team-scroll" ref={teamScrollRef}>
+              {TEAM.map((m) => (
+                <div key={m.name} className="about-team-member">
+                  <img src={m.img} alt={m.name} className="about-founder-img" />
+                  <div className="about-founder-name">{m.name}</div>
+                  <div className="about-founder-title">{m.role}</div>
+                  <p className="about-founder-bio">{m.bio}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
         </div>
@@ -176,36 +169,32 @@ export default function AboutPage() {
         {/* RIGHT rail */}
         <div className="about-right">
 
-          <div className="about-card about-contact-card">
-            <div className="about-section-label">Contact</div>
-            <div className="about-contact-group">
-              <div className="about-contact-label">New Business</div>
-              <a className="about-contact-link" href="mailto:business@lvetica.co">business@lvetica.co</a>
-            </div>
-            <div className="about-contact-group">
-              <div className="about-contact-label">Media Inquiries</div>
-              <a className="about-contact-link" href="mailto:press@lvetica.co">press@lvetica.co</a>
-            </div>
-            <div className="about-contact-group">
-              <div className="about-contact-label">General Inquiries</div>
-              <a className="about-contact-link" href="mailto:info@lvetica.co">info@lvetica.co</a>
-            </div>
-            <div className="about-contact-group">
-              <div className="about-contact-label">Social</div>
-              <a className="about-contact-link" href="#">Instagram</a>
-              <span className="about-contact-sep"> / </span>
-              <a className="about-contact-link" href="#">LinkedIn</a>
-            </div>
+          <div className="about-card about-openings-card">
+            <div className="about-section-label">Join Our Team</div>
+            <a className="about-cv-btn" href="mailto:salam@lvetica.co?subject=CV Submission">Submit Your CV</a>
           </div>
 
-          <div className="about-card about-openings-card">
-            <div className="about-section-label">Current Openings</div>
-            {OPENINGS.map((o) => (
-              <div key={o.title} className="about-opening-row">
-                <span className="about-opening-title">{o.title}</span>
-                <span className="about-opening-location">{o.location}</span>
+          {/* Map */}
+          <div className="about-card about-map-card">
+            <div className="about-section-label">Our Location</div>
+            <a
+              className="about-map-wrap"
+              href="https://www.google.com/maps/search/?api=1&query=Matbuat+Avenue+3141+Baku+Azerbaijan"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open location in Google Maps"
+            >
+              <iframe
+                className="about-map-iframe"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=49.855%2C40.402%2C49.876%2C40.413&layer=mapnik&marker=40.4073%2C49.8651"
+                allowFullScreen
+                loading="lazy"
+              />
+              <div className="about-map-overlay">
+                <span className="about-map-open">Open in Maps ↗</span>
               </div>
-            ))}
+            </a>
+            <div className="about-map-address">pr 3141 Matbuat Avenue, Baku 1000</div>
           </div>
 
         </div>
