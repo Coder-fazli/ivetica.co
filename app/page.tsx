@@ -9,8 +9,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ w
   const initialCards = works.map((work, i) => ({
     id: i,
     name: work.title,
-    desc: work.client,
-    img: work.thumbnail || `/img/works/${(i % 6) + 1}.jpg`,
+    desc: work.description || work.client,
+    img: work.thumbnail || "",
     slug: work.slug,
   }));
 

@@ -182,10 +182,18 @@ html, body {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: radial-gradient(76.17% 129.78% at 23.83% 65.4%, var(--start2) 0%, var(--end2) 100%);
+  background-size: cover;
+  background-position: center;
   opacity: 0;
   transition: opacity 0.5s ease;
   pointer-events: none;
+}
+.proj-card-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(0,0,0,0.45);
 }
 
 .proj-card-icon,
@@ -198,9 +206,9 @@ html, body {
   width: 68px;
   height: 68px;
   border-radius: 8px;
-  object-fit: cover;
+  object-fit: contain;
   flex-shrink: 0;
-  background: #222;
+  background: #111;
   margin-top: 1px;
 }
 
@@ -228,8 +236,7 @@ html, body {
 .main-hero {
   width: calc(100% - 32px);
   max-width: calc(100% - 32px);
-  height: 62vh;
-  object-fit: cover;
+  height: auto;
   display: block;
   border-radius: 10px;
   margin: 8px 16px 0;
@@ -617,7 +624,7 @@ html, body {
 /* ── Mobile ── */
 @media (max-width: 768px) {
   .main-body { padding: 24px 16px; }
-  .main-hero { width: calc(100% - 24px); max-width: calc(100% - 24px); margin: 8px 12px 0; }
+  .main-hero { width: calc(100% - 24px); max-width: calc(100% - 24px); margin: 8px 12px 0; height: auto; }
   .work-blocks { margin: 24px 0 40px; }
 
   .layout {
@@ -636,9 +643,33 @@ html, body {
     padding-bottom: 0;
   }
 
-  /* Hide desktop-only sections — replaced by mobile cards in the carousel */
-  aside > .sidebar-top { display: none; }
+  /* Fixed header on mobile — logo + tagline + theme toggle always visible */
+  aside > .sidebar-top {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    padding: 18px 16px 16px;
+    text-align: center;
+  }
+
+  aside > .sidebar-top .sidebar-topbar {
+    margin-bottom: 14px;
+  }
+
+  aside > .sidebar-top .sidebar-logo-img {
+    width: 190px;
+    margin-bottom: 6px;
+  }
+
+  aside > .sidebar-top .sidebar-tagline {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+  }
+
   aside > .sidebar-about { display: none; }
+
+  /* Hide the carousel hero slot (duplicate of fixed header above) */
+  .mobile-only-slot:first-child { display: none; }
 
   /* Show mobile-only carousel cards */
   .mobile-only-slot { display: block; }

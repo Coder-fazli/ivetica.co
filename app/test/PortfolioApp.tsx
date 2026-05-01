@@ -9,8 +9,8 @@ const CARD_SLOT_DESKTOP = 110;
 const CARD_SLOT_MOBILE = 84;
 const CARD_HEIGHT = 100;
 const TRACK_OFFSET = 2;
-const MOBILE_EXTRA = 2;   // hero (0) + about (1)
-const MOBILE_HERO_SLOT = 160; // hero slot: topbar + logo + tagline
+const MOBILE_EXTRA = 2;   // hero (0, hidden) + about (1)
+const MOBILE_HERO_SLOT = 0; // hero slot is hidden — sidebar-top is fixed header
 
 // Top position of a mobile slot given its index
 const mobileSlotTop = (idx: number) =>
@@ -37,8 +37,8 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
       const mapped: Card[] = works.map((w, i) => ({
         id: i,
         name: w.title,
-        desc: w.client,
-        img: w.thumbnail || `/img/works/${(i % 6) + 1}.jpg`,
+        desc: w.description || w.client,
+        img: w.thumbnail || "",
         slug: w.slug,
       }));
       setCards(mapped);
@@ -173,13 +173,14 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
       const isMobile = mob();
       const totalSlots = isMobile ? MOBILE_EXTRA + cardsRef.current.length : cardsRef.current.length;
 
-      // Mobile-only slots: hero (0) and about (1)
+      // Mobile-only slots: hero (0, hidden/skipped) and about (1)
       if (isMobile) {
         for (let mi = 0; mi < MOBILE_EXTRA; mi++) {
+          if (mi === 0) continue; // hero hidden — sidebar-top is fixed header
           const slot = mobileSlotEls.current[mi];
           if (!slot) continue;
 
-          const cardH = mi === 0 ? MOBILE_HERO_SLOT : CARD_HEIGHT;
+          const cardH = CARD_HEIGHT;
           const visualTop = mobileSlotTop(mi) - currentY.current + TRACK_OFFSET;
           const visualBottom = visualTop + cardH;
           const excess = visualBottom - containerH;
@@ -348,8 +349,8 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
                   className={`proj-card${seenCards.current.has(i) ? " visible" : ""}${i === active ? " active" : ""}`}
                   onClick={() => handleCardClick(i)}
                 >
-                  <div ref={(el) => { glowEls.current[i] = el; }} className="proj-card-glow" />
-                  <img src={c.img} alt={c.name} className="proj-card-icon" />
+                  <div ref={(el) => { glowEls.current[i] = el; }} className="proj-card-glow" style={c.img ? { backgroundImage: `url(${c.img})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined} />
+                  {c.img && <img src={c.img} alt={c.name} className="proj-card-icon" />}
                   <div className="proj-card-info">
                     <div className="proj-card-name">{c.name}</div>
                     <div className="proj-card-desc">{c.desc}</div>

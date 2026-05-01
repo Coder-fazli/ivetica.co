@@ -76,6 +76,8 @@ export type WorkType = {
   client: string;
   tags: string[];
   thumbnail?: string;
+  coverImage?: string;
+  description?: string;
   challenge?: string;
   approach?: string;
   results?: string;

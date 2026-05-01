@@ -206,22 +206,21 @@ work blocks
 .work-block-text-two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0;
-  background: var(--card-bg);
+  gap: 8px;
+  background: var(--bg);
   border-radius: 10px;
   overflow: hidden;
 }
 
 .work-block-text-two-col > div {
   padding: 28px 32px;
+  background: var(--card-bg);
+  border-radius: 8px;
 }
 
-.work-block-text-two-col > div + div {
-  border-left: 1px solid rgba(255,255,255,0.06);
-}
 
 @media (max-width: 768px) {
   .work-block-text-two-col { grid-template-columns: 1fr; }
-  .work-block-text-two-col > div + div { border-left: none; border-top: 1px solid rgba(255,255,255,0.06); }
+  .work-block-text-two-col { grid-template-columns: 1fr; }
   .work-block-text { width: 100%; }
 }

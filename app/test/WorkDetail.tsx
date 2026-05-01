@@ -25,11 +25,6 @@ export default function WorkDetail({ slug, fading }: { slug: string; fading: boo
 
   return (
     <div className={`work-detail-panel${fading ? " fade" : ""}`}>
-      {/* hero thumbnail */}
-      {work.thumbnail && (
-        <img src={work.thumbnail} alt={work.title} className="main-hero" />
-      )}
-
       <div className="main-body">
         <div className="main-label">{work.client}</div>
         <h1 className="main-title"><strong>{work.title}</strong></h1>

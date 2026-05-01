@@ -200,21 +200,30 @@ export default function AdminWorks() {
             <div style={s.modalBody}>
 
               {/* thumbnail + basic fields */}
-              <div style={{ display: "grid", gridTemplateColumns: "110px 1fr", gap: 16, alignItems: "start", marginBottom: 18 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "110px 110px 1fr", gap: 16, alignItems: "start", marginBottom: 18 }}>
 
-                {/* thumbnail via MediaPicker */}
+                {/* thumbnail */}
                 <div>
                   <span style={s.label}>Thumbnail</span>
                   <div style={{ width: 110, height: 110, borderRadius: 8, border: "1.5px dashed var(--admin-input-border)", overflow: "hidden", background: "var(--admin-input-bg)", marginBottom: 6 }}>
                     {modal.thumbnail
                       ? <img src={modal.thumbnail} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                      : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", opacity: 0.2, fontSize: 11 }}>Photo</div>
+                      : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", opacity: 0.2, fontSize: 11 }}>Hero</div>
                     }
                   </div>
-                  <MediaUpload
-                    value={{ url: modal.thumbnail || "", kind: "image" }}
-                    onChange={(m) => field("thumbnail", m.url)}
-                  />
+                  <MediaUpload value={{ url: modal.thumbnail || "", kind: "image" }} onChange={(m) => field("thumbnail", m.url)} />
+                </div>
+
+                {/* cover image for /all page */}
+                <div>
+                  <span style={s.label}>Cover <span style={{ opacity: 0.5, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>/all</span></span>
+                  <div style={{ width: 110, height: 110, borderRadius: 8, border: "1.5px dashed var(--admin-input-border)", overflow: "hidden", background: "var(--admin-input-bg)", marginBottom: 6 }}>
+                    {modal.coverImage
+                      ? <img src={modal.coverImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", opacity: 0.2, fontSize: 11 }}>/all</div>
+                    }
+                  </div>
+                  <MediaUpload value={{ url: modal.coverImage || "", kind: "image" }} onChange={(m) => field("coverImage", m.url)} />
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -231,6 +240,10 @@ export default function AdminWorks() {
                       <span style={s.label}>Client</span>
                       <input style={s.input} value={modal.client} onChange={(e) => field("client", e.target.value)} placeholder="Nike" />
                     </div>
+                  </div>
+                  <div>
+                    <span style={s.label}>Card description <span style={{ opacity: 0.5, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>sidebar</span></span>
+                    <input style={s.input} value={modal.description || ""} onChange={(e) => field("description", e.target.value)} placeholder="Short description shown on the sidebar card" />
                   </div>
                   <div>
                     <span style={s.label}>Tags</span>

@@ -6,6 +6,8 @@ const WorkSchema = new mongoose.Schema({
   client: { type: String, required: true },
   tags: [{ type: String }],
   thumbnail: { type: String },
+  coverImage: { type: String },
+  description: { type: String },
   challenge: { type: String },
   approach: { type: String },
   results: { type: String },

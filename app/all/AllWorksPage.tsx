@@ -126,8 +126,8 @@ export default function AllWorksPage({ works, initialTag }: { works: WorkType[];
                 color: "inherit",
               }}
             >
-              {work.thumbnail
-                ? <img src={work.thumbnail} alt={work.title} style={{ width: "100%", display: "block", borderRadius: 8 }} />
+              {(work.coverImage || work.thumbnail)
+                ? <img src={work.coverImage || work.thumbnail} alt={work.title} style={{ width: "100%", display: "block", borderRadius: 8 }} />
                 : <div style={{ width: "100%", aspectRatio: "4/3", background: "#1a1a1a", borderRadius: 8 }} />
               }
               <div style={{ padding: "10px 4px 0" }}>
