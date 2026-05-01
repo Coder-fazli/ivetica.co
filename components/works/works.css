@@ -190,7 +190,7 @@ work blocks
 }
 
 @media (max-width: 768px) {
-  .work-block-portrait { width: 80%; }
+  .work-block-portrait { width: 100%; }
   .work-block-two-col { grid-template-columns: 1fr; }
   .work-block-text { width: 100%; }
   .work-block-media-text { grid-template-columns: 1fr; gap: 20px; }

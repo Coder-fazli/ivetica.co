@@ -616,6 +616,10 @@ html, body {
 
 /* ── Mobile ── */
 @media (max-width: 768px) {
+  .main-body { padding: 24px 16px; }
+  .main-hero { width: calc(100% - 24px); max-width: calc(100% - 24px); margin: 8px 12px 0; }
+  .work-blocks { margin: 24px 0 40px; }
+
   .layout {
     flex-direction: column;
     height: 100dvh;
