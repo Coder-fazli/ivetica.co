@@ -11,6 +11,24 @@ const WorkSchema = new mongoose.Schema({
   results: { type: String },
   gallery: [{ type: String }],
   metrics: [{ label: { type: String }, value: { type: String } }],
+  blocks:[
+     {
+      type: { type: String },
+      // full-media / portrait-media
+      media: {
+        url: { type: String },
+        kind: { type: String },
+    },                                          
+      // two-column
+      left: { url: { type: String }, kind: { type:
+       String } },    
+       right: { url: { type: String }, kind: {
+       type: String } },
+       // text
+      label: { type: String },
+      body: { type: String },                     
+    },
+  ],
 });
 
 export const Work = mongoose.models.Work || mongoose.model("Work", WorkSchema);

@@ -2,130 +2,144 @@
 
 import { useState, useEffect } from "react";
 import { getWorks, updateWork, createWork, deleteWork } from "@/actions/works";
-import { WorkType } from "@/types";
-import ImageUpload from "@/components/admin/ImageUpload";
+import { WorkType, Block, MediaItem } from "@/types";
 import SeoMetabox from "@/components/admin/SeoMetabox";
+import MediaUpload from "@/components/admin/MediaUpload";
 
-const TAGS = ["Influencer", "UGC", "Production", "Social Media"];
+const TAGS = ["Art & Culture", "Tech", "Fashion", "Entertainment", "Hospitality", "Retail", "Finance", "Non-profit"];
 
 const empty: WorkType = {
-  title: "",
-  slug: "",
-  client: "",
-  tags: [],
-  thumbnail: "",
-  challenge: "",
-  approach: "",
-  results: "",
-  gallery: [],
-  metrics: [],
+  title: "", slug: "", client: "", tags: [],
+  thumbnail: "", challenge: "", approach: "", results: "",
+  gallery: [], metrics: [], blocks: [],
 };
+
+const s: Record<string, React.CSSProperties> = {
+  overlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px" },
+  modal: { background: "var(--admin-card-bg, #fff)", borderRadius: 10, width: "100%", maxWidth: 1000, maxHeight: "90vh", display: "flex", flexDirection: "column", overflow: "hidden", boxShadow: "0 8px 40px rgba(0,0,0,0.18)" },
+  modalHead: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 20px", borderBottom: "1px solid var(--admin-input-border)", flexShrink: 0 },
+  modalBody: { flex: 1, overflowY: "auto", padding: "18px 20px" },
+  modalFoot: { display: "flex", gap: 8, padding: "12px 20px", borderTop: "1px solid var(--admin-input-border)", flexShrink: 0 },
+  label: { fontSize: 10, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.08em", opacity: 0.4, marginBottom: 5, display: "block" },
+  input: { width: "100%", fontSize: 13, padding: "0 10px", height: 34, borderRadius: 5, border: "1px solid var(--admin-input-border)", background: "var(--admin-input-bg)", color: "var(--admin-text)", outline: "none", boxSizing: "border-box" as const },
+  textarea: { width: "100%", fontSize: 13, padding: "7px 10px", borderRadius: 5, border: "1px solid var(--admin-input-border)", background: "var(--admin-input-bg)", color: "var(--admin-text)", outline: "none", resize: "vertical" as const, boxSizing: "border-box" as const },
+  blockBox: { border: "1px solid var(--admin-input-border)", borderRadius: 8, padding: 12, marginBottom: 8 },
+  blockHead: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 },
+  blockType: { fontSize: 10, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.08em", opacity: 0.4 },
+  iconBtn: { background: "none", border: "1px solid var(--admin-input-border)", borderRadius: 4, cursor: "pointer", padding: "2px 8px", fontSize: 12, color: "inherit" },
+};
+
+// SVG icon paths for each block type
+const BLOCK_TYPES: { type: Block["type"]; label: string; svg: React.ReactNode }[] = [
+  {
+    type: "full-media", label: "Full media",
+    svg: <svg width="40" height="30" viewBox="0 0 40 30"><rect x="1" y="1" width="38" height="28" rx="3" fill="currentColor" opacity="0.85"/></svg>,
+  },
+  {
+    type: "portrait-media", label: "Portrait",
+    svg: <svg width="40" height="30" viewBox="0 0 40 30"><rect x="12" y="1" width="16" height="28" rx="3" fill="currentColor" opacity="0.85"/></svg>,
+  },
+  {
+    type: "two-column", label: "Two column",
+    svg: <svg width="40" height="30" viewBox="0 0 40 30"><rect x="1" y="1" width="17" height="28" rx="3" fill="currentColor" opacity="0.85"/><rect x="22" y="1" width="17" height="28" rx="3" fill="currentColor" opacity="0.85"/></svg>,
+  },
+  {
+    type: "media-text", label: "Media + Text",
+    svg: <svg width="40" height="30" viewBox="0 0 40 30"><rect x="1" y="1" width="17" height="28" rx="3" fill="currentColor" opacity="0.85"/><rect x="22" y="6" width="17" height="3" rx="1" fill="currentColor" opacity="0.7"/><rect x="22" y="12" width="17" height="3" rx="1" fill="currentColor" opacity="0.7"/><rect x="22" y="18" width="12" height="3" rx="1" fill="currentColor" opacity="0.7"/></svg>,
+  },
+  {
+    type: "text", label: "Label + Text",
+    svg: <svg width="40" height="30" viewBox="0 0 40 30"><rect x="1" y="8" width="12" height="3" rx="1" fill="currentColor" opacity="0.5"/><rect x="17" y="6" width="22" height="3" rx="1" fill="currentColor" opacity="0.85"/><rect x="17" y="12" width="22" height="3" rx="1" fill="currentColor" opacity="0.85"/><rect x="17" y="18" width="16" height="3" rx="1" fill="currentColor" opacity="0.85"/></svg>,
+  },
+  {
+    type: "text-full", label: "Full text",
+    svg: <svg width="40" height="30" viewBox="0 0 40 30"><rect x="1" y="6" width="38" height="3" rx="1" fill="currentColor" opacity="0.85"/><rect x="1" y="12" width="38" height="3" rx="1" fill="currentColor" opacity="0.85"/><rect x="1" y="18" width="28" height="3" rx="1" fill="currentColor" opacity="0.85"/></svg>,
+  },
+  {
+    type: "text-two-col", label: "2-col text",
+    svg: <svg width="40" height="30" viewBox="0 0 40 30"><rect x="1" y="6" width="17" height="2.5" rx="1" fill="currentColor" opacity="0.85"/><rect x="1" y="11" width="17" height="2.5" rx="1" fill="currentColor" opacity="0.85"/><rect x="1" y="16" width="12" height="2.5" rx="1" fill="currentColor" opacity="0.85"/><rect x="22" y="6" width="17" height="2.5" rx="1" fill="currentColor" opacity="0.85"/><rect x="22" y="11" width="17" height="2.5" rx="1" fill="currentColor" opacity="0.85"/><rect x="22" y="16" width="12" height="2.5" rx="1" fill="currentColor" opacity="0.85"/></svg>,
+  },
+];
 
 export default function AdminWorks() {
   const [works, setWorks] = useState<WorkType[]>([]);
-  const [open, setOpen] = useState<number | null>(null);
-  const [saving, setSaving] = useState<number | null>(null);
+  const [modal, setModal] = useState<WorkType | null>(null);
+  const [modalIdx, setModalIdx] = useState<number | null>(null);
+  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
-  const [dirtyIndexes, setDirtyIndexes] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     getWorks().then((data) => setWorks(data as WorkType[]));
   }, []);
 
-  useEffect(() => {
-    const handler = (e: BeforeUnloadEvent) => {
-      if (dirtyIndexes.size > 0) e.preventDefault();
-    };
-    window.addEventListener("beforeunload", handler);
-    return () => window.removeEventListener("beforeunload", handler);
-  }, [dirtyIndexes]);
+  function openNew() { setModal({ ...empty }); setModalIdx(null); }
+  function openEdit(i: number) { setModal({ ...works[i] }); setModalIdx(i); }
+  function closeModal() { setModal(null); setModalIdx(null); }
 
-  function markDirty(i: number) {
-    setDirtyIndexes((prev) => new Set(prev).add(i));
-  }
-  function markClean(i: number) {
-    setDirtyIndexes((prev) => { const n = new Set(prev); n.delete(i); return n; });
+  function field(key: keyof WorkType, val: unknown) {
+    setModal((prev) => prev ? { ...prev, [key]: val } : prev);
   }
 
-  function update(index: number, field: keyof WorkType, value: unknown) {
-    const updated = [...works];
-    updated[index] = { ...updated[index], [field]: value };
-    setWorks(updated);
-    markDirty(index);
+  function toggleTag(tag: string) {
+    if (!modal) return;
+    const tags = modal.tags || [];
+    field("tags", tags.includes(tag) ? tags.filter(t => t !== tag) : [...tags, tag]);
   }
 
-  function toggleTag(index: number, tag: string) {
-    const current = works[index].tags || [];
-    const next = current.includes(tag) ? current.filter((t) => t !== tag) : [...current, tag];
-    update(index, "tags", next);
+  function addBlock(type: Block["type"]) {
+    const emptyMedia: MediaItem = { url: "", kind: "image" };
+    let b: Block;
+    if (type === "full-media") b = { type: "full-media", media: emptyMedia };
+    else if (type === "portrait-media") b = { type: "portrait-media", media: emptyMedia };
+    else if (type === "two-column") b = { type: "two-column", left: emptyMedia, right: emptyMedia };
+    else if (type === "text") b = { type: "text", label: "", body: "" };
+    else if (type === "text-full") b = { type: "text-full", label: "", body: "" };
+    else if (type === "text-two-col") b = { type: "text-two-col", leftLabel: "", leftBody: "", rightLabel: "", rightBody: "" };
+    else b = { type: "media-text", media: emptyMedia, body: "" };
+    field("blocks", [...(modal?.blocks || []), b]);
   }
 
-  function addMetric(index: number) {
-    const metrics = [...(works[index].metrics || []), { label: "", value: "" }];
-    update(index, "metrics", metrics);
+  function updateBlock(bi: number, val: Partial<Block>) {
+    const blocks = [...(modal?.blocks || [])];
+    blocks[bi] = { ...blocks[bi], ...val } as Block;
+    field("blocks", blocks);
   }
 
-  function updateMetric(wi: number, mi: number, field: "label" | "value", val: string) {
-    const metrics = [...(works[wi].metrics || [])];
-    metrics[mi] = { ...metrics[mi], [field]: val };
-    update(wi, "metrics", metrics);
+  function removeBlock(bi: number) { field("blocks", (modal?.blocks || []).filter((_, i) => i !== bi)); }
+
+  function moveBlock(bi: number, dir: "up" | "down") {
+    const blocks = [...(modal?.blocks || [])];
+    const swap = dir === "up" ? bi - 1 : bi + 1;
+    if (swap < 0 || swap >= blocks.length) return;
+    [blocks[bi], blocks[swap]] = [blocks[swap], blocks[bi]];
+    field("blocks", blocks);
   }
 
-  function removeMetric(wi: number, mi: number) {
-    const metrics = (works[wi].metrics || []).filter((_, i) => i !== mi);
-    update(wi, "metrics", metrics);
-  }
-
-  function addGalleryItem(index: number) {
-    const gallery = [...(works[index].gallery || []), ""];
-    update(index, "gallery", gallery);
-  }
-
-  function updateGallery(wi: number, gi: number, val: string) {
-    const gallery = [...(works[wi].gallery || [])];
-    gallery[gi] = val;
-    update(wi, "gallery", gallery);
-  }
-
-  function removeGallery(wi: number, gi: number) {
-    const gallery = (works[wi].gallery || []).filter((_, i) => i !== gi);
-    update(wi, "gallery", gallery);
-  }
-
-  async function handleSave(index: number) {
-    setSaving(index);
+  async function handleSave() {
+    if (!modal) return;
+    setSaving(true);
     setMessage("");
     try {
-      const w = works[index];
-      if (w.slug) {
-        await updateWork(w.slug, w);
+      if (modalIdx !== null && modal.slug) {
+        await updateWork(modal.slug, modal);
+        const updated = [...works]; updated[modalIdx] = modal; setWorks(updated);
       } else {
-        await createWork(w);
+        await createWork(modal);
+        setWorks([...works, modal]);
       }
-      markClean(index);
       setMessage("Saved!");
+      closeModal();
     } catch {
       setMessage("Failed to save.");
     }
-    setSaving(null);
+    setSaving(false);
   }
 
-  async function handleDelete(index: number) {
-    const w = works[index];
-    if (!w.slug) {
-      setWorks(works.filter((_, i) => i !== index));
-      markClean(index);
-      return;
-    }
-    await deleteWork(w.slug);
-    setWorks(works.filter((_, i) => i !== index));
-    markClean(index);
-    if (open === index) setOpen(null);
-  }
-
-  function addWork() {
-    setWorks([...works, { ...empty }]);
-    setOpen(works.length);
+  async function handleDelete() {
+    if (!modal?.slug) { closeModal(); return; }
+    await deleteWork(modal.slug);
+    setWorks(works.filter((_, i) => i !== modalIdx));
+    closeModal();
   }
 
   return (
@@ -137,175 +151,210 @@ export default function AdminWorks() {
 
       {message && <div className="admin-alert admin-alert-success">{message}</div>}
 
-      {dirtyIndexes.size > 0 && (
-        <div className="admin-alert admin-alert-error" style={{ marginBottom: "16px" }}>
-          <i className="fas fa-exclamation-triangle" style={{ marginRight: "8px" }}></i>
-          You have unsaved changes in {dirtyIndexes.size} project{dirtyIndexes.size > 1 ? "s" : ""}.
-        </div>
-      )}
-
       <div className="admin-card">
         <div className="admin-card-header">
           <h3>All Works ({works.length})</h3>
-          <button className="admin-btn admin-btn-secondary" onClick={addWork}>
+          <button className="admin-btn admin-btn-secondary" onClick={openNew}>
             <i className="fas fa-plus"></i> Add Work
           </button>
         </div>
 
-        {works.map((work, i) => (
-          <div key={i} style={{ borderBottom: "1px solid var(--admin-input-border)" }}>
+        {works.length === 0 && (
+          <p style={{ fontSize: 13, opacity: 0.4, padding: "12px 0" }}>No works yet.</p>
+        )}
 
-            {/* toggler header */}
-            <div
-              onClick={() => setOpen(open === i ? null : i)}
-              style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 0", cursor: "pointer" }}
-            >
-              <span style={{ display: "flex", alignItems: "center", gap: "10px", fontWeight: 500, fontSize: "14px" }}>
-                {work.title || "New Work"}
-                {dirtyIndexes.has(i) && (
-                  <span style={{ fontSize: "10px", color: "var(--admin-accent)", background: "rgba(255,152,0,0.1)", padding: "2px 7px", borderRadius: "4px" }}>
-                    unsaved
-                  </span>
-                )}
-              </span>
-              <i className={`fas fa-chevron-${open === i ? "up" : "down"}`} style={{ color: "var(--admin-muted)", fontSize: "12px" }}></i>
+        {works.map((w, i) => (
+          <div
+            key={i}
+            onClick={() => openEdit(i)}
+            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid var(--admin-input-border)", cursor: "pointer" }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              {w.thumbnail
+                ? <img src={w.thumbnail} alt="" style={{ width: 36, height: 36, objectFit: "cover", borderRadius: 4 }} />
+                : <div style={{ width: 36, height: 36, borderRadius: 4, background: "var(--admin-input-bg)", border: "1px solid var(--admin-input-border)" }} />
+              }
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 500 }}>{w.title || "Untitled"}</div>
+                <div style={{ fontSize: 11, opacity: 0.4 }}>{w.client}{w.blocks?.length ? ` · ${w.blocks.length} blocks` : ""}</div>
+              </div>
+            </div>
+            <i className="fas fa-chevron-right" style={{ fontSize: 11, opacity: 0.3 }}></i>
+          </div>
+        ))}
+      </div>
+
+      <SeoMetabox page="works" />
+
+      {modal && (
+        <div style={s.overlay} onClick={(e) => { if (e.target === e.currentTarget) closeModal(); }}>
+          <div style={s.modal}>
+
+            {/* header */}
+            <div style={s.modalHead}>
+              <span style={{ fontSize: 13, fontWeight: 600 }}>{modalIdx !== null ? modal.title || "Edit Work" : "New Work"}</span>
+              <button onClick={closeModal} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 20, opacity: 0.4, lineHeight: 1, color: "inherit" }}>×</button>
             </div>
 
-            {/* expanded fields */}
-            {open === i && (
-              <div style={{ paddingBottom: "20px" }}>
+            {/* body */}
+            <div style={s.modalBody}>
 
-                {/* title + slug */}
-                <div className="admin-row">
-                  <div className="admin-col">
-                    <div className="admin-form-group">
-                      <label className="admin-label">Title</label>
-                      <input className="admin-input" style={{ padding: "6px 10px" }} value={work.title} onChange={(e) => update(i, "title", e.target.value)} />
+              {/* thumbnail + basic fields */}
+              <div style={{ display: "grid", gridTemplateColumns: "110px 1fr", gap: 16, alignItems: "start", marginBottom: 18 }}>
+
+                {/* thumbnail via MediaPicker */}
+                <div>
+                  <span style={s.label}>Thumbnail</span>
+                  <div style={{ width: 110, height: 110, borderRadius: 8, border: "1.5px dashed var(--admin-input-border)", overflow: "hidden", background: "var(--admin-input-bg)", marginBottom: 6 }}>
+                    {modal.thumbnail
+                      ? <img src={modal.thumbnail} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", opacity: 0.2, fontSize: 11 }}>Photo</div>
+                    }
+                  </div>
+                  <MediaUpload
+                    value={{ url: modal.thumbnail || "", kind: "image" }}
+                    onChange={(m) => field("thumbnail", m.url)}
+                  />
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 8 }}>
+                    <div>
+                      <span style={s.label}>Title</span>
+                      <input style={s.input} value={modal.title} onChange={(e) => field("title", e.target.value)} placeholder="Nike Run" />
+                    </div>
+                    <div>
+                      <span style={s.label}>Slug</span>
+                      <input style={s.input} value={modal.slug} onChange={(e) => field("slug", e.target.value)} placeholder="nike-run" />
+                    </div>
+                    <div>
+                      <span style={s.label}>Client</span>
+                      <input style={s.input} value={modal.client} onChange={(e) => field("client", e.target.value)} placeholder="Nike" />
                     </div>
                   </div>
-                  <div className="admin-col">
-                    <div className="admin-form-group">
-                      <label className="admin-label">Slug (URL)</label>
-                      <input className="admin-input" style={{ padding: "6px 10px" }} value={work.slug} onChange={(e) => update(i, "slug", e.target.value)} placeholder="e.g. brand-campaign-2024" />
+                  <div>
+                    <span style={s.label}>Tags</span>
+                    <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+                      {TAGS.map(tag => {
+                        const active = modal.tags?.includes(tag) ?? false;
+                        return (
+                          <button
+                            key={tag}
+                            onClick={() => toggleTag(tag)}
+                            style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, border: "1px solid var(--admin-input-border)", cursor: "pointer", background: active ? "var(--admin-accent)" : "transparent", color: active ? "#fff" : "inherit", fontWeight: 500 }}
+                          >
+                            {tag}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
+              </div>
 
-                {/* client + thumbnail */}
-                <div className="admin-row">
-                  <div className="admin-col">
-                    <div className="admin-form-group">
-                      <label className="admin-label">Client</label>
-                      <input className="admin-input" style={{ padding: "6px 10px" }} value={work.client} onChange={(e) => update(i, "client", e.target.value)} />
+              {/* blocks */}
+              <div>
+                <span style={s.label}>Content Blocks</span>
+
+                {(modal.blocks || []).map((block, bi) => (
+                  <div key={bi} style={s.blockBox}>
+                    <div style={s.blockHead}>
+                      <span style={s.blockType}>
+                        {BLOCK_TYPES.find(bt => bt.type === block.type)?.label ?? block.type}
+                      </span>
+                      <div style={{ display: "flex", gap: 4 }}>
+                        <button style={s.iconBtn} onClick={() => moveBlock(bi, "up")}>↑</button>
+                        <button style={s.iconBtn} onClick={() => moveBlock(bi, "down")}>↓</button>
+                        <button style={{ ...s.iconBtn, color: "#e53" }} onClick={() => removeBlock(bi)}>×</button>
+                      </div>
                     </div>
-                  </div>
-                  <div className="admin-col">
-                    <ImageUpload label="Thumbnail" value={work.thumbnail || ""} onChange={(url) => update(i, "thumbnail", url)} />
-                  </div>
-                </div>
 
-                {/* tags */}
-                <div className="admin-form-group">
-                  <label className="admin-label">Tags</label>
-                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                    {TAGS.map((tag) => (
+                    {(block.type === "full-media" || block.type === "portrait-media") && (
+                      <MediaUpload label="Media" value={block.media} onChange={(m) => updateBlock(bi, { media: m })} />
+                    )}
+                    {block.type === "two-column" && (
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                        <MediaUpload label="Left" value={block.left} onChange={(m) => updateBlock(bi, { left: m })} />
+                        <MediaUpload label="Right" value={block.right} onChange={(m) => updateBlock(bi, { right: m })} />
+                      </div>
+                    )}
+                    {block.type === "media-text" && (
+                      <>
+                        <MediaUpload label="Media" value={block.media} onChange={(m) => updateBlock(bi, { media: m })} />
+                        <textarea style={{ ...s.textarea, marginTop: 8 }} rows={2} placeholder="Text (right side)" value={block.body} onChange={(e) => updateBlock(bi, { body: e.target.value })} />
+                      </>
+                    )}
+                    {block.type === "text" && (
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 8 }}>
+                        <input style={s.input} placeholder="Label" value={block.label} onChange={(e) => updateBlock(bi, { label: e.target.value })} />
+                        <textarea style={s.textarea} rows={2} placeholder="Body text" value={block.body} onChange={(e) => updateBlock(bi, { body: e.target.value })} />
+                      </div>
+                    )}
+                    {block.type === "text-full" && (
+                      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                        <input style={s.input} placeholder="Label (optional)" value={block.label} onChange={(e) => updateBlock(bi, { label: e.target.value })} />
+                        <textarea style={s.textarea} rows={3} placeholder="Body text" value={block.body} onChange={(e) => updateBlock(bi, { body: e.target.value })} />
+                      </div>
+                    )}
+                    {block.type === "text-two-col" && (
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                          <input style={s.input} placeholder="Left label" value={block.leftLabel} onChange={(e) => updateBlock(bi, { leftLabel: e.target.value })} />
+                          <textarea style={s.textarea} rows={2} placeholder="Left body" value={block.leftBody} onChange={(e) => updateBlock(bi, { leftBody: e.target.value })} />
+                        </div>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                          <input style={s.input} placeholder="Right label" value={block.rightLabel} onChange={(e) => updateBlock(bi, { rightLabel: e.target.value })} />
+                          <textarea style={s.textarea} rows={2} placeholder="Right body" value={block.rightBody} onChange={(e) => updateBlock(bi, { rightBody: e.target.value })} />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {/* visual block type picker */}
+                <div style={{ marginTop: 6 }}>
+                  <span style={{ ...s.label, marginBottom: 8 }}>Add block</span>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 6 }}>
+                    {BLOCK_TYPES.map(bt => (
                       <button
-                        key={tag}
-                        onClick={() => toggleTag(i, tag)}
-                        className={`admin-btn ${work.tags?.includes(tag) ? "admin-btn-primary" : "admin-btn-secondary"}`}
-                        style={{ fontSize: "12px", padding: "4px 12px" }}
+                        key={bt.type}
+                        onClick={() => addBlock(bt.type)}
+                        title={bt.label}
+                        style={{
+                          display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
+                          padding: "10px 6px 8px", borderRadius: 7,
+                          border: "1px solid var(--admin-input-border)",
+                          background: "var(--admin-input-bg)",
+                          cursor: "pointer", color: "var(--admin-text)",
+                          transition: "border-color 0.15s, background 0.15s",
+                        }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--admin-accent)"; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--admin-input-border)"; }}
                       >
-                        {tag}
+                        {bt.svg}
+                        <span style={{ fontSize: 9, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", opacity: 0.5, lineHeight: 1.2, textAlign: "center" }}>{bt.label}</span>
                       </button>
                     ))}
                   </div>
                 </div>
-
-                {/* challenge / approach / results — 3 cols */}
-                <div className="admin-row">
-                  <div className="admin-col">
-                    <div className="admin-form-group">
-                      <label className="admin-label">Challenge</label>
-                      <textarea className="admin-input" rows={3} style={{ resize: "vertical" }} value={work.challenge || ""} onChange={(e) => update(i, "challenge", e.target.value)} />
-                    </div>
-                  </div>
-                  <div className="admin-col">
-                    <div className="admin-form-group">
-                      <label className="admin-label">Approach</label>
-                      <textarea className="admin-input" rows={3} style={{ resize: "vertical" }} value={work.approach || ""} onChange={(e) => update(i, "approach", e.target.value)} />
-                    </div>
-                  </div>
-                  <div className="admin-col">
-                    <div className="admin-form-group">
-                      <label className="admin-label">Results</label>
-                      <textarea className="admin-input" rows={3} style={{ resize: "vertical" }} value={work.results || ""} onChange={(e) => update(i, "results", e.target.value)} />
-                    </div>
-                  </div>
-                </div>
-
-                {/* gallery */}
-                <div className="admin-form-group">
-                  <label className="admin-label">Gallery</label>
-                  {(work.gallery || []).map((url, gi) => (
-                    <div key={gi} style={{ display: "flex", gap: "8px", marginBottom: "8px", alignItems: "flex-end" }}>
-                      <div style={{ flex: 1 }}>
-                        <ImageUpload label="" value={url} onChange={(val) => updateGallery(i, gi, val)} />
-                      </div>
-                      <button className="admin-btn admin-btn-danger" onClick={() => removeGallery(i, gi)} style={{ marginBottom: 4 }}>
-                        <i className="fas fa-times"></i>
-                      </button>
-                    </div>
-                  ))}
-                  <button className="admin-btn admin-btn-secondary" onClick={() => addGalleryItem(i)} style={{ marginTop: "4px" }}>
-                    <i className="fas fa-plus"></i> Add Image
-                  </button>
-                </div>
-
-                {/* metrics */}
-                <div className="admin-form-group">
-                  <label className="admin-label">Metrics</label>
-                  {(work.metrics || []).map((metric, mi) => (
-                    <div key={mi} style={{ display: "flex", gap: "8px", marginBottom: "6px" }}>
-                      <input
-                        className="admin-input"
-                        style={{ padding: "6px 10px", flex: 1 }}
-                        value={metric.value}
-                        onChange={(e) => updateMetric(i, mi, "value", e.target.value)}
-                        placeholder="e.g. 2.5M"
-                      />
-                      <input
-                        className="admin-input"
-                        style={{ padding: "6px 10px", flex: 2 }}
-                        value={metric.label}
-                        onChange={(e) => updateMetric(i, mi, "label", e.target.value)}
-                        placeholder="e.g. Total Reach"
-                      />
-                      <button className="admin-btn admin-btn-danger" onClick={() => removeMetric(i, mi)}>
-                        <i className="fas fa-times"></i>
-                      </button>
-                    </div>
-                  ))}
-                  <button className="admin-btn admin-btn-secondary" onClick={() => addMetric(i)} style={{ marginTop: "4px" }}>
-                    <i className="fas fa-plus"></i> Add Metric
-                  </button>
-                </div>
-
-                {/* actions */}
-                <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-                  <button className="admin-btn admin-btn-primary" onClick={() => handleSave(i)} disabled={saving === i}>
-                    <i className="fas fa-save"></i> {saving === i ? "Saving..." : "Save"}
-                  </button>
-                  <button className="admin-btn admin-btn-danger" onClick={() => handleDelete(i)}>
-                    <i className="fas fa-trash"></i> Delete
-                  </button>
-                </div>
-
               </div>
-            )}
+
+            </div>
+
+            {/* footer */}
+            <div style={s.modalFoot}>
+              <button className="admin-btn admin-btn-primary" onClick={handleSave} disabled={saving} style={{ flex: 1 }}>
+                {saving ? "Saving..." : "Save"}
+              </button>
+              {modalIdx !== null && (
+                <button className="admin-btn admin-btn-danger" onClick={handleDelete}>Delete</button>
+              )}
+              <button className="admin-btn admin-btn-secondary" onClick={closeModal}>Cancel</button>
+            </div>
+
           </div>
-        ))}
-      </div>
-      <SeoMetabox page="works" />
+        </div>
+      )}
     </>
   );
 }
