@@ -1,7 +1,57 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import ImageUpload from "@/components/admin/ImageUpload";
+import { useEffect, useRef, useState } from "react";
+
+function FileUploadField({
+  label, hint, type, current, onUploaded,
+}: {
+  label: string; hint: string; type: "logo" | "favicon";
+  current: string; onUploaded: (url: string) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setError("");
+    setUploading(true);
+    const form = new FormData();
+    form.append("file", file);
+    form.append("type", type);
+    try {
+      const res = await fetch("/api/settings/upload", { method: "POST", body: form });
+      const json = await res.json();
+      if (!res.ok) { setError(json.error || "Upload failed"); }
+      else { onUploaded(json.url); }
+    } catch {
+      setError("Upload failed.");
+    } finally {
+      setUploading(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  }
+
+  return (
+    <div className="admin-form-group">
+      <label style={{ fontWeight: 600, display: "block", marginBottom: 8 }}>{label}</label>
+      <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+        {current && (
+          <img src={current} alt={label} style={{ height: 56, maxWidth: 160, objectFit: "contain", background: "#111", borderRadius: 6, padding: 6 }} />
+        )}
+        <div>
+          <input ref={inputRef} type="file" accept="image/*" onChange={handleFile} style={{ display: "none" }} />
+          <button type="button" className="admin-btn-add" onClick={() => inputRef.current?.click()} disabled={uploading}>
+            {uploading ? "Uploading..." : current ? "Replace" : "Upload"}
+          </button>
+          {error && <p style={{ color: "red", fontSize: 12, marginTop: 4 }}>{error}</p>}
+        </div>
+      </div>
+      <p style={{ fontSize: 12, color: "#999", marginTop: 6 }}>{hint}</p>
+    </div>
+  );
+}
 
 export default function SettingsPage() {
   const [logoUrl, setLogoUrl] = useState("");
@@ -33,7 +83,7 @@ export default function SettingsPage() {
     <div>
       <div className="admin-page-header">
         <h1>Site Settings</h1>
-        <p>Manage your site logo and favicon</p>
+        <p>Upload logo and favicon — saved to server, URL stored in database</p>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {saved && <span className="admin-save-msg">Saved ✓</span>}
           <button className="admin-btn-primary" disabled={saving} onClick={handleSave}>
@@ -43,20 +93,22 @@ export default function SettingsPage() {
       </div>
 
       {loading ? <p style={{ padding: 24 }}>Loading...</p> : (
-        <div style={{ padding: 24, maxWidth: 600 }}>
-          <div className="admin-form-group" style={{ marginBottom: 32 }}>
-            <ImageUpload label="Site Logo" value={logoUrl} onChange={setLogoUrl} />
-            <p style={{ fontSize: 12, color: "#999", marginTop: 6 }}>
-              Shown in the portfolio sidebar. Recommended: transparent PNG, white text.
-            </p>
-          </div>
-
-          <div className="admin-form-group" style={{ marginBottom: 32 }}>
-            <ImageUpload label="Favicon" value={faviconUrl} onChange={setFaviconUrl} />
-            <p style={{ fontSize: 12, color: "#999", marginTop: 6 }}>
-              Shown in browser tab. Recommended: square PNG, min 64×64px.
-            </p>
-          </div>
+        <div style={{ padding: 24, maxWidth: 560 }}>
+          <FileUploadField
+            label="Site Logo"
+            hint="Shown in the portfolio sidebar. Transparent PNG recommended."
+            type="logo"
+            current={logoUrl}
+            onUploaded={setLogoUrl}
+          />
+          <div style={{ marginBottom: 32 }} />
+          <FileUploadField
+            label="Favicon"
+            hint="Shown in the browser tab. Square PNG, min 64×64px."
+            type="favicon"
+            current={faviconUrl}
+            onUploaded={setFaviconUrl}
+          />
         </div>
       )}
     </div>
