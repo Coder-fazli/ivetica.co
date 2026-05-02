@@ -30,27 +30,33 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="admin-page">
+    <div>
       <div className="admin-page-header">
         <h1>Site Settings</h1>
         <p>Manage your site logo and favicon</p>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {saved && <span className="admin-save-msg">Saved ✓</span>}
+          <button className="admin-btn-primary" disabled={saving} onClick={handleSave}>
+            <i className="fas fa-save"></i> {saving ? "Saving..." : "Save Settings"}
+          </button>
+        </div>
       </div>
 
-      {loading ? <p>Loading...</p> : (
-        <div className="admin-form-card">
-          <ImageUpload label="Site Logo" value={logoUrl} onChange={setLogoUrl} />
-          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: -12, marginBottom: 20 }}>
-            Shown in the portfolio sidebar. Recommended: transparent PNG, white text.
-          </p>
+      {loading ? <p style={{ padding: 24 }}>Loading...</p> : (
+        <div style={{ padding: 24, maxWidth: 600 }}>
+          <div className="admin-form-group" style={{ marginBottom: 32 }}>
+            <ImageUpload label="Site Logo" value={logoUrl} onChange={setLogoUrl} />
+            <p style={{ fontSize: 12, color: "#999", marginTop: 6 }}>
+              Shown in the portfolio sidebar. Recommended: transparent PNG, white text.
+            </p>
+          </div>
 
-          <ImageUpload label="Favicon" value={faviconUrl} onChange={setFaviconUrl} />
-          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: -12, marginBottom: 20 }}>
-            Shown in browser tab. Recommended: square PNG, min 64×64px.
-          </p>
-
-          <button className="admin-btn-save" onClick={handleSave} disabled={saving}>
-            {saving ? "Saving..." : saved ? "Saved ✓" : "Save Settings"}
-          </button>
+          <div className="admin-form-group" style={{ marginBottom: 32 }}>
+            <ImageUpload label="Favicon" value={faviconUrl} onChange={setFaviconUrl} />
+            <p style={{ fontSize: 12, color: "#999", marginTop: 6 }}>
+              Shown in browser tab. Recommended: square PNG, min 64×64px.
+            </p>
+          </div>
         </div>
       )}
     </div>
