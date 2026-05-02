@@ -18,6 +18,7 @@ export default function Sidebar() {
     { href: "/admin/about", label: "About", icon: "fas fa-users" },
     { href: "/admin/contact", label: "Contact", icon: "fas fa-envelope" },
     { href: "/admin/users", label: "Users", icon: "fas fa-user-shield" },
+    { href: "/admin/settings", label: "Settings", icon: "fas fa-sliders-h" },
   ];
 
   return (

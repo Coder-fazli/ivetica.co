@@ -30,6 +30,12 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
   const [mainOpen, setMainOpen] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [detailKey, setDetailKey] = useState(0);
+  const [logoUrl, setLogoUrl] = useState("/img/lvetica-logo.png");
+
+  useEffect(() => {
+    const custom = document.body.dataset.logo;
+    if (custom) setLogoUrl(custom);
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle("light-theme", theme === "light");
@@ -286,7 +292,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
             <button className="sidebar-show-btn" onClick={() => window.location.href = "/all"}>Show all projects</button>
             <button className={`sidebar-theme-toggle${theme === "light" ? " is-light" : ""}`} onClick={toggleTheme} />
           </div>
-          <img src="/img/lvetica-logo.png" alt="Lvetica" className="sidebar-logo-img" />
+          <img src={logoUrl} alt="Lvetica" className="sidebar-logo-img" />
           <div className="sidebar-tagline">DOING WHAT <span style={{ color: "#f4dc17" }}>MATTERS</span></div>
         </div>
 
@@ -319,7 +325,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
                     onClick={toggleTheme}
                   />
                 </div>
-                <img src="/img/lvetica-logo.png" alt="Lvetica" className="sidebar-logo-img" />
+                <img src={logoUrl} alt="Lvetica" className="sidebar-logo-img" />
                 <div className="sidebar-tagline">DOING WHAT <span style={{ color: "#f4dc17" }}>MATTERS</span></div>
               </div>
             </div>
