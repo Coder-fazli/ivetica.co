@@ -1,27 +1,18 @@
-import { ClerkProvider } from "@clerk/nextjs";
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import Sidebar from "@/components/admin/Sidebar";
+import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
 import "./admin.css";
 
 export const metadata = {
   title: "Admin — lvetica",
 };
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { userId } = await auth();
-  if (!userId) redirect("/sign-in");
-
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider>
+    <AdminAuthGuard>
       <div className="admin-layout">
         <Sidebar />
         <main className="admin-main">{children}</main>
       </div>
-    </ClerkProvider>
+    </AdminAuthGuard>
   );
 }
