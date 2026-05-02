@@ -38,6 +38,12 @@ export default function AdminDashboard() {
           <h4>Contact</h4>
           <p>Edit contact info and map</p>
         </Link>
+
+        <Link href="/admin/users" className="admin-dashboard-card">
+          <i className="fas fa-user-shield"></i>
+          <h4>Users</h4>
+          <p>Manage admin access &amp; invitations</p>
+        </Link>
       </div>
     </>
   );

@@ -30,6 +30,10 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
   const [mainOpen, setMainOpen] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [detailKey, setDetailKey] = useState(0);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("light-theme", theme === "light");
+  }, [theme]);
   const cardsRef = useRef<Card[]>(initialCards);
 
   const fetchCards = () => {

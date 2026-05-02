@@ -1,3 +1,4 @@
+import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import { Readable } from "stream";
@@ -13,12 +14,18 @@ const ALLOWED_TYPES = [
   "video/mp4", "video/quicktime", "video/webm", "video/x-msvideo",
 ];
 
+const MAX_BYTES = 100 * 1024 * 1024; // 100 MB
+
 export async function POST(req: NextRequest) {
+  const { userId } = await auth();
+  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const formData = await req.formData();
   const file = formData.get("file") as File | null;
 
   if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
   if (!ALLOWED_TYPES.includes(file.type)) return NextResponse.json({ error: "File type not allowed" }, { status: 400 });
+  if (file.size > MAX_BYTES) return NextResponse.json({ error: "File too large (max 100MB)" }, { status: 400 });
 
   const isVideo = file.type.startsWith("video/");
 

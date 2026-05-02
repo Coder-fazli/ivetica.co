@@ -820,6 +820,12 @@ html, body {
 }
 
 /* ── Light Theme ── */
+html.light-theme,
+html.light-theme body {
+  background: #f0f0f0;
+}
+
+html.light-theme .layout,
 .layout.light {
   --bg: #f0f0f0;
   --card-bg: #ffffff;
@@ -831,35 +837,38 @@ html, body {
   --end2: #f0f0f0;
 }
 
-.layout.light html,
-.layout.light body {
-  background: var(--bg);
-}
-
-.layout.light .sidebar-theme-toggle {
+.layout.light .sidebar-theme-toggle,
+html.light-theme .sidebar-theme-toggle {
   background: #d0d0d0;
 }
 
-.layout.light .sidebar-theme-toggle::after {
+.layout.light .sidebar-theme-toggle::after,
+html.light-theme .sidebar-theme-toggle::after {
   left: 3px;
   right: auto;
   background: #555;
 }
 
-.layout.light .sidebar-theme-toggle.is-light {
+.layout.light .sidebar-theme-toggle.is-light,
+html.light-theme .sidebar-theme-toggle.is-light {
   background: #c8c8c8;
 }
 
-.layout.light .proj-card.visible:hover  { background: #f7f7f7; }
-.layout.light .proj-card.visible.active { background: #f7f7f7; }
+.layout.light .proj-card.visible:hover,
+html.light-theme .proj-card.visible:hover  { background: #f7f7f7; }
+.layout.light .proj-card.visible.active,
+html.light-theme .proj-card.visible.active { background: #f7f7f7; }
 
-.layout.light .about-tab.active {
+.layout.light .about-tab.active,
+html.light-theme .about-tab.active {
   color: var(--text-primary);
   border-color: var(--text-primary);
 }
 
-.layout.light .main-back-btn:hover { color: var(--text-primary); }
+.layout.light .main-back-btn:hover,
+html.light-theme .main-back-btn:hover { color: var(--text-primary); }
 
-.layout.light .sidebar-logo-img {
+.layout.light .sidebar-logo-img,
+html.light-theme .sidebar-logo-img {
   filter: brightness(0);
 }
