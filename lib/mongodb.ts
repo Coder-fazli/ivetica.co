@@ -20,7 +20,10 @@ export default async function dbConnect() {
     }
 
     if (!cached.promise) {
-        cached.promise = mongoose.connect(MONGODB_URI).catch((err) => {
+        cached.promise = mongoose.connect(MONGODB_URI, {
+            serverSelectionTimeoutMS: 5000,
+            connectTimeoutMS: 5000,
+        }).catch((err) => {
             cached.promise = null;
             throw err;
         });

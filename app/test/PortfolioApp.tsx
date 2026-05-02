@@ -52,6 +52,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
 
   useEffect(() => {
     cardsRef.current = initialCards;
+    fetchCards();
     const onFocus = () => { fetchCards(); setDetailKey(k => k + 1); };
     window.addEventListener("focus", onFocus);
     return () => window.removeEventListener("focus", onFocus);
