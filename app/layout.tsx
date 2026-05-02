@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./bootstrap-grid.css";
 import "./globals.css";
-import "./test/test.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import ChunkErrorHandler from "@/components/ChunkErrorHandler";
 

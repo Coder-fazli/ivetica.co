@@ -4,8 +4,6 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Animations from "@/components/layout/Animations";
 import { getWorkBySlug, getWorks } from "@/actions/works";
-import { MediaItem } from "@/types";
-import VideoPlayer from "@/components/works/VideoPlayer";
 import "@/components/works/works.css";
 
 export const dynamic = "force-dynamic";
@@ -23,13 +21,6 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
 
   const galleryImages = work.gallery ?? [];
   const hasGallery = galleryImages.length > 0;
-  const hasBlocks = (work.blocks ?? []).length > 0;
-
-  function renderMedia(media: MediaItem, className = "") {
-    return media.kind === "video"
-      ? <VideoPlayer src={media.url} className={className} />
-      : <img src={media.url} alt="" className={className} />;
-  }
 
   return (
     <div className="mil-wrapper" id="top">
@@ -81,60 +72,6 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
                   <div>Services: &nbsp;<span className="mil-dark">{work.tags.join(", ")}</span></div>
                 )}
               </div>
-
-              {/* content blocks */}
-              {hasBlocks && (
-                <div className="work-blocks">
-                  {work.blocks!.map((block, idx) => {
-                    if (block.type === "full-media") return (
-                      <div key={idx} className="work-block work-block-full">
-                        {renderMedia(block.media, "work-block-media")}
-                      </div>
-                    );
-                    if (block.type === "portrait-media") return (
-                      <div key={idx} className="work-block work-block-portrait">
-                        {renderMedia(block.media, "work-block-media")}
-                      </div>
-                    );
-                    if (block.type === "two-column") return (
-                      <div key={idx} className="work-block work-block-two-col">
-                        {renderMedia(block.left, "work-block-media")}
-                        {renderMedia(block.right, "work-block-media")}
-                      </div>
-                    );
-                    if (block.type === "text") return (
-                      <div key={idx} className="work-block work-block-text">
-                        {block.label && <span className="work-block-label">{block.label}</span>}
-                        <p className="work-block-body">{block.body}</p>
-                      </div>
-                    );
-                    if (block.type === "media-text") return (
-                      <div key={idx} className="work-block work-block-media-text">
-                        {renderMedia(block.media, "work-block-media")}
-                        <p className="work-block-body">{block.body}</p>
-                      </div>
-                    );
-                    if (block.type === "text-full") return (
-                      <div key={idx} className="work-block work-block-text-full">
-                        {block.label && <span className="work-block-label">{block.label}</span>}
-                        <p className="work-block-body">{block.body}</p>
-                      </div>
-                    );
-                    if (block.type === "text-two-col") return (
-                      <div key={idx} className="work-block work-block-text-two-col">
-                        <div>
-                          {block.leftLabel && <span className="work-block-label">{block.leftLabel}</span>}
-                          <p className="work-block-body">{block.leftBody}</p>
-                        </div>
-                        <div>
-                          {block.rightLabel && <span className="work-block-label">{block.rightLabel}</span>}
-                          <p className="work-block-body">{block.rightBody}</p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
 
               <div className="mil-p-120-0">
 
