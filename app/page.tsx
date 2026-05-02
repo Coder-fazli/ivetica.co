@@ -1,34 +1,18 @@
-import type { Metadata } from "next";
+import { getWorks } from "@/actions/works";
+import PortfolioApp from "@/app/test/PortfolioApp";
 
-export const metadata: Metadata = {
-  title: "Lvetica — Coming Soon",
-  description: "We're working on something great. Check back soon.",
-};
+export const dynamic = "force-dynamic";
 
-export default function Home() {
-  return (
-    <div style={{
-      minHeight: "100vh",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      background: "#fff",
-      fontFamily: "sans-serif",
-      textAlign: "center",
-      padding: "24px",
-    }}>
-      <img
-        src="/mad-designer.png"
-        alt="Under maintenance"
-        style={{ width: "100%", maxWidth: "480px", marginBottom: "32px" }}
-      />
-      <h1 style={{ fontSize: "28px", fontWeight: 700, color: "#111", marginBottom: "12px" }}>
-        We&apos;re working on it
-      </h1>
-      <p style={{ fontSize: "16px", color: "#666", maxWidth: "360px", lineHeight: 1.6 }}>
-        Our site is currently under maintenance. We&apos;ll be back shortly.
-      </p>
-    </div>
-  );
+export default async function Home({ searchParams }: { searchParams: Promise<{ w?: string }> }) {
+  const { w: slug } = await searchParams;
+  const works = await getWorks();
+  const initialCards = works.map((work, i) => ({
+    id: i,
+    name: work.title,
+    desc: work.description || work.client,
+    img: work.thumbnail || "",
+    slug: work.slug,
+  }));
+
+  return <PortfolioApp initialCards={initialCards} initialSlug={slug} />;
 }

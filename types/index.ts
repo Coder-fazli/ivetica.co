@@ -76,9 +76,26 @@ export type WorkType = {
   client: string;
   tags: string[];
   thumbnail?: string;
+  coverImage?: string;
+  description?: string;
   challenge?: string;
   approach?: string;
   results?: string;
   gallery?: string[];
   metrics?: WorkMetricType[];
+  blocks?: Block[];
 };
+
+export type MediaItem = {
+  url: string;
+  kind: "image" | "video" | "text";
+};
+
+export type Block =
+| { type: "full-media"; media: MediaItem }
+| { type: "portrait-media"; media: MediaItem }
+| { type: "two-column"; left: MediaItem; right: MediaItem }
+| { type: "text"; label: string; body: string }
+| { type: "media-text"; media: MediaItem; body: string }
+| { type: "text-two-col"; leftLabel: string; leftBody: string; rightLabel: string; rightBody: string }
+| { type: "text-full"; label: string; body: string };
