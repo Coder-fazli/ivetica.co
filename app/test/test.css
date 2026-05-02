@@ -20,8 +20,6 @@ html, body {
   color: var(--text-primary);
   font-family: 'SF Pro Text', -apple-system, sans-serif;
   font-size: 13px;
-  height: 100%;
-  overflow: hidden;
 }
 
 .layout { display: flex; height: 100vh; overflow: hidden; gap: 0; background: var(--bg); }
