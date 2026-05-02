@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Sidebar from "@/components/admin/Sidebar";
@@ -16,9 +17,11 @@ export default async function AdminLayout({
   if (!userId) redirect("/sign-in");
 
   return (
-    <div className="admin-layout">
-      <Sidebar />
-      <main className="admin-main">{children}</main>
-    </div>
+    <ClerkProvider>
+      <div className="admin-layout">
+        <Sidebar />
+        <main className="admin-main">{children}</main>
+      </div>
+    </ClerkProvider>
   );
 }

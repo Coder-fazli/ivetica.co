@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./bootstrap-grid.css";
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
 import ChunkErrorHandler from "@/components/ChunkErrorHandler";
 
 
@@ -42,7 +41,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
     <html lang="en">
       <head>
         <script dangerouslySetInnerHTML={{ __html: `
@@ -66,6 +64,5 @@ export default function RootLayout({
         {children}
       </body>
     </html>
-    </ClerkProvider>
   );
 }
