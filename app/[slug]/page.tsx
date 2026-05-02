@@ -3,7 +3,8 @@ import PortfolioApp from "@/app/test/PortfolioApp";
 
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
+export default async function SlugPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const works = await getWorks();
   const initialCards = works.map((work, i) => ({
     id: i,
@@ -13,5 +14,5 @@ export default async function Home() {
     slug: work.slug,
   }));
 
-  return <PortfolioApp initialCards={initialCards} />;
+  return <PortfolioApp initialCards={initialCards} initialSlug={slug} />;
 }

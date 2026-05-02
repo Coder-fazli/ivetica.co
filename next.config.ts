@@ -7,16 +7,6 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "200mb",
     },
   },
-  async rewrites() {
-    return {
-      afterFiles: [
-        {
-          source: "/:slug",
-          destination: "/?w=:slug",
-        },
-      ],
-    };
-  },
 };
 
 export default nextConfig;
