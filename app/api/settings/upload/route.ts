@@ -1,13 +1,15 @@
-import { auth } from "@clerk/nextjs/server";
+import { verifyToken } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await auth();
-    if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
+    const token = req.cookies.get("__session")?.value;
+    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const verified = await verifyToken(token, { secretKey: process.env.CLERK_SECRET_KEY! });
+    if (!verified) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    
     const form = await req.formData();
     const file = form.get("file") as File | null;
     const type = form.get("type") as string | null;
