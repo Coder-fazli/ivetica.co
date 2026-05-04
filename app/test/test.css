@@ -870,5 +870,5 @@ html.light-theme .main-back-btn:hover { color: var(--text-primary); }
 
 .layout.light .sidebar-logo-img,
 html.light-theme .sidebar-logo-img {
-  filter: invert(1) hue-rotate(180deg);
+  filter: invert(1) hue-rotate(180deg) saturate(1.2);
 }
