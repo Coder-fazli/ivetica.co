@@ -5,8 +5,10 @@ import path from "path";
 
 export async function POST(req: NextRequest) {
   try {
+    const allCookies = req.cookies.getAll().map(c => c.name).join(", ");
+    console.log("[upload] cookies:", allCookies || "NONE");
     const token = req.cookies.get("__session")?.value;
-    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!token) return NextResponse.json({ error: `Unauthorized (token missing, cookies: ${allCookies || "none"})` }, { status: 401 });
     const verified = await verifyToken(token, { secretKey: process.env.CLERK_SECRET_KEY! });
     if (!verified) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     
