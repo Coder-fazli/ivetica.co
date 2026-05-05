@@ -14,7 +14,7 @@ const ALLOWED_TYPES = [
   "video/mp4", "video/quicktime", "video/webm", "video/x-msvideo",
 ];
 
-const MAX_BYTES = 100 * 1024 * 1024; // 100 MB
+const MAX_BYTES = 200 * 1024 * 1024; // 200 MB
 
 export async function POST(req: NextRequest) {
   const token = req.cookies.get("__session")?.value;
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
   if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
   if (!ALLOWED_TYPES.includes(file.type)) return NextResponse.json({ error: "File type not allowed" }, { status: 400 });
-  if (file.size > MAX_BYTES) return NextResponse.json({ error: "File too large (max 100MB)" }, { status: 400 });
+  if (file.size > MAX_BYTES) return NextResponse.json({ error: "File too large (max 200MB)" }, { status: 400 });
 
   const isVideo = file.type.startsWith("video/");
 
