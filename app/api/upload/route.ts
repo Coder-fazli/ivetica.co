@@ -47,8 +47,10 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ url: result.secure_url, publicId: result.public_id });
-  } catch (err) {
+  } catch (err: unknown) {
     console.error("Upload error:", err);
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+    const e = err as { message?: string; error?: { message?: string }; http_code?: number };
+    const msg = e?.error?.message || e?.message || (typeof err === "string" ? err : "Upload failed");
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

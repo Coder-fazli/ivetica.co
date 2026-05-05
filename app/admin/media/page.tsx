@@ -16,6 +16,7 @@ export default function AdminMedia() {
   const [uploading, setUploading] = useState(false);
   const [filter, setFilter] = useState<"all" | "image" | "video">("all");
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   async function fetchAssets() {
@@ -32,10 +33,19 @@ export default function AdminMedia() {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
     setUploading(true);
+    setUploadError("");
     for (const file of files) {
       const form = new FormData();
       form.append("file", file);
-      await fetch("/api/upload", { method: "POST", body: form });
+      try {
+        const res = await fetch("/api/upload", { method: "POST", body: form });
+        if (!res.ok) {
+          const json = await res.json().catch(() => ({}));
+          setUploadError(`${file.name}: ${json.error || `HTTP ${res.status}`}`);
+        }
+      } catch (err) {
+        setUploadError(`${file.name}: ${err instanceof Error ? err.message : "Upload failed"}`);
+      }
     }
     setUploading(false);
     if (inputRef.current) inputRef.current.value = "";
@@ -80,6 +90,11 @@ export default function AdminMedia() {
             </button>
           </div>
         </div>
+        {uploadError && (
+          <div style={{ padding: "8px 12px", marginTop: 8, background: "rgba(229, 51, 51, 0.1)", color: "#e53", fontSize: 12, borderRadius: 4 }}>
+            {uploadError}
+          </div>
+        )}
 
         {loading ? (
           <div style={{ padding: 40, textAlign: "center", opacity: 0.4, fontSize: 13 }}>Loading...</div>
