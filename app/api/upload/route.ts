@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { verifyToken } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import { Readable } from "stream";
@@ -17,8 +17,10 @@ const ALLOWED_TYPES = [
 const MAX_BYTES = 100 * 1024 * 1024; // 100 MB
 
 export async function POST(req: NextRequest) {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const token = req.cookies.get("__session")?.value;
+  if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const verified = await verifyToken(token, { secretKey: process.env.CLERK_SECRET_KEY! });
+  if (!verified) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const formData = await req.formData();
   const file = formData.get("file") as File | null;
