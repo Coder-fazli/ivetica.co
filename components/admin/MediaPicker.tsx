@@ -62,10 +62,15 @@ export default function MediaPicker({ value, onChange, label = "Media" }: Props)
           if (ev.lengthComputable) setProgress(Math.round((ev.loaded / ev.total) * 100));
         };
         xhr.onload = () => {
-          const json = JSON.parse(xhr.responseText);
-          xhr.status === 200 ? resolve(json) : reject(new Error(json.error || "Upload failed"));
+          let json: { url?: string; error?: string } = {};
+          try { json = JSON.parse(xhr.responseText || "{}"); } catch {
+            return reject(new Error(`Server error (HTTP ${xhr.status}): empty or invalid response. File likely too large or server timed out.`));
+          }
+          if (xhr.status === 200 && json.url) resolve(json as { url: string });
+          else reject(new Error(json.error || `Upload failed (HTTP ${xhr.status})`));
         };
-        xhr.onerror = () => reject(new Error("Upload failed"));
+        xhr.onerror = () => reject(new Error("Network error during upload"));
+        xhr.ontimeout = () => reject(new Error("Upload timed out"));
         xhr.send(form);
       });
 
@@ -186,7 +191,7 @@ export default function MediaPicker({ value, onChange, label = "Media" }: Props)
                     style={{ width: "100%", maxWidth: 400, border: "2px dashed var(--admin-input-border)", borderRadius: 10, padding: "40px 20px", textAlign: "center", cursor: "pointer" }}
                   >
                     <div style={{ fontSize: 32, marginBottom: 8, opacity: 0.3 }}>↑</div>
-                    <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>{uploading ? `Uploading ${progress}%` : "Click to upload"}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>{uploading ? (progress === 100 ? "Processing on server..." : `Uploading ${progress}%`) : "Click to upload"}</div>
                     <div style={{ fontSize: 11, opacity: 0.4 }}>Images or videos</div>
                     {uploading && (
                       <div style={{ width: "100%", height: 3, background: "rgba(0,0,0,0.1)", borderRadius: 2, marginTop: 10 }}>
