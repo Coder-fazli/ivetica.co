@@ -114,23 +114,20 @@ export default function AdminBlog() {
     if (!file) return;
     setCoverUploading(true);
     try {
-      const sigRes = await fetch("/api/upload-signature");
-      if (!sigRes.ok) throw new Error("Failed to get upload signature");
-      const { timestamp, signature, apiKey, cloudName } = await sigRes.json();
-
-      const form = new FormData();
-      form.append("file", file);
-      form.append("api_key", apiKey);
-      form.append("timestamp", String(timestamp));
-      form.append("signature", signature);
-      form.append("folder", "lvetica");
-
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      const sigRes = await fetch("/api/r2-presigned-url", {
         method: "POST",
-        body: form,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ filename: file.name, contentType: file.type }),
       });
-      const json = await res.json();
-      if (json.secure_url) { set("coverImage", json.secure_url); }
+      if (!sigRes.ok) throw new Error("Failed to get upload URL");
+      const { uploadUrl, publicUrl } = await sigRes.json();
+
+      const putRes = await fetch(uploadUrl, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+      if (putRes.ok) { set("coverImage", publicUrl); }
     } finally {
       setCoverUploading(false);
       if (coverFileRef.current) coverFileRef.current.value = "";

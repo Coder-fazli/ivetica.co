@@ -32,9 +32,9 @@ export default function MediaPicker({ value, onChange, label = "Media" }: Props)
   const fetchAssets = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/media");
+      const res = await fetch("/api/r2-media");
       const data = await res.json();
-      setAssets(data);
+      setAssets(Array.isArray(data) ? data : []);
     } finally {
       setLoading(false);
     }
@@ -53,42 +53,34 @@ export default function MediaPicker({ value, onChange, label = "Media" }: Props)
     try {
       const kind: "image" | "video" = file.type.startsWith("video/") ? "video" : "image";
 
-      // 1. Get signature from our server (tiny request)
-      const sigRes = await fetch("/api/upload-signature");
-      if (!sigRes.ok) throw new Error("Failed to get upload signature");
-      const { timestamp, signature, apiKey, cloudName } = await sigRes.json();
+      const sigRes = await fetch("/api/r2-presigned-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ filename: file.name, contentType: file.type }),
+      });
+      if (!sigRes.ok) {
+        const j = await sigRes.json().catch(() => ({}));
+        throw new Error(j.error || "Failed to get upload URL");
+      }
+      const { uploadUrl, publicUrl } = await sigRes.json();
 
-      // 2. Upload directly to Cloudinary (bypasses Hostinger entirely)
-      const form = new FormData();
-      form.append("file", file);
-      form.append("api_key", apiKey);
-      form.append("timestamp", String(timestamp));
-      form.append("signature", signature);
-      form.append("folder", "lvetica");
-
-      const resourceType = kind === "video" ? "video" : "image";
-      const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
-
-      const result = await new Promise<{ secure_url: string }>((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", cloudinaryUrl);
+        xhr.open("PUT", uploadUrl);
+        xhr.setRequestHeader("Content-Type", file.type);
         xhr.upload.onprogress = (ev) => {
           if (ev.lengthComputable) setProgress(Math.round((ev.loaded / ev.total) * 100));
         };
         xhr.onload = () => {
-          let json: { secure_url?: string; error?: { message?: string } } = {};
-          try { json = JSON.parse(xhr.responseText || "{}"); } catch {
-            return reject(new Error(`Cloudinary returned invalid response (HTTP ${xhr.status})`));
-          }
-          if (xhr.status === 200 && json.secure_url) resolve(json as { secure_url: string });
-          else reject(new Error(json.error?.message || `Cloudinary upload failed (HTTP ${xhr.status})`));
+          if (xhr.status >= 200 && xhr.status < 300) resolve();
+          else reject(new Error(`R2 upload failed (HTTP ${xhr.status})`));
         };
         xhr.onerror = () => reject(new Error("Network error during upload"));
         xhr.ontimeout = () => reject(new Error("Upload timed out"));
-        xhr.send(form);
+        xhr.send(file);
       });
 
-      onChange({ url: result.secure_url, kind });
+      onChange({ url: publicUrl, kind });
       setOpen(false);
       fetchAssets();
     } catch (err) {
