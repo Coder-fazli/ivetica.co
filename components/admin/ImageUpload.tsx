@@ -20,20 +20,31 @@ export default function ImageUpload({ value, onChange, label = "Image" }: Props)
     setError("");
     setUploading(true);
 
-    const form = new FormData();
-    form.append("file", file);
-
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: form });
+      const sigRes = await fetch("/api/upload-signature");
+      if (!sigRes.ok) throw new Error("Failed to get upload signature");
+      const { timestamp, signature, apiKey, cloudName } = await sigRes.json();
+
+      const form = new FormData();
+      form.append("file", file);
+      form.append("api_key", apiKey);
+      form.append("timestamp", String(timestamp));
+      form.append("signature", signature);
+      form.append("folder", "lvetica");
+
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: "POST",
+        body: form,
+      });
       const json = await res.json();
 
-      if (!res.ok) {
-        setError(json.error || "Upload failed");
+      if (!res.ok || !json.secure_url) {
+        setError(json.error?.message || "Upload failed");
       } else {
-        onChange(json.url);
+        onChange(json.secure_url);
       }
-    } catch {
-      setError("Upload failed. Please try again.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = "";

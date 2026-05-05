@@ -34,14 +34,34 @@ export default function AdminMedia() {
     if (!files.length) return;
     setUploading(true);
     setUploadError("");
+
+    let sig: { timestamp: number; signature: string; apiKey: string; cloudName: string };
+    try {
+      const sigRes = await fetch("/api/upload-signature");
+      if (!sigRes.ok) throw new Error("Failed to get upload signature");
+      sig = await sigRes.json();
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Failed to get upload signature");
+      setUploading(false);
+      return;
+    }
+
     for (const file of files) {
+      const kind = file.type.startsWith("video/") ? "video" : "image";
       const form = new FormData();
       form.append("file", file);
+      form.append("api_key", sig.apiKey);
+      form.append("timestamp", String(sig.timestamp));
+      form.append("signature", sig.signature);
+      form.append("folder", "lvetica");
       try {
-        const res = await fetch("/api/upload", { method: "POST", body: form });
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${sig.cloudName}/${kind}/upload`, {
+          method: "POST",
+          body: form,
+        });
         if (!res.ok) {
           const json = await res.json().catch(() => ({}));
-          setUploadError(`${file.name}: ${json.error || `HTTP ${res.status}`}`);
+          setUploadError(`${file.name}: ${json.error?.message || `HTTP ${res.status}`}`);
         }
       } catch (err) {
         setUploadError(`${file.name}: ${err instanceof Error ? err.message : "Upload failed"}`);

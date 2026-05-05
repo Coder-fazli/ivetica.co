@@ -113,13 +113,28 @@ export default function AdminBlog() {
     const file = e.target.files?.[0];
     if (!file) return;
     setCoverUploading(true);
-    const form = new FormData();
-    form.append("file", file);
-    const res = await fetch("/api/upload", { method: "POST", body: form });
-    const json = await res.json();
-    if (json.url) { set("coverImage", json.url); }
-    setCoverUploading(false);
-    if (coverFileRef.current) coverFileRef.current.value = "";
+    try {
+      const sigRes = await fetch("/api/upload-signature");
+      if (!sigRes.ok) throw new Error("Failed to get upload signature");
+      const { timestamp, signature, apiKey, cloudName } = await sigRes.json();
+
+      const form = new FormData();
+      form.append("file", file);
+      form.append("api_key", apiKey);
+      form.append("timestamp", String(timestamp));
+      form.append("signature", signature);
+      form.append("folder", "lvetica");
+
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: "POST",
+        body: form,
+      });
+      const json = await res.json();
+      if (json.secure_url) { set("coverImage", json.secure_url); }
+    } finally {
+      setCoverUploading(false);
+      if (coverFileRef.current) coverFileRef.current.value = "";
+    }
   }
 
   async function save(published: boolean) {

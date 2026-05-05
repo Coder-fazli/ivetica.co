@@ -41,14 +41,29 @@ export default function TipTapEditor({ value, onChange }: Props) {
     const file = e.target.files?.[0];
     if (!file || !editor) return;
 
-    const form = new FormData();
-    form.append("file", file);
-    const res = await fetch("/api/upload", { method: "POST", body: form });
-    const json = await res.json();
-    if (json.url) {
-      editor.chain().focus().setImage({ src: json.url }).run();
+    try {
+      const sigRes = await fetch("/api/upload-signature");
+      if (!sigRes.ok) throw new Error("Failed to get upload signature");
+      const { timestamp, signature, apiKey, cloudName } = await sigRes.json();
+
+      const form = new FormData();
+      form.append("file", file);
+      form.append("api_key", apiKey);
+      form.append("timestamp", String(timestamp));
+      form.append("signature", signature);
+      form.append("folder", "lvetica");
+
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: "POST",
+        body: form,
+      });
+      const json = await res.json();
+      if (json.secure_url) {
+        editor.chain().focus().setImage({ src: json.secure_url }).run();
+      }
+    } finally {
+      if (fileRef.current) fileRef.current.value = "";
     }
-    if (fileRef.current) fileRef.current.value = "";
   }
 
   if (!editor) return null;

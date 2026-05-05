@@ -52,29 +52,43 @@ export default function MediaPicker({ value, onChange, label = "Media" }: Props)
     setError("");
     try {
       const kind: "image" | "video" = file.type.startsWith("video/") ? "video" : "image";
+
+      // 1. Get signature from our server (tiny request)
+      const sigRes = await fetch("/api/upload-signature");
+      if (!sigRes.ok) throw new Error("Failed to get upload signature");
+      const { timestamp, signature, apiKey, cloudName } = await sigRes.json();
+
+      // 2. Upload directly to Cloudinary (bypasses Hostinger entirely)
       const form = new FormData();
       form.append("file", file);
+      form.append("api_key", apiKey);
+      form.append("timestamp", String(timestamp));
+      form.append("signature", signature);
+      form.append("folder", "lvetica");
 
-      const result = await new Promise<{ url: string }>((resolve, reject) => {
+      const resourceType = kind === "video" ? "video" : "image";
+      const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
+
+      const result = await new Promise<{ secure_url: string }>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "/api/upload");
+        xhr.open("POST", cloudinaryUrl);
         xhr.upload.onprogress = (ev) => {
           if (ev.lengthComputable) setProgress(Math.round((ev.loaded / ev.total) * 100));
         };
         xhr.onload = () => {
-          let json: { url?: string; error?: string } = {};
+          let json: { secure_url?: string; error?: { message?: string } } = {};
           try { json = JSON.parse(xhr.responseText || "{}"); } catch {
-            return reject(new Error(`Server error (HTTP ${xhr.status}): empty or invalid response. File likely too large or server timed out.`));
+            return reject(new Error(`Cloudinary returned invalid response (HTTP ${xhr.status})`));
           }
-          if (xhr.status === 200 && json.url) resolve(json as { url: string });
-          else reject(new Error(json.error || `Upload failed (HTTP ${xhr.status})`));
+          if (xhr.status === 200 && json.secure_url) resolve(json as { secure_url: string });
+          else reject(new Error(json.error?.message || `Cloudinary upload failed (HTTP ${xhr.status})`));
         };
         xhr.onerror = () => reject(new Error("Network error during upload"));
         xhr.ontimeout = () => reject(new Error("Upload timed out"));
         xhr.send(form);
       });
 
-      onChange({ url: result.url, kind });
+      onChange({ url: result.secure_url, kind });
       setOpen(false);
       fetchAssets();
     } catch (err) {
