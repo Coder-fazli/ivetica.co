@@ -116,7 +116,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div className="admin-page-header">
         <h1>Site Settings</h1>
         <p>Manage logo, favicon, and font sizes</p>
@@ -128,8 +128,9 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {loading ? <p style={{ padding: 24 }}>Loading...</p> : (
-        <div style={{ padding: 24, maxWidth: 800 }}>
+      <div style={{ flex: 1, overflowY: "auto", paddingRight: 16 }}>
+        {loading ? <p style={{ padding: 24 }}>Loading...</p> : (
+          <div style={{ padding: 24, maxWidth: 800 }}>
           {/* Logo & Favicon Section */}
           <div style={{ marginBottom: 48 }}>
             <h2 style={{ fontSize: 14, fontWeight: 600, marginBottom: 20, textTransform: "uppercase", letterSpacing: "0.08em", color: "#aaa" }}>
@@ -247,7 +248,8 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
