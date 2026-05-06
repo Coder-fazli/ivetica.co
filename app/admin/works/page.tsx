@@ -38,8 +38,16 @@ const BLOCK_TYPES: { type: Block["type"]; label: string; svg: React.ReactNode }[
     svg: <svg width="40" height="30" viewBox="0 0 40 30"><rect x="12" y="1" width="16" height="28" rx="3" fill="currentColor" opacity="0.85"/></svg>,
   },
   {
-    type: "two-column", label: "Two column",
+    type: "two-column", label: "Two column 9:16",
     svg: <svg width="40" height="30" viewBox="0 0 40 30"><rect x="1" y="1" width="17" height="28" rx="3" fill="currentColor" opacity="0.85"/><rect x="22" y="1" width="17" height="28" rx="3" fill="currentColor" opacity="0.85"/></svg>,
+  },
+  {
+    type: "two-column-4-5", label: "Two column 4:5",
+    svg: <svg width="40" height="30" viewBox="0 0 40 30"><rect x="3" y="3" width="15" height="24" rx="3" fill="currentColor" opacity="0.85"/><rect x="22" y="3" width="15" height="24" rx="3" fill="currentColor" opacity="0.85"/></svg>,
+  },
+  {
+    type: "two-column-1-1", label: "Two column 1:1",
+    svg: <svg width="40" height="30" viewBox="0 0 40 30"><rect x="3" y="6" width="15" height="18" rx="3" fill="currentColor" opacity="0.85"/><rect x="22" y="6" width="15" height="18" rx="3" fill="currentColor" opacity="0.85"/></svg>,
   },
   {
     type: "media-text", label: "Media + Text",
@@ -94,6 +102,8 @@ export default function AdminWorks() {
     if (type === "full-media") b = { type: "full-media", media: emptyMedia };
     else if (type === "portrait-media") b = { type: "portrait-media", media: emptyMedia };
     else if (type === "two-column") b = { type: "two-column", left: emptyMedia, right: emptyMedia };
+    else if (type === "two-column-4-5") b = { type: "two-column-4-5", left: emptyMedia, right: emptyMedia };
+    else if (type === "two-column-1-1") b = { type: "two-column-1-1", left: emptyMedia, right: emptyMedia };
     else if (type === "text") b = { type: "text", label: "", body: "" };
     else if (type === "text-full") b = { type: "text-full", label: "", body: "" };
     else if (type === "text-two-col") b = { type: "text-two-col", leftLabel: "", leftBody: "", rightLabel: "", rightBody: "" };
@@ -291,6 +301,18 @@ export default function AdminWorks() {
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                         <MediaUpload label="Left" value={block.left} onChange={(m) => updateBlock(bi, { left: m })} />
                         <MediaUpload label="Right" value={block.right} onChange={(m) => updateBlock(bi, { right: m })} />
+                      </div>
+                    )}
+                    {block.type === "two-column-4-5" && (
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                        <MediaUpload label="Left (4:5)" value={block.left} onChange={(m) => updateBlock(bi, { left: m })} />
+                        <MediaUpload label="Right (4:5)" value={block.right} onChange={(m) => updateBlock(bi, { right: m })} />
+                      </div>
+                    )}
+                    {block.type === "two-column-1-1" && (
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                        <MediaUpload label="Left (1:1)" value={block.left} onChange={(m) => updateBlock(bi, { left: m })} />
+                        <MediaUpload label="Right (1:1)" value={block.right} onChange={(m) => updateBlock(bi, { right: m })} />
                       </div>
                     )}
                     {block.type === "media-text" && (
