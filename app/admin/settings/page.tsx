@@ -78,6 +78,9 @@ export default function SettingsPage() {
   const [logoUrlLight, setLogoUrlLight] = useState("");
   const [faviconUrl, setFaviconUrl] = useState("");
   const [fontSizes, setFontSizes] = useState<FontSizes>(defaultFontSizes);
+  const [socialTiktok, setSocialTiktok] = useState("");
+  const [socialFacebook, setSocialFacebook] = useState("");
+  const [socialInstagram, setSocialInstagram] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -90,6 +93,9 @@ export default function SettingsPage() {
         setLogoUrlLight(d.logoUrlLight || "");
         setFaviconUrl(d.faviconUrl || "");
         setFontSizes(d.fontSizes || defaultFontSizes);
+        setSocialTiktok(d.socialTiktok || "");
+        setSocialFacebook(d.socialFacebook || "");
+        setSocialInstagram(d.socialInstagram || "");
         setLoading(false);
       });
   }, []);
@@ -100,7 +106,7 @@ export default function SettingsPage() {
     await fetch("/api/settings", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ logoUrl, logoUrlLight, faviconUrl, fontSizes }),
+      body: JSON.stringify({ logoUrl, logoUrlLight, faviconUrl, fontSizes, socialTiktok, socialFacebook, socialInstagram }),
     });
     setSaving(false);
     setSaved(true);
@@ -229,7 +235,7 @@ export default function SettingsPage() {
             </div>
 
             {/* Contact Sidebar Section */}
-            <div>
+            <div style={{ marginBottom: 32, paddingBottom: 24, borderBottom: "1px solid #1e1e1e" }}>
               <h3 style={{ fontSize: 12, fontWeight: 600, marginBottom: 16, opacity: 0.6 }}>Contact Info</h3>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
                 <FontSizeInput
@@ -244,6 +250,43 @@ export default function SettingsPage() {
                   value={fontSizes.contactLink}
                   onChange={(v) => updateFontSize("contactLink", v)}
                 />
+              </div>
+            </div>
+
+            {/* Social Media Section */}
+            <div>
+              <h3 style={{ fontSize: 12, fontWeight: 600, marginBottom: 16, opacity: 0.6 }}>Social Media</h3>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12 }}>
+                <div className="admin-form-group">
+                  <label>TikTok URL</label>
+                  <input
+                    type="text"
+                    value={socialTiktok}
+                    onChange={(e) => setSocialTiktok(e.target.value)}
+                    className="admin-input"
+                    placeholder="https://tiktok.com/@..."
+                  />
+                </div>
+                <div className="admin-form-group">
+                  <label>Facebook URL</label>
+                  <input
+                    type="text"
+                    value={socialFacebook}
+                    onChange={(e) => setSocialFacebook(e.target.value)}
+                    className="admin-input"
+                    placeholder="https://facebook.com/..."
+                  />
+                </div>
+                <div className="admin-form-group">
+                  <label>Instagram URL</label>
+                  <input
+                    type="text"
+                    value={socialInstagram}
+                    onChange={(e) => setSocialInstagram(e.target.value)}
+                    className="admin-input"
+                    placeholder="https://instagram.com/..."
+                  />
+                </div>
               </div>
             </div>
           </div>

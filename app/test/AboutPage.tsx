@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 const CLIENT_TABS = ["All", "Art & Culture", "Tech", "Fashion", "Entertainment", "Hospitality", "Retail", "Finance", "Non-profit"];
 
@@ -64,7 +64,20 @@ const TEAM = [
 export default function AboutPage() {
   const [clientTab, setClientTab] = useState("All");
   const [offeringTab, setOfferingTab] = useState("Visual Identity");
+  const [socialTiktok, setSocialTiktok] = useState("");
+  const [socialFacebook, setSocialFacebook] = useState("");
+  const [socialInstagram, setSocialInstagram] = useState("");
   const teamScrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then(r => r.json())
+      .then(d => {
+        setSocialTiktok(d.socialTiktok || "");
+        setSocialFacebook(d.socialFacebook || "");
+        setSocialInstagram(d.socialInstagram || "");
+      });
+  }, []);
 
   const offering = OFFERINGS.find((o) => o.name === offeringTab)!;
 
@@ -103,6 +116,34 @@ export default function AboutPage() {
             <div className="about-contact-label">Call Us</div>
             <a className="about-contact-link" href="tel:+994105050666">+994 10 505 06 66</a>
           </div>
+          {(socialTiktok || socialFacebook || socialInstagram) && (
+            <div className="about-contact-group">
+              <div className="about-contact-label">Follow</div>
+              <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
+                {socialTiktok && (
+                  <a href={socialTiktok} target="_blank" rel="noopener noreferrer" title="TikTok" style={{ color: "#efefef", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.68v13.7a2.85 2.85 0 1 1-5.92-2.81v3.73a6.61 6.61 0 1 0 9.61 6.05V9.91a8.26 8.26 0 0 0 3.16 1.62z"/>
+                    </svg>
+                  </a>
+                )}
+                {socialFacebook && (
+                  <a href={socialFacebook} target="_blank" rel="noopener noreferrer" title="Facebook" style={{ color: "#efefef", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                  </a>
+                )}
+                {socialInstagram && (
+                  <a href={socialInstagram} target="_blank" rel="noopener noreferrer" title="Instagram" style={{ color: "#efefef", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0C5.37 0 0 5.37 0 12c0 6.63 5.37 12 12 12s12-5.37 12-12c0-6.63-5.37-12-12-12zm0 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm3.6 5.2c-.4 0-.8.4-.8.8v1.6c0 .4.4.8.8.8h1.6c.4 0 .8-.4.8-.8V8c0-.4-.4-.8-.8-.8h-1.6zm4.04 1.32a2.6 2.6 0 0 0-2.6-2.6h-7.08a2.6 2.6 0 0 0-2.6 2.6v7.08a2.6 2.6 0 0 0 2.6 2.6h7.08a2.6 2.6 0 0 0 2.6-2.6V8.52zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+                    </svg>
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

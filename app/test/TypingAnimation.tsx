@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 
 export default function TypingAnimation() {
   const [charCount, setCharCount] = useState(0);
-  const fullText = "DOING WHAT MATTERS";
+  const [isTyping, setIsTyping] = useState(true);
+  const fullText = "DOING WHAT MATTERS..";
 
   useEffect(() => {
     const startDelay = setTimeout(() => {
@@ -12,8 +13,11 @@ export default function TypingAnimation() {
       const typeInterval = setInterval(() => {
         count++;
         setCharCount(count);
-        if (count >= fullText.length) clearInterval(typeInterval);
-      }, 50);
+        if (count >= fullText.length) {
+          clearInterval(typeInterval);
+          setIsTyping(false);
+        }
+      }, 100);
 
       return () => clearInterval(typeInterval);
     }, 1000);
@@ -31,6 +35,22 @@ export default function TypingAnimation() {
       <span style={{ color: "#f4dc17" }}>
         {mattersPart}
       </span>
+      {isTyping && (
+        <span style={{
+          display: "inline-block",
+          marginLeft: "2px",
+          animation: "blink 1s infinite",
+          color: "#f4dc17"
+        }}>
+          |
+        </span>
+      )}
+      <style>{`
+        @keyframes blink {
+          0%, 49% { opacity: 1; }
+          50%, 100% { opacity: 0; }
+        }
+      `}</style>
     </div>
   );
 }
