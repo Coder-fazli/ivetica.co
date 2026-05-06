@@ -95,6 +95,8 @@ export type Block =
 | { type: "full-media"; media: MediaItem }
 | { type: "portrait-media"; media: MediaItem }
 | { type: "two-column"; left: MediaItem; right: MediaItem }
+| { type: "two-column-4-5"; left: MediaItem; right: MediaItem }
+| { type: "two-column-1-1"; left: MediaItem; right: MediaItem }
 | { type: "text"; label: string; body: string }
 | { type: "media-text"; media: MediaItem; body: string }
 | { type: "text-two-col"; leftLabel: string; leftBody: string; rightLabel: string; rightBody: string }

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { getWorks } from "@/actions/works";
 import AboutPage from "./AboutPage";
 import WorkDetail from "./WorkDetail";
+import TypingAnimation from "./TypingAnimation";
 
 const CARD_SLOT_DESKTOP = 110;
 const CARD_SLOT_MOBILE = 84;
@@ -305,7 +306,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
           <button onClick={() => { setView("home"); setMainOpen(false); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             <img src={logoUrl} alt="Lvetica" className="sidebar-logo-img" />
           </button>
-          <div className="sidebar-tagline">DOING WHAT <span style={{ color: "#f4dc17" }}>MATTERS</span></div>
+          <TypingAnimation />
         </div>
 
         {/* Desktop-only about section */}
@@ -340,7 +341,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
                 <button onClick={() => { setView("home"); setMainOpen(false); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
                   <img src={logoUrl} alt="Lvetica" className="sidebar-logo-img" />
                 </button>
-                <div className="sidebar-tagline">DOING WHAT <span style={{ color: "#f4dc17" }}>MATTERS</span></div>
+                <TypingAnimation />
               </div>
             </div>
 

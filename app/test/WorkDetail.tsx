@@ -15,7 +15,7 @@ function collectMedia(blocks: Block[]): LightboxItem[] {
   for (const block of blocks) {
     if (block.type === "full-media" || block.type === "portrait-media") {
       if (block.media.kind !== "text") items.push({ url: block.media.url, kind: block.media.kind });
-    } else if (block.type === "two-column") {
+    } else if (block.type === "two-column" || block.type === "two-column-4-5" || block.type === "two-column-1-1") {
       if (block.left.kind !== "text") items.push({ url: block.left.url, kind: block.left.kind });
       if (block.right.kind !== "text") items.push({ url: block.right.url, kind: block.right.kind });
     } else if (block.type === "media-text") {
@@ -83,6 +83,18 @@ export default function WorkDetail({ slug, fading }: { slug: string; fading: boo
                 );
                 if (block.type === "two-column") return (
                   <div key={idx} className="work-block work-block-two-col">
+                    {renderMedia(block.left.url, block.left.kind, "work-block-media")}
+                    {renderMedia(block.right.url, block.right.kind, "work-block-media")}
+                  </div>
+                );
+                if (block.type === "two-column-4-5") return (
+                  <div key={idx} className="work-block work-block-two-col-4-5">
+                    {renderMedia(block.left.url, block.left.kind, "work-block-media")}
+                    {renderMedia(block.right.url, block.right.kind, "work-block-media")}
+                  </div>
+                );
+                if (block.type === "two-column-1-1") return (
+                  <div key={idx} className="work-block work-block-two-col-1-1">
                     {renderMedia(block.left.url, block.left.kind, "work-block-media")}
                     {renderMedia(block.right.url, block.right.kind, "work-block-media")}
                   </div>
