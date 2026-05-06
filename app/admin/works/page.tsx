@@ -6,11 +6,9 @@ import { WorkType, Block, MediaItem } from "@/types";
 import SeoMetabox from "@/components/admin/SeoMetabox";
 import MediaUpload from "@/components/admin/MediaUpload";
 
-const TAGS = ["Art & Culture", "Tech", "Fashion", "Entertainment", "Hospitality", "Retail", "Finance", "Non-profit"];
-
 const empty: WorkType = {
   title: "", slug: "", client: "", tags: [],
-  thumbnail: "", challenge: "", approach: "", results: "",
+  thumbnail: "", coverImage: "", challenge: "", approach: "", results: "",
   gallery: [], metrics: [], blocks: [],
 };
 
@@ -61,8 +59,11 @@ const BLOCK_TYPES: { type: Block["type"]; label: string; svg: React.ReactNode }[
   },
 ];
 
+type Tag = { _id: string; name: string };
+
 export default function AdminWorks() {
   const [works, setWorks] = useState<WorkType[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [modal, setModal] = useState<WorkType | null>(null);
   const [modalIdx, setModalIdx] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
@@ -70,6 +71,7 @@ export default function AdminWorks() {
 
   useEffect(() => {
     getWorks().then((data) => setWorks(data as WorkType[]));
+    fetch("/api/tags").then(r => r.json()).then(data => setTags(Array.isArray(data) ? data : []));
   }, []);
 
   function openNew() { setModal({ ...empty }); setModalIdx(null); }
@@ -80,10 +82,10 @@ export default function AdminWorks() {
     setModal((prev) => prev ? { ...prev, [key]: val } : prev);
   }
 
-  function toggleTag(tag: string) {
+  function toggleTag(tagName: string) {
     if (!modal) return;
-    const tags = modal.tags || [];
-    field("tags", tags.includes(tag) ? tags.filter(t => t !== tag) : [...tags, tag]);
+    const modalTags = modal.tags || [];
+    field("tags", modalTags.includes(tagName) ? modalTags.filter(t => t !== tagName) : [...modalTags, tagName]);
   }
 
   function addBlock(type: Block["type"]) {
@@ -248,15 +250,15 @@ export default function AdminWorks() {
                   <div>
                     <span style={s.label}>Tags</span>
                     <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
-                      {TAGS.map(tag => {
-                        const active = modal.tags?.includes(tag) ?? false;
+                      {tags.map(tag => {
+                        const active = modal.tags?.includes(tag.name) ?? false;
                         return (
                           <button
-                            key={tag}
-                            onClick={() => toggleTag(tag)}
+                            key={tag._id}
+                            onClick={() => toggleTag(tag.name)}
                             style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, border: "1px solid var(--admin-input-border)", cursor: "pointer", background: active ? "var(--admin-accent)" : "transparent", color: active ? "#fff" : "inherit", fontWeight: 500 }}
                           >
-                            {tag}
+                            {tag.name}
                           </button>
                         );
                       })}

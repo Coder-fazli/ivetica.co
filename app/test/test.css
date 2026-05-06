@@ -93,7 +93,7 @@ html, body {
 }
 
 .sidebar-tagline {
-  font-size: 15px;
+  font-size: var(--fs-hero, 15px);
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -215,7 +215,7 @@ html, body {
 .proj-card-info { flex: 1; min-width: 0; }
 
 .proj-card-name {
-  font-size: 16px;
+  font-size: var(--fs-card-title, 16px);
   font-weight: 500;
   color: var(--text-primary);
   margin-bottom: 6px;
@@ -223,7 +223,7 @@ html, body {
 }
 
 .proj-card-desc {
-  font-size: 14px;
+  font-size: var(--fs-card-desc, 14px);
   color: var(--text-muted);
   line-height: 1.45;
 }
@@ -342,14 +342,14 @@ html, body {
 .about-contact-group { margin-bottom: 14px; }
 .about-contact-group:last-child { margin-bottom: 0; }
 .about-contact-label {
-  font-size: 11px;
+  font-size: var(--fs-contact-label, 11px);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 4px;
 }
 .about-contact-link {
-  font-size: 14px;
+  font-size: var(--fs-contact-link, 14px);
   color: var(--text-primary);
   text-decoration: none;
 }
@@ -868,7 +868,3 @@ html.light-theme .about-tab.active {
 .layout.light .main-back-btn:hover,
 html.light-theme .main-back-btn:hover { color: var(--text-primary); }
 
-.layout.light .sidebar-logo-img,
-html.light-theme .sidebar-logo-img {
-  filter: invert(1) hue-rotate(180deg) saturate(1.2);
-}

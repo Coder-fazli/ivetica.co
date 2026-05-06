@@ -5,6 +5,7 @@ import { getWorkBySlug } from "@/actions/works";
 import { WorkType, Block } from "@/types";
 import VideoPlayer from "@/components/works/VideoPlayer";
 import Lightbox from "@/components/works/Lightbox";
+import { VideoProvider } from "@/components/works/VideoContext";
 import "@/components/works/works.css";
 
 type LightboxItem = { url: string; kind: "image" | "video" };
@@ -64,12 +65,9 @@ export default function WorkDetail({ slug, fading }: { slug: string; fading: boo
   }
 
   return (
-    <>
+    <VideoProvider>
       <div className={`work-detail-panel${fading ? " fade" : ""}`}>
         <div className="main-body">
-          <div className="main-label">{work.client}</div>
-          <h1 className="main-title"><strong>{work.title}</strong></h1>
-
           {work.blocks && work.blocks.length > 0 && (
             <div className="work-blocks">
               {work.blocks.map((block, idx) => {
@@ -133,6 +131,6 @@ export default function WorkDetail({ slug, fading }: { slug: string; fading: boo
           onNav={setLightboxIndex}
         />
       )}
-    </>
+    </VideoProvider>
   );
 }

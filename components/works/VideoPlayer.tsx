@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import { useVideoContext } from "./VideoContext";
 
 type Props = {
   src: string;
@@ -14,11 +15,20 @@ function getPreviewUrl(url: string): string {
   return url;
 }
 
+let videoIdCounter = 0;
+
 export default function VideoPlayer({ src, className = "" }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [muted, setMuted] = useState(true);
   const [active, setActive] = useState(false);
+  const [videoId] = useState(() => `video-${videoIdCounter++}`);
+  const { hoveredVideoId, setHoveredVideoId, registerVideo, unregisterVideo } = useVideoContext();
+
+  useEffect(() => {
+    registerVideo(videoId);
+    return () => unregisterVideo(videoId);
+  }, [videoId, registerVideo, unregisterVideo]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -36,7 +46,21 @@ export default function VideoPlayer({ src, className = "" }: Props) {
     return () => observer.disconnect();
   }, []);
 
-  function toggleSound() {
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (hoveredVideoId === null) {
+      video.play().catch(() => {});
+    } else if (hoveredVideoId === videoId) {
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  }, [hoveredVideoId, videoId]);
+
+  function toggleSound(e: React.MouseEvent) {
+    e.stopPropagation();
     const v = videoRef.current;
     if (!v) return;
     v.muted = !v.muted;
@@ -44,12 +68,17 @@ export default function VideoPlayer({ src, className = "" }: Props) {
   }
 
   return (
-    <div ref={containerRef} className={className} style={{ position: "relative", overflow: "hidden", borderRadius: 10, width: "100%", height: "100%" }}>
+    <div
+      ref={containerRef}
+      className={className}
+      style={{ position: "relative", overflow: "hidden", borderRadius: 10, width: "100%", height: "100%" }}
+      onMouseEnter={() => setHoveredVideoId(videoId)}
+      onMouseLeave={() => setHoveredVideoId(null)}
+    >
       {active && (
       <video
         ref={videoRef}
         src={getPreviewUrl(src)}
-        autoPlay
         muted
         loop
         playsInline

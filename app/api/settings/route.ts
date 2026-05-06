@@ -25,7 +25,14 @@ export async function PUT(req: NextRequest) {
     await dbConnect();
     await SiteSettings.findByIdAndUpdate(
       "global",
-      { $set: { logoUrl: data.logoUrl ?? "", faviconUrl: data.faviconUrl ?? "" } },
+      {
+        $set: {
+          logoUrl: data.logoUrl ?? "",
+          logoUrlLight: data.logoUrlLight ?? "",
+          faviconUrl: data.faviconUrl ?? "",
+          fontSizes: data.fontSizes ?? {},
+        },
+      },
       { upsert: true, new: true }
     );
     revalidateTag("site-settings");

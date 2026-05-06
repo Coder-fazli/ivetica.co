@@ -4,13 +4,18 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { WorkType } from "@/types";
 
-const TAGS = ["All", "Art & Culture", "Tech", "Fashion", "Entertainment", "Hospitality", "Retail", "Finance", "Non-profit"];
+type Tag = { _id: string; name: string };
 
 export default function AllWorksPage({ works, initialTag }: { works: WorkType[]; initialTag?: string }) {
   const router = useRouter();
   const [activeTag, setActiveTag] = useState(initialTag || "All");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [tags, setTags] = useState<Tag[]>([]);
   const inputRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetch("/api/tags").then(r => r.json()).then(data => setTags(Array.isArray(data) ? data : []));
+  }, []);
 
   const filtered = activeTag === "All"
     ? works
@@ -77,22 +82,37 @@ export default function AllWorksPage({ works, initialTag }: { works: WorkType[];
               boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
               zIndex: 10,
             }}>
-              {TAGS.map(tag => (
+              <button
+                onClick={() => selectTag("All")}
+                style={{
+                  display: "block", width: "100%", textAlign: "left",
+                  padding: "9px 18px", background: "none", border: "none",
+                  color: activeTag === "All" ? "#efefef" : "#555",
+                  fontSize: 14, cursor: "pointer",
+                  fontFamily: "inherit",
+                  fontWeight: activeTag === "All" ? 500 : 400,
+                }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#efefef")}
+                onMouseLeave={e => (e.currentTarget.style.color = activeTag === "All" ? "#efefef" : "#555")}
+              >
+                All
+              </button>
+              {tags.map(tag => (
                 <button
-                  key={tag}
-                  onClick={() => selectTag(tag)}
+                  key={tag._id}
+                  onClick={() => selectTag(tag.name)}
                   style={{
                     display: "block", width: "100%", textAlign: "left",
                     padding: "9px 18px", background: "none", border: "none",
-                    color: activeTag === tag ? "#efefef" : "#555",
+                    color: activeTag === tag.name ? "#efefef" : "#555",
                     fontSize: 14, cursor: "pointer",
                     fontFamily: "inherit",
-                    fontWeight: activeTag === tag ? 500 : 400,
+                    fontWeight: activeTag === tag.name ? 500 : 400,
                   }}
                   onMouseEnter={e => (e.currentTarget.style.color = "#efefef")}
-                  onMouseLeave={e => (e.currentTarget.style.color = activeTag === tag ? "#efefef" : "#555")}
+                  onMouseLeave={e => (e.currentTarget.style.color = activeTag === tag.name ? "#efefef" : "#555")}
                 >
-                  {tag}
+                  {tag.name}
                 </button>
               ))}
             </div>

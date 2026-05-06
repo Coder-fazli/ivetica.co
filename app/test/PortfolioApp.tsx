@@ -31,15 +31,25 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [detailKey, setDetailKey] = useState(0);
   const [logoUrl, setLogoUrl] = useState("/img/lvetica-logo.png");
+  const [logoDark, setLogoDark] = useState<string | null>(null);
+  const [logoLight, setLogoLight] = useState<string | null>(null);
 
   useEffect(() => {
-    const custom = document.body.dataset.logo;
-    if (custom) setLogoUrl(custom);
+    const dark = document.body.dataset.logo;
+    const light = document.body.dataset.logoLight;
+    if (dark) setLogoDark(dark);
+    if (light) setLogoLight(light);
+    setLogoUrl(dark || "/img/lvetica-logo.png");
   }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle("light-theme", theme === "light");
-  }, [theme]);
+    if (theme === "light" && logoLight) {
+      setLogoUrl(logoLight);
+    } else if (theme === "dark" && logoDark) {
+      setLogoUrl(logoDark);
+    }
+  }, [theme, logoDark, logoLight]);
   const cardsRef = useRef<Card[]>(initialCards);
 
   const fetchCards = () => {
@@ -292,7 +302,9 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
             <button className="sidebar-show-btn" onClick={() => window.location.href = "/all"}>Show all projects</button>
             <button className={`sidebar-theme-toggle${theme === "light" ? " is-light" : ""}`} onClick={toggleTheme} />
           </div>
-          <img src={logoUrl} alt="Lvetica" className="sidebar-logo-img" />
+          <button onClick={() => { setView("home"); setMainOpen(false); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+            <img src={logoUrl} alt="Lvetica" className="sidebar-logo-img" />
+          </button>
           <div className="sidebar-tagline">DOING WHAT <span style={{ color: "#f4dc17" }}>MATTERS</span></div>
         </div>
 
@@ -325,7 +337,9 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
                     onClick={toggleTheme}
                   />
                 </div>
-                <img src={logoUrl} alt="Lvetica" className="sidebar-logo-img" />
+                <button onClick={() => { setView("home"); setMainOpen(false); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+                  <img src={logoUrl} alt="Lvetica" className="sidebar-logo-img" />
+                </button>
                 <div className="sidebar-tagline">DOING WHAT <span style={{ color: "#f4dc17" }}>MATTERS</span></div>
               </div>
             </div>

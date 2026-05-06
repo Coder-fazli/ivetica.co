@@ -12,6 +12,7 @@ export default function Sidebar() {
     { href: "/admin/dashboard", label: "Dashboard", icon: "fas fa-th-large" },
     { href: "/admin/homepage", label: "Homepage", icon: "fas fa-home" },
     { href: "/admin/works", label: "Works", icon: "fas fa-briefcase" },
+    { href: "/admin/tags", label: "Tags", icon: "fas fa-tags" },
     { href: "/admin/media", label: "Media", icon: "fas fa-photo-video" },
     { href: "/admin/services", label: "Services", icon: "fas fa-cogs" },
     { href: "/admin/blog", label: "Blog", icon: "fas fa-pen" },
