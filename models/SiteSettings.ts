@@ -14,6 +14,9 @@ const SiteSettingsSchema = new Schema({
     contactLabel: { type: Number, default: 11 },
     contactLink: { type: Number, default: 14 },
   },
+  socialTiktok: { type: String, default: "" },
+  socialFacebook: { type: String, default: "" },
+  socialInstagram: { type: String, default: "" },
 }, { _id: false });
 
 export const SiteSettings = mongoose.models.SiteSettings || mongoose.model("SiteSettings", SiteSettingsSchema);

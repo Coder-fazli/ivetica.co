@@ -31,6 +31,9 @@ export async function PUT(req: NextRequest) {
           logoUrlLight: data.logoUrlLight ?? "",
           faviconUrl: data.faviconUrl ?? "",
           fontSizes: data.fontSizes ?? {},
+          socialTiktok: data.socialTiktok ?? "",
+          socialFacebook: data.socialFacebook ?? "",
+          socialInstagram: data.socialInstagram ?? "",
         },
       },
       { upsert: true, new: true }

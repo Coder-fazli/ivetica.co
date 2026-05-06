@@ -21,6 +21,8 @@ export default async function TestLayout({ children }: { children: React.ReactNo
       --fs-hero: ${fs.heroTagline ?? 15}px;
       --fs-card-title: ${fs.cardTitle ?? 16}px;
       --fs-card-desc: ${fs.cardDesc ?? 14}px;
+      --fs-work-title: ${fs.workTitle ?? 30}px;
+      --fs-work-body: ${fs.workBody ?? 13}px;
       --fs-contact-label: ${fs.contactLabel ?? 11}px;
       --fs-contact-link: ${fs.contactLink ?? 14}px;
     }
