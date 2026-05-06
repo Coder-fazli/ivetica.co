@@ -16,6 +16,7 @@ export default function AdminTags() {
   const [editingName, setEditingName] = useState("");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [openSection, setOpenSection] = useState<string | null>("tags");
 
   useEffect(() => {
     fetchTags();
@@ -116,122 +117,122 @@ export default function AdminTags() {
     }
   }
 
+  function toggle(section: string) {
+    setOpenSection((prev) => (prev === section ? null : section));
+  }
+
   return (
-    <div>
+    <>
       <div className="admin-page-header">
-        <h1>Work Tags</h1>
-        <p>Manage project categories and tags</p>
-      </div>
-
-      <div style={{ padding: 24, maxWidth: 600 }}>
-        {/* Add new tag */}
-        <form onSubmit={handleAddTag} style={{ marginBottom: 32, paddingBottom: 24, borderBottom: "1px solid #1e1e1e" }}>
-          <h2 style={{ fontSize: 14, fontWeight: 600, marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.08em", color: "#aaa" }}>
-            Add New Tag
-          </h2>
-          <div style={{ display: "flex", gap: 10 }}>
-            <input
-              type="text"
-              value={newTagName}
-              onChange={(e) => setNewTagName(e.target.value)}
-              placeholder="Tag name (e.g., Branding)"
-              className="admin-input"
-              disabled={saving}
-            />
-            <button type="submit" className="admin-btn-primary" disabled={saving || !newTagName.trim()}>
-              {saving ? "Adding..." : "Add"}
-            </button>
-          </div>
-        </form>
-
-        {/* Tag list */}
         <div>
-          <h2 style={{ fontSize: 14, fontWeight: 600, marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.08em", color: "#aaa" }}>
-            All Tags ({tags.length})
-          </h2>
-
-          {message && (
-            <div style={{ padding: "12px 16px", marginBottom: 16, background: message.includes("Failed") ? "rgba(229, 51, 51, 0.1)" : "rgba(76, 175, 80, 0.1)", color: message.includes("Failed") ? "#e53" : "#4caf50", borderRadius: 4, fontSize: 12 }}>
-              {message}
-            </div>
-          )}
-
-          {loading ? (
-            <p style={{ opacity: 0.4, fontSize: 13 }}>Loading tags...</p>
-          ) : tags.length === 0 ? (
-            <p style={{ opacity: 0.4, fontSize: 13 }}>No tags yet. Create your first one above.</p>
-          ) : (
-            <div style={{ display: "grid", gap: 8 }}>
-              {tags.map((tag) => (
-                <div
-                  key={tag._id}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    padding: "12px 16px",
-                    background: "#1a1a1a",
-                    borderRadius: 8,
-                    border: "1px solid #1e1e1e",
-                  }}
-                >
-                  {editingId === tag._id ? (
-                    <>
-                      <input
-                        type="text"
-                        value={editingName}
-                        onChange={(e) => setEditingName(e.target.value)}
-                        className="admin-input"
-                        style={{ flex: 1 }}
-                        disabled={saving}
-                      />
-                      <button
-                        onClick={() => handleEditTag(tag._id, editingName)}
-                        className="admin-btn-primary"
-                        style={{ fontSize: 12, padding: "6px 12px" }}
-                        disabled={saving}
-                      >
-                        Save
-                      </button>
-                      <button
-                        onClick={() => setEditingId(null)}
-                        className="admin-btn"
-                        style={{ fontSize: 12, padding: "6px 12px", background: "transparent", border: "1px solid #333" }}
-                        disabled={saving}
-                      >
-                        Cancel
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <span style={{ flex: 1, fontSize: 13 }}>{tag.name}</span>
-                      <button
-                        onClick={() => {
-                          setEditingId(tag._id);
-                          setEditingName(tag.name);
-                        }}
-                        className="admin-btn"
-                        style={{ fontSize: 11, padding: "4px 10px", background: "transparent", border: "1px solid #333" }}
-                        disabled={saving}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteTag(tag._id)}
-                        className="admin-btn"
-                        style={{ fontSize: 11, padding: "4px 10px", background: "transparent", border: "1px solid #e53", color: "#e53" }}
-                        disabled={saving}
-                      >
-                        Delete
-                      </button>
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+          <h1>Work Tags</h1>
+          <p>Manage project categories and tags.</p>
         </div>
+        {message && (
+          <div style={{ padding: "8px 12px", background: message.includes("Failed") ? "rgba(229, 51, 51, 0.1)" : "rgba(76, 175, 80, 0.1)", color: message.includes("Failed") ? "#e53" : "#4caf50", borderRadius: 4, fontSize: 12 }}>
+            {message}
+          </div>
+        )}
       </div>
-    </div>
+
+      <div className="admin-accordion-item">
+        <div className="admin-accordion-header" onClick={() => toggle("tags")}>
+          <span>Tags ({tags.length})</span>
+          <i className={`fas fa-chevron-${openSection === "tags" ? "up" : "down"}`}></i>
+        </div>
+        {openSection === "tags" && (
+          <div className="admin-accordion-body">
+            <form onSubmit={handleAddTag} style={{ marginBottom: 24, paddingBottom: 24, borderBottom: "1px solid var(--admin-input-border)" }}>
+              <div className="admin-field-group">
+                <label>Add New Tag</label>
+                <div style={{ display: "flex", gap: 10 }}>
+                  <input
+                    type="text"
+                    value={newTagName}
+                    onChange={(e) => setNewTagName(e.target.value)}
+                    placeholder="Tag name (e.g., Branding)"
+                    className="admin-input"
+                    disabled={saving}
+                  />
+                  <button type="submit" className="admin-btn-primary" disabled={saving || !newTagName.trim()}>
+                    {saving ? "Adding..." : "Add"}
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            {loading ? (
+              <p style={{ opacity: 0.5, fontSize: 13 }}>Loading tags...</p>
+            ) : tags.length === 0 ? (
+              <p style={{ opacity: 0.5, fontSize: 13 }}>No tags yet. Create your first one above.</p>
+            ) : (
+              <div>
+                {tags.map((tag) => (
+                  <div key={tag._id} className="admin-list-item">
+                    {editingId === tag._id ? (
+                      <>
+                        <div style={{ display: "flex", gap: 10 }}>
+                          <input
+                            type="text"
+                            value={editingName}
+                            onChange={(e) => setEditingName(e.target.value)}
+                            className="admin-input"
+                            style={{ flex: 1 }}
+                            disabled={saving}
+                          />
+                          <button
+                            onClick={() => handleEditTag(tag._id, editingName)}
+                            className="admin-btn-primary"
+                            style={{ fontSize: 12, padding: "8px 16px", whiteSpace: "nowrap" }}
+                            disabled={saving}
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={() => setEditingId(null)}
+                            className="admin-btn"
+                            style={{ fontSize: 12, padding: "8px 16px", whiteSpace: "nowrap" }}
+                            disabled={saving}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <span style={{ fontSize: 13 }}>{tag.name}</span>
+                          <div style={{ display: "flex", gap: 8 }}>
+                            <button
+                              onClick={() => {
+                                setEditingId(tag._id);
+                                setEditingName(tag.name);
+                              }}
+                              className="admin-btn"
+                              style={{ fontSize: 11, padding: "4px 10px", background: "transparent", border: "1px solid var(--admin-input-border)" }}
+                              disabled={saving}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteTag(tag._id)}
+                              className="admin-btn"
+                              style={{ fontSize: 11, padding: "4px 10px", background: "transparent", border: "1px solid #e53", color: "#e53" }}
+                              disabled={saving}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </>
   );
 }

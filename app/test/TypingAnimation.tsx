@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 
 export default function TypingAnimation() {
   const [charCount, setCharCount] = useState(0);
-  const [isTyping, setIsTyping] = useState(true);
-  const fullText = "DOING WHAT MATTERS..";
+  const fullText = "DOING WHAT MATTERS";
+  const dots = "...";
 
   useEffect(() => {
     const startDelay = setTimeout(() => {
@@ -15,12 +15,11 @@ export default function TypingAnimation() {
         setCharCount(count);
         if (count >= fullText.length) {
           clearInterval(typeInterval);
-          setIsTyping(false);
         }
-      }, 100);
+      }, 200);
 
       return () => clearInterval(typeInterval);
-    }, 1000);
+    }, 800);
 
     return () => clearTimeout(startDelay);
   }, []);
@@ -35,20 +34,35 @@ export default function TypingAnimation() {
       <span style={{ color: "#f4dc17" }}>
         {mattersPart}
       </span>
-      {isTyping && (
-        <span style={{
-          display: "inline-block",
-          marginLeft: "2px",
-          animation: "blink 1s infinite",
-          color: "#f4dc17"
-        }}>
-          |
-        </span>
+      <span style={{
+        display: "inline-block",
+        marginLeft: "2px",
+        animation: "cursor-blink 1s infinite",
+        color: "#f4dc17"
+      }}>
+        |
+      </span>
+      {charCount >= fullText.length && (
+        <>
+          <span style={{ color: "#f4dc17" }}>.</span>
+          <span style={{ color: "#f4dc17" }}>.</span>
+          <span style={{
+            display: "inline-block",
+            color: "#f4dc17",
+            animation: "dot-pulse 1.5s infinite"
+          }}>
+            .
+          </span>
+        </>
       )}
       <style>{`
-        @keyframes blink {
+        @keyframes cursor-blink {
           0%, 49% { opacity: 1; }
           50%, 100% { opacity: 0; }
+        }
+        @keyframes dot-pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
         }
       `}</style>
     </div>
