@@ -62,10 +62,23 @@ export default function TypingAnimation() {
   const beforeYellow = "DOING ";
   const yellowPart = displayed.slice(beforeYellow.length);
 
+  const isTyping = ["doing", "what", "matters"].includes(phase);
+
   return (
     <div className="sidebar-tagline">
       {displayed.slice(0, beforeYellow.length)}
       <span style={{ color: "#f4dc17" }}>{yellowPart}</span>
+      {isTyping && (
+        <span
+          style={{
+            display: "inline-block",
+            animation: "cursor-blink 1s infinite",
+            color: "#f4dc17",
+          }}
+        >
+          |
+        </span>
+      )}
       {phase === "done" && (
         <>
           <span style={{ color: "#f4dc17" }}>.</span>
