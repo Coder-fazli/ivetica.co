@@ -22,6 +22,7 @@ export default function VideoPlayer({ src, className = "" }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [muted, setMuted] = useState(true);
   const [active, setActive] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [videoId] = useState(() => `video-${videoIdCounter++}`);
   const { hoveredVideoId, setHoveredVideoId, registerVideo, unregisterVideo } = useVideoContext();
 
@@ -76,15 +77,36 @@ export default function VideoPlayer({ src, className = "" }: Props) {
       onMouseLeave={() => setHoveredVideoId(null)}
     >
       {active && (
-      <video
-        ref={videoRef}
-        src={getPreviewUrl(src)}
-        muted
-        loop
-        playsInline
-        preload="none"
-        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-      />
+        <>
+          {isLoading && (
+            <div style={{
+              position: "absolute", inset: 0,
+              background: "#0d0d0d",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              zIndex: 1,
+              borderRadius: 10
+            }}>
+              <div style={{
+                width: 40, height: 40,
+                border: "3px solid rgba(255,255,255,0.1)",
+                borderTop: "3px solid rgba(255,255,255,0.4)",
+                borderRadius: "50%",
+                animation: "spin 1s linear infinite"
+              }} />
+            </div>
+          )}
+          <video
+            ref={videoRef}
+            src={getPreviewUrl(src)}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            onCanPlay={() => setIsLoading(false)}
+            onLoadedMetadata={() => setIsLoading(false)}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        </>
       )}
       <button
         onClick={toggleSound}
