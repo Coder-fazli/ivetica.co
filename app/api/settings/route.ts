@@ -7,10 +7,32 @@ import { SiteSettings } from "@/models/SiteSettings";
 export async function GET() {
   try {
     await dbConnect();
-    const settings = await SiteSettings.findById("global").lean();
-    return NextResponse.json(settings || { logoUrl: "", faviconUrl: "" });
-  } catch {
-    return NextResponse.json({ logoUrl: "", faviconUrl: "" });
+    let settings = await SiteSettings.findById("global").lean();
+
+    if (!settings) {
+      console.log("[settings GET] No settings found, creating default document");
+      try {
+        const created = await SiteSettings.create({
+          _id: "global",
+          logoUrl: "",
+          logoUrlLight: "",
+          faviconUrl: "",
+        });
+        settings = created.toObject();
+      } catch (createErr) {
+        console.error("[settings GET] Failed to create default settings:", createErr);
+      }
+    }
+
+    if (!settings) {
+      console.warn("[settings GET] Still no settings after creation attempt");
+      return NextResponse.json({ logoUrl: "", logoUrlLight: "", faviconUrl: "", fontSizes: {} });
+    }
+
+    return NextResponse.json(settings);
+  } catch (err) {
+    console.error("[settings GET] Error:", err);
+    return NextResponse.json({ logoUrl: "", logoUrlLight: "", faviconUrl: "", fontSizes: {} });
   }
 }
 
@@ -23,7 +45,8 @@ export async function PUT(req: NextRequest) {
 
     const data = await req.json();
     await dbConnect();
-    await SiteSettings.findByIdAndUpdate(
+
+    const result = await SiteSettings.findByIdAndUpdate(
       "global",
       {
         $set: {
@@ -38,11 +61,18 @@ export async function PUT(req: NextRequest) {
       },
       { upsert: true, new: true }
     );
+
+    if (!result) {
+      console.warn("[settings PUT] Update returned null, document may not have been created");
+    } else {
+      console.log("[settings PUT] Successfully saved settings for logoUrl:", data.logoUrl?.slice(0, 50));
+    }
+
     revalidateTag("site-settings");
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, data: result });
   } catch (err) {
     console.error("[settings PUT] error:", err);
     const msg = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return NextResponse.json({ error: `Failed to save settings: ${msg}` }, { status: 500 });
   }
 }

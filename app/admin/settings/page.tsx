@@ -53,14 +53,26 @@ export default function SettingsPage() {
   async function handleSave() {
     setSaving(true);
     setSaved(false);
-    await fetch("/api/settings", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ logoUrl, logoUrlLight, faviconUrl, fontSizes, socialTiktok, socialFacebook, socialInstagram }),
-    });
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    try {
+      const res = await fetch("/api/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ logoUrl, logoUrlLight, faviconUrl, fontSizes, socialTiktok, socialFacebook, socialInstagram }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        console.error("[Settings Save] Error:", err);
+        alert(`Save failed: ${err.error || "Unknown error"}`);
+        return;
+      }
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error("[Settings Save] Network error:", err);
+      alert("Save failed: Network error");
+    } finally {
+      setSaving(false);
+    }
   }
 
   function resetFontSizes() {
