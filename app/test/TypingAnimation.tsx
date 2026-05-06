@@ -41,17 +41,22 @@ export default function TypingAnimation() {
   const mattersText = "MATTERS";
 
   let displayed = "";
-  if (["doing", "pause1", "what", "pause2", "matters", "done"].includes(phase)) {
+  if (phase === "doing") {
+    displayed += doingText.slice(0, charCount);
+  } else if (["pause1", "what", "pause2", "matters", "done"].includes(phase)) {
     displayed += doingText;
   }
-  if (["what", "pause2", "matters", "done"].includes(phase)) {
-    displayed += whatText.slice(0, phase === "what" ? charCount - doingText.length : whatText.length);
+
+  if (phase === "what") {
+    displayed += whatText.slice(0, charCount - doingText.length);
+  } else if (["pause2", "matters", "done"].includes(phase)) {
+    displayed += whatText;
   }
-  if (["matters", "done"].includes(phase)) {
-    displayed += mattersText.slice(
-      0,
-      phase === "matters" ? charCount - doingText.length - whatText.length : mattersText.length
-    );
+
+  if (phase === "matters") {
+    displayed += mattersText.slice(0, charCount - doingText.length - whatText.length);
+  } else if (phase === "done") {
+    displayed += mattersText;
   }
 
   const beforeYellow = "DOING ";
