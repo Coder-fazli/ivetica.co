@@ -29,14 +29,34 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
 };
 
+type SiteSettingsData = {
+  logoUrl?: string;
+  logoUrlLight?: string;
+  faviconUrl?: string;
+  fontSizes?: {
+    heroTagline?: number;
+    cardTitle?: number;
+    cardDesc?: number;
+    workTitle?: number;
+    workBody?: number;
+    contactLabel?: number;
+    contactLink?: number;
+  };
+};
+
 const getSettings = unstable_cache(
   async () => {
     try {
       await dbConnect();
-      const s = await SiteSettings.findById("global").lean() as { logoUrl?: string; faviconUrl?: string } | null;
-      return { logoUrl: s?.logoUrl || "", faviconUrl: s?.faviconUrl || "" };
+      const s = await SiteSettings.findById("global").lean() as SiteSettingsData | null;
+      return {
+        logoUrl: s?.logoUrl || "",
+        logoUrlLight: s?.logoUrlLight || "",
+        faviconUrl: s?.faviconUrl || "",
+        fontSizes: s?.fontSizes || {},
+      };
     } catch {
-      return { logoUrl: "", faviconUrl: "" };
+      return { logoUrl: "", logoUrlLight: "", faviconUrl: "", fontSizes: {} };
     }
   },
   ["site-settings"],
@@ -44,7 +64,20 @@ const getSettings = unstable_cache(
 );
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const { logoUrl, faviconUrl } = await getSettings();
+  const { logoUrl, logoUrlLight, faviconUrl, fontSizes } = await getSettings();
+  const fs = fontSizes as SiteSettingsData["fontSizes"] ?? {};
+
+  const cssVars = `
+    :root {
+      --fs-hero: ${fs?.heroTagline ?? 15}px;
+      --fs-card-title: ${fs?.cardTitle ?? 16}px;
+      --fs-card-desc: ${fs?.cardDesc ?? 14}px;
+      --fs-work-title: ${fs?.workTitle ?? 30}px;
+      --fs-work-body: ${fs?.workBody ?? 13}px;
+      --fs-contact-label: ${fs?.contactLabel ?? 11}px;
+      --fs-contact-link: ${fs?.contactLink ?? 14}px;
+    }
+  `;
 
   return (
     <ClerkProvider>
@@ -63,8 +96,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           `}} />
           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" />
           {faviconUrl && <link rel="icon" href={faviconUrl} />}
+          <style dangerouslySetInnerHTML={{ __html: cssVars }} />
         </head>
-        <body className={outfit.className} data-logo={logoUrl || undefined}>
+        <body className={outfit.className} data-logo={logoUrl || undefined} data-logo-light={logoUrlLight || undefined}>
           <ChunkErrorHandler />
           {children}
         </body>

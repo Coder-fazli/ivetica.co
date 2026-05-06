@@ -252,13 +252,13 @@ html, body {
 }
 
 .main-title {
-  font-size: 30px; font-weight: 300;
+  font-size: var(--fs-work-title, 30px); font-weight: 300;
   letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 14px;
   color: var(--text-primary);
 }
 .main-title strong { font-weight: 500; }
 
-.main-desc { font-size: 13px; color: var(--text-dim); line-height: 1.8; max-width: 500px; }
+.main-desc { font-size: var(--fs-work-body, 13px); color: var(--text-dim); line-height: 1.8; max-width: 500px; }
 
 .main-tags { display: flex; gap: 8px; margin-top: 20px; }
 

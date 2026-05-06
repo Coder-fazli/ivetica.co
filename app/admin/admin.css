@@ -25,10 +25,11 @@
 /* ---------- Layout ---------- */
 .admin-layout {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
   background-color: var(--admin-bg);
   color: var(--admin-text);
   font-family: "Outfit", sans-serif;
+  overflow: hidden;
 }
 
 /* Main area text resets */
@@ -150,7 +151,7 @@
   flex: 1;
   margin-left: 250px;
   padding: 30px 40px;
-  min-height: 100vh;
+  height: 100vh;
   background: var(--admin-bg);
   overflow-y: auto;
   overflow-x: hidden;
