@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import { getAbout, TeamMember, Offering } from "@/actions/about";
 
 const CLIENT_TABS = ["All", "Art & Culture", "Tech", "Fashion", "Entertainment", "Hospitality", "Retail", "Finance", "Non-profit"];
 
@@ -18,55 +19,14 @@ const CLIENTS = [
   { name: "WWF", cat: "Non-profit" }, { name: "UNICEF", cat: "Non-profit" },
 ];
 
-const OFFERINGS = [
-  {
-    name: "Strategy",
-    desc: "We develop brand strategies that define how companies think, speak, and act. Our systems-driven approach ensures every decision is rooted in purpose and built for longevity.",
-    services: "Brand Strategy, Market Positioning, Audience Research, Competitive Analysis, Brand Architecture",
-  },
-  {
-    name: "Verbal Identity",
-    desc: "We craft the language of a brand — naming, voice, tone, and messaging frameworks that give companies a distinct and consistent way to communicate across every touchpoint.",
-    services: "Naming, Taglines, Brand Voice, Messaging Framework, Copywriting",
-  },
-  {
-    name: "Visual Identity",
-    desc: "We design how brands look and feel. As systems thinkers, we piece together the elements, tools, and behaviors necessary to create unique and memorable identities that flex across different touchpoints, contexts and audiences.",
-    services: "Logo Design, Type Design, Photography Direction, Iconography Direction, Illustration Direction, Guidelines & Tooling",
-  },
-  {
-    name: "Digital",
-    desc: "We build digital experiences that bring brand systems to life — from websites and apps to interactive campaigns and digital products designed for scale.",
-    services: "Web Design, UX/UI, Digital Campaigns, Motion Design, Prototyping",
-  },
-  {
-    name: "Motion & 3D",
-    desc: "We bring brands into motion through animation, 3D, and film — creating dynamic expressions that capture attention and communicate with depth and energy.",
-    services: "Brand Animation, 3D Modeling & Rendering, Video Direction, Social Content, Title Sequences",
-  },
-];
-
-const TEAM = [
-  { name: "Felipe Rocha", role: "Founder & Creative Director", img: "/img/works/4.jpg", bio: "Felipe is a designer and creative director with over 18 years of experience shaping brands at the intersection of business, identity, and culture." },
-  { name: "Leo Porto", role: "Founder & Creative Director", img: "/img/works/5.jpg", bio: "Leo is a NY-based Brazilian creative director. His practice centers on brand identity systems built to scale and pulse with culture." },
-  { name: "Alessandro De Vecchi", role: "Senior Brand Designer", img: "/img/works/1.jpg", bio: "Brand designer with a decade of experience crafting visual identities for global clients across fashion, culture, and tech." },
-  { name: "Anne Carmichael", role: "Producer", img: "/img/works/2.jpg", bio: "Seasoned producer keeping complex multi-market projects on track and creative teams aligned." },
-  { name: "Ayo Fagbomi", role: "Senior Strategist", img: "/img/works/3.jpg", bio: "Strategic thinker with deep expertise in brand positioning, audience research, and cultural insight." },
-  { name: "Celia Mahieu", role: "Senior Interactive Designer", img: "/img/works/6.jpg", bio: "Interactive designer creating digital experiences that feel intuitive, human, and brand-true." },
-  { name: "Claren Walker", role: "Senior Strategist", img: "/img/works/1.jpg", bio: "Brand strategist focused on building lasting connections between brands and the cultures they operate in." },
-  { name: "Clarissa Svalter", role: "Senior Project Manager", img: "/img/works/2.jpg", bio: "Project manager with a talent for navigating complexity across global, cross-functional teams." },
-  { name: "Connor Bannister", role: "Senior Motion Designer", img: "/img/works/3.jpg", bio: "Motion designer bringing brands to life through dynamic animation, film, and immersive sequences." },
-  { name: "David Fiz", role: "Associate Interactive Design Director", img: "/img/works/4.jpg", bio: "Interactive design director bridging strategy and execution across web, app, and campaign platforms." },
-  { name: "Elisa Bartolini", role: "Associate Project Management Director", img: "/img/works/5.jpg", bio: "Director of project management ensuring studio excellence and client satisfaction across every engagement." },
-  { name: "Andy Li", role: "Design Intern", img: "/img/works/6.jpg", bio: "Emerging designer bringing fresh perspectives and energy to the studio's identity and digital projects." },
-];
-
 export default function AboutPage() {
   const [clientTab, setClientTab] = useState("All");
-  const [offeringTab, setOfferingTab] = useState("Visual Identity");
+  const [offeringTab, setOfferingTab] = useState("");
   const [socialTiktok, setSocialTiktok] = useState("");
   const [socialFacebook, setSocialFacebook] = useState("");
   const [socialInstagram, setSocialInstagram] = useState("");
+  const [team, setTeam] = useState<TeamMember[]>([]);
+  const [offerings, setOfferings] = useState<Offering[]>([]);
   const teamScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -77,9 +37,16 @@ export default function AboutPage() {
         setSocialFacebook(d.socialFacebook || "");
         setSocialInstagram(d.socialInstagram || "");
       });
+    getAbout().then(d => {
+      setTeam(d.team || []);
+      setOfferings(d.offerings || []);
+      if (d.offerings && d.offerings.length > 0) {
+        setOfferingTab(d.offerings[0].name);
+      }
+    });
   }, []);
 
-  const offering = OFFERINGS.find((o) => o.name === offeringTab)!;
+  const offering = offerings.find((o) => o.name === offeringTab);
 
   const scrollTeam = (dir: "left" | "right") => {
     const el = teamScrollRef.current;
@@ -172,38 +139,46 @@ export default function AboutPage() {
           </div>
 
           {/* Offerings */}
-          <div className="about-card about-offerings-card">
-            <div className="about-section-label">Offerings</div>
-            <div className="about-tabs">
-              {OFFERINGS.map((o) => (
-                <button key={o.name} className={`about-tab${offeringTab === o.name ? " active" : ""}`} onClick={() => setOfferingTab(o.name)}>{o.name}</button>
-              ))}
+          {offerings.length > 0 && (
+            <div className="about-card about-offerings-card">
+              <div className="about-section-label">Offerings</div>
+              <div className="about-tabs">
+                {offerings.map((o) => (
+                  <button key={o.name} className={`about-tab${offeringTab === o.name ? " active" : ""}`} onClick={() => setOfferingTab(o.name)}>{o.name}</button>
+                ))}
+              </div>
+              {offering && (
+                <>
+                  <p className="about-offering-desc">{offering.desc}</p>
+                  <div className="about-offering-services-label">Services</div>
+                  <div className="about-offering-services">{offering.services}</div>
+                </>
+              )}
             </div>
-            <p className="about-offering-desc">{offering.desc}</p>
-            <div className="about-offering-services-label">Services</div>
-            <div className="about-offering-services">{offering.services}</div>
-          </div>
+          )}
 
           {/* Team — horizontal scroll */}
-          <div className="about-card about-team-card">
-            <div className="about-team-header">
-              <div className="about-section-label">Team</div>
-              <div className="about-team-arrows">
-                <button className="about-team-arrow" onClick={() => scrollTeam("left")}>←</button>
-                <button className="about-team-arrow" onClick={() => scrollTeam("right")}>→</button>
+          {team.length > 0 && (
+            <div className="about-card about-team-card">
+              <div className="about-team-header">
+                <div className="about-section-label">Team</div>
+                <div className="about-team-arrows">
+                  <button className="about-team-arrow" onClick={() => scrollTeam("left")}>←</button>
+                  <button className="about-team-arrow" onClick={() => scrollTeam("right")}>→</button>
+                </div>
+              </div>
+              <div className="about-team-scroll" ref={teamScrollRef}>
+                {team.map((m, i) => (
+                  <div key={`${m.name}-${i}`} className="about-team-member">
+                    <img src={m.photo} alt={m.name} className="about-founder-img" />
+                    <div className="about-founder-name">{m.name}</div>
+                    <div className="about-founder-title">{m.role}</div>
+                    {m.bio && <p className="about-founder-bio">{m.bio}</p>}
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="about-team-scroll" ref={teamScrollRef}>
-              {TEAM.map((m) => (
-                <div key={m.name} className="about-team-member">
-                  <img src={m.img} alt={m.name} className="about-founder-img" />
-                  <div className="about-founder-name">{m.name}</div>
-                  <div className="about-founder-title">{m.role}</div>
-                  <p className="about-founder-bio">{m.bio}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+          )}
 
         </div>
 

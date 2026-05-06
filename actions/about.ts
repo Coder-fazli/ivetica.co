@@ -4,7 +4,8 @@ import dbConnect from "@/lib/mongodb";
 import { About } from "@/models/About";
 
 export type ValueItem = { number: string; title: string; text: string };
-export type TeamMember = { name: string; role: string; photo: string };
+export type TeamMember = { name: string; role: string; photo: string; bio?: string };
+export type Offering = { name: string; desc: string; services: string };
 export type AboutData = {
   story: {
     title: string;
@@ -16,6 +17,7 @@ export type AboutData = {
   };
   values: ValueItem[];
   team: TeamMember[];
+  offerings: Offering[];
 };
 
 const DEFAULTS: AboutData = {
@@ -33,14 +35,17 @@ const DEFAULTS: AboutData = {
     { number: "03", title: "Transparency", text: "No surprises, no jargon. We keep you in the loop at every stage and build relationships based on honesty and mutual respect." },
   ],
   team: [
-    { name: "Anna Oldman",   role: "Art Director",   photo: "/img/faces/1.jpg" },
-    { name: "Oscar Freeman", role: "Frontend Dev",   photo: "/img/faces/3.jpg" },
-    { name: "Emma Newman",   role: "Founder",        photo: "/img/faces/2.jpg" },
-    { name: "Lisa Trueman",  role: "UI/UX Designer", photo: "/img/faces/4.jpg" },
-    { name: "Tom Oldman",    role: "Art Director",   photo: "/img/faces/5.jpg" },
-    { name: "Corey Trueman", role: "Art Director",   photo: "/img/faces/6.jpg" },
-    { name: "Justin Newman", role: "Videographer",   photo: "/img/faces/7.jpg" },
-    { name: "Spunkie",       role: "Paw giver",      photo: "/img/faces/8.jpg" },
+    { name: "Anna Oldman",   role: "Art Director",   photo: "/img/faces/1.jpg", bio: "" },
+    { name: "Oscar Freeman", role: "Frontend Dev",   photo: "/img/faces/3.jpg", bio: "" },
+    { name: "Emma Newman",   role: "Founder",        photo: "/img/faces/2.jpg", bio: "" },
+    { name: "Lisa Trueman",  role: "UI/UX Designer", photo: "/img/faces/4.jpg", bio: "" },
+  ],
+  offerings: [
+    { name: "Strategy", desc: "We develop brand strategies that define how companies think, speak, and act. Our systems-driven approach ensures every decision is rooted in purpose and built for longevity.", services: "Brand Strategy, Market Positioning, Audience Research, Competitive Analysis, Brand Architecture" },
+    { name: "Verbal Identity", desc: "We craft the language of a brand — naming, voice, tone, and messaging frameworks that give companies a distinct and consistent way to communicate across every touchpoint.", services: "Naming, Taglines, Brand Voice, Messaging Framework, Copywriting" },
+    { name: "Visual Identity", desc: "We design how brands look and feel. As systems thinkers, we piece together the elements, tools, and behaviors necessary to create unique and memorable identities that flex across different touchpoints, contexts and audiences.", services: "Logo Design, Type Design, Photography Direction, Iconography Direction, Illustration Direction, Guidelines & Tooling" },
+    { name: "Digital", desc: "We build digital experiences that bring brand systems to life — from websites and apps to interactive campaigns and digital products designed for scale.", services: "Web Design, UX/UI, Digital Campaigns, Motion Design, Prototyping" },
+    { name: "Motion & 3D", desc: "We bring brands into motion through animation, 3D, and film — creating dynamic expressions that capture attention and communicate with depth and energy.", services: "Brand Animation, 3D Modeling & Rendering, Video Direction, Social Content, Title Sequences" },
   ],
 };
 

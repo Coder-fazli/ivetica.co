@@ -18,6 +18,12 @@ const AboutSchema = new mongoose.Schema({
     name:  { type: String, default: "" },
     role:  { type: String, default: "" },
     photo: { type: String, default: "" },
+    bio:   { type: String, default: "" },
+  }],
+  offerings: [{
+    name:     { type: String, default: "" },
+    desc:     { type: String, default: "" },
+    services: { type: String, default: "" },
   }],
 });
 

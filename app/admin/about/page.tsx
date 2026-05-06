@@ -1,17 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getAbout, updateAbout, AboutData, ValueItem, TeamMember } from "@/actions/about";
+import { getAbout, updateAbout, AboutData, ValueItem, TeamMember, Offering } from "@/actions/about";
 import ImageUpload from "@/components/admin/ImageUpload";
 import SeoMetabox from "@/components/admin/SeoMetabox";
 
 const emptyValue: ValueItem = { number: "", title: "", text: "" };
-const emptyMember: TeamMember = { name: "", role: "", photo: "" };
+const emptyMember: TeamMember = { name: "", role: "", photo: "", bio: "" };
+const emptyOffering: Offering = { name: "", desc: "", services: "" };
 
 const emptyData: AboutData = {
   story: { title: "", description1: "", description2: "", image: "", founderQuote: "", founderAvatar: "" },
   values: [],
   team: [],
+  offerings: [],
 };
 
 export default function AdminAbout() {
@@ -73,6 +75,25 @@ export default function AdminAbout() {
 
   function removeMember(i: number) {
     setData((prev) => ({ ...prev, team: prev.team.filter((_, idx) => idx !== i) }));
+    setDirty(true);
+  }
+
+  function updateOffering(i: number, field: keyof Offering, value: string) {
+    setData((prev) => {
+      const offerings = [...(prev.offerings || [])];
+      offerings[i] = { ...offerings[i], [field]: value };
+      return { ...prev, offerings };
+    });
+    setDirty(true);
+  }
+
+  function addOffering() {
+    setData((prev) => ({ ...prev, offerings: [...(prev.offerings || []), { ...emptyOffering }] }));
+    setDirty(true);
+  }
+
+  function removeOffering(i: number) {
+    setData((prev) => ({ ...prev, offerings: (prev.offerings || []).filter((_, idx) => idx !== i) }));
     setDirty(true);
   }
 
@@ -194,10 +215,47 @@ export default function AdminAbout() {
                   <label>Role</label>
                   <input value={m.role} onChange={(e) => updateMember(i, "role", e.target.value)} className="admin-input" />
                 </div>
+                <div className="admin-field-group">
+                  <label>Bio</label>
+                  <textarea value={m.bio || ""} onChange={(e) => updateMember(i, "bio", e.target.value)} className="admin-input" rows={3} />
+                </div>
                 <ImageUpload label="Photo" value={m.photo} onChange={(url) => { updateMember(i, "photo", url); setDirty(true); }} />
               </div>
             ))}
             <button onClick={addMember} className="admin-btn-add">+ Add Member</button>
+          </div>
+        )}
+      </div>
+
+      {/* Offerings */}
+      <div className="admin-accordion-item">
+        <div className="admin-accordion-header" onClick={() => toggle("offerings")}>
+          <span>Offerings</span>
+          <i className={`fas fa-chevron-${openSection === "offerings" ? "up" : "down"}`}></i>
+        </div>
+        {openSection === "offerings" && (
+          <div className="admin-accordion-body">
+            {(data.offerings || []).map((o, i) => (
+              <div key={i} className="admin-list-item">
+                <div className="admin-list-item-header">
+                  <strong>{o.name || `Offering ${i + 1}`}</strong>
+                  <button onClick={() => removeOffering(i)} className="admin-btn-remove">Remove</button>
+                </div>
+                <div className="admin-field-group">
+                  <label>Name</label>
+                  <input value={o.name} onChange={(e) => updateOffering(i, "name", e.target.value)} className="admin-input" placeholder="e.g. Strategy" />
+                </div>
+                <div className="admin-field-group">
+                  <label>Description</label>
+                  <textarea value={o.desc} onChange={(e) => updateOffering(i, "desc", e.target.value)} className="admin-input" rows={3} />
+                </div>
+                <div className="admin-field-group">
+                  <label>Services (comma-separated)</label>
+                  <textarea value={o.services} onChange={(e) => updateOffering(i, "services", e.target.value)} className="admin-input" rows={2} placeholder="Brand Strategy, Market Positioning, ..." />
+                </div>
+              </div>
+            ))}
+            <button onClick={addOffering} className="admin-btn-add">+ Add Offering</button>
           </div>
         )}
       </div>
