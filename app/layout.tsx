@@ -49,18 +49,22 @@ const getSettings = unstable_cache(
     try {
       await dbConnect();
       const s = await SiteSettings.findById("global").lean() as SiteSettingsData | null;
+      if (!s) {
+        console.warn("[getSettings] No settings document found in DB");
+      }
       return {
         logoUrl: s?.logoUrl || "",
         logoUrlLight: s?.logoUrlLight || "",
         faviconUrl: s?.faviconUrl || "",
         fontSizes: s?.fontSizes || {},
       };
-    } catch {
+    } catch (err) {
+      console.error("[getSettings] Error fetching settings:", err instanceof Error ? err.message : String(err));
       return { logoUrl: "", logoUrlLight: "", faviconUrl: "", fontSizes: {} };
     }
   },
   ["site-settings"],
-  { revalidate: 60, tags: ["site-settings"] }
+  { revalidate: 3600, tags: ["site-settings"] }
 );
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -3,46 +3,38 @@
 import { useState, useEffect } from "react";
 
 export default function TypingAnimation() {
-  const [charCount, setCharCount] = useState(0);
-  const fullText = "DOING WHAT MATTERS";
-  const dots = "...";
+  const [state, setState] = useState<"idle" | "doing" | "pause1" | "what" | "pause2" | "matters" | "dots">("idle");
 
   useEffect(() => {
-    const startDelay = setTimeout(() => {
-      let count = 0;
-      const typeInterval = setInterval(() => {
-        count++;
-        setCharCount(count);
-        if (count >= fullText.length) {
-          clearInterval(typeInterval);
-        }
-      }, 200);
+    const timeline: { delay: number; newState: typeof state }[] = [
+      { delay: 500, newState: "doing" },
+      { delay: 500 + 200 * 5, newState: "pause1" },
+      { delay: 500 + 200 * 5 + 1500, newState: "what" },
+      { delay: 500 + 200 * 5 + 1500 + 200 * 4, newState: "pause2" },
+      { delay: 500 + 200 * 5 + 1500 + 200 * 4 + 1200, newState: "matters" },
+      { delay: 500 + 200 * 5 + 1500 + 200 * 4 + 1200 + 200 * 7, newState: "dots" },
+    ];
 
-      return () => clearInterval(typeInterval);
-    }, 800);
+    const timeouts = timeline.map(({ delay, newState }) =>
+      setTimeout(() => setState(newState), delay)
+    );
 
-    return () => clearTimeout(startDelay);
+    return () => timeouts.forEach(clearTimeout);
   }, []);
 
-  const displayed = fullText.slice(0, charCount);
-  const beforeMatters = "DOING WHAT ";
-  const mattersPart = displayed.slice(beforeMatters.length);
+  const showDoing = ["doing", "pause1", "what", "pause2", "matters", "dots"].includes(state);
+  const showWhat = ["what", "pause2", "matters", "dots"].includes(state);
+  const showMatters = ["matters", "dots"].includes(state);
+  const showDots = state === "dots";
 
   return (
     <div className="sidebar-tagline">
-      {displayed.slice(0, Math.min(beforeMatters.length, charCount))}
+      {showDoing && "DOING "}
       <span style={{ color: "#f4dc17" }}>
-        {mattersPart}
+        {showWhat && "WHAT "}
+        {showMatters && "MATTERS"}
       </span>
-      <span style={{
-        display: "inline-block",
-        marginLeft: "2px",
-        animation: "cursor-blink 1s infinite",
-        color: "#f4dc17"
-      }}>
-        |
-      </span>
-      {charCount >= fullText.length && (
+      {showDots && (
         <>
           <span style={{ color: "#f4dc17" }}>.</span>
           <span style={{ color: "#f4dc17" }}>.</span>
@@ -54,6 +46,16 @@ export default function TypingAnimation() {
             .
           </span>
         </>
+      )}
+      {showDots && (
+        <span style={{
+          display: "inline-block",
+          marginLeft: "2px",
+          animation: "cursor-blink 1s infinite",
+          color: "#f4dc17"
+        }}>
+          |
+        </span>
       )}
       <style>{`
         @keyframes cursor-blink {
