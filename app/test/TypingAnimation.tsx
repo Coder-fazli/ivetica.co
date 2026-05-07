@@ -81,8 +81,6 @@ export default function TypingAnimation() {
       )}
       {phase === "done" && (
         <>
-          <span style={{ color: "#f4dc17" }}>.</span>
-          <span style={{ color: "#f4dc17" }}>.</span>
           <span
             style={{
               display: "inline-block",
