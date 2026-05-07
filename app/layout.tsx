@@ -49,8 +49,9 @@ const getSettings = unstable_cache(
     try {
       await dbConnect();
       const s = await SiteSettings.findById("global").lean() as SiteSettingsData | null;
+      console.log("[getSettings] Fetched from DB:", { logoUrl: !!s?.logoUrl, logoUrlLight: !!s?.logoUrlLight, faviconUrl: !!s?.faviconUrl });
       if (!s) {
-        console.warn("[getSettings] No settings document found in DB");
+        console.warn("[getSettings] No settings document found in DB, creating default");
       }
       return {
         logoUrl: s?.logoUrl || "",
@@ -64,7 +65,7 @@ const getSettings = unstable_cache(
     }
   },
   ["site-settings"],
-  { revalidate: 3600, tags: ["site-settings"] }
+  { revalidate: 60, tags: ["site-settings"] }
 );
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
