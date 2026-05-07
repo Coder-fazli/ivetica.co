@@ -52,12 +52,18 @@ export default function VideoPlayer({ src, className = "" }: Props) {
     const video = videoRef.current;
     if (!video) return;
 
-    if (hoveredVideoId === null) {
-      video.play().catch(() => {});
-    } else if (hoveredVideoId === videoId) {
+    if (hoveredVideoId === videoId) {
+      video.muted = false;
+      setMuted(false);
       video.play().catch(() => {});
     } else {
-      video.pause();
+      video.muted = true;
+      setMuted(true);
+      if (hoveredVideoId === null) {
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
     }
   }, [hoveredVideoId, videoId]);
 
@@ -75,14 +81,7 @@ export default function VideoPlayer({ src, className = "" }: Props) {
       className={className}
       style={{ position: "relative", overflow: "hidden", borderRadius: 10, width: "100%", height: "100%" }}
       onMouseEnter={() => setHoveredVideoId(videoId)}
-      onMouseLeave={() => {
-        setHoveredVideoId(null);
-        const v = videoRef.current;
-        if (v && !v.muted) {
-          v.muted = true;
-          setMuted(true);
-        }
-      }}
+      onMouseLeave={() => setHoveredVideoId(null)}
     >
       {active && (
         <>
