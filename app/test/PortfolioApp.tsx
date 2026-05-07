@@ -375,7 +375,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
                   className={`proj-card${seenCards.current.has(i) ? " visible" : ""}${i === active ? " active" : ""}`}
                   onClick={() => handleCardClick(i)}
                 >
-                  <div ref={(el) => { glowEls.current[i] = el; }} className="proj-card-glow" style={c.img ? { backgroundImage: `url(${c.img})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined} />
+                  <div ref={(el) => { glowEls.current[i] = el; }} className="proj-card-glow" />
                   {c.img && <img src={c.img} alt={c.name} className="proj-card-icon" />}
                   <div className="proj-card-info">
                     <div className="proj-card-name">{c.name}</div>

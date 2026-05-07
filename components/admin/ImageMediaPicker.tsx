@@ -8,6 +8,12 @@ type UploadedAsset = {
   createdAt: string;
 };
 
+type ApiAsset = {
+  url: string;
+  kind: "image" | "video";
+  createdAt: string;
+};
+
 type Props = {
   value: string;
   onChange: (url: string) => void;
@@ -29,8 +35,8 @@ export default function ImageMediaPicker({ value, onChange, label = "Image" }: P
     try {
       const res = await fetch("/api/r2-media");
       const data = await res.json();
-      const images = Array.isArray(data) ? data.filter((a: any) => a.kind === "image") : [];
-      setAssets(images.map((a: any) => ({ url: a.url, name: a.url.split("/").pop() || "image", createdAt: a.createdAt })));
+      const images = Array.isArray(data) ? data.filter((a: ApiAsset) => a.kind === "image") : [];
+      setAssets(images.map((a: ApiAsset) => ({ url: a.url, name: a.url.split("/").pop() || "image", createdAt: a.createdAt })));
     } finally {
       setLoading(false);
     }
