@@ -75,7 +75,14 @@ export default function VideoPlayer({ src, className = "" }: Props) {
       className={className}
       style={{ position: "relative", overflow: "hidden", borderRadius: 10, width: "100%", height: "100%" }}
       onMouseEnter={() => setHoveredVideoId(videoId)}
-      onMouseLeave={() => setHoveredVideoId(null)}
+      onMouseLeave={() => {
+        setHoveredVideoId(null);
+        const v = videoRef.current;
+        if (v && !v.muted) {
+          v.muted = true;
+          setMuted(true);
+        }
+      }}
     >
       {active && (
         <>
