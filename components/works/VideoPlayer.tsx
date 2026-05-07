@@ -49,6 +49,7 @@ export default function VideoPlayer({ src, className = "" }: Props) {
   }, []);
 
   useEffect(() => {
+    if (!active) return;
     const video = videoRef.current;
     if (!video) return;
 
@@ -65,7 +66,7 @@ export default function VideoPlayer({ src, className = "" }: Props) {
         video.pause();
       }
     }
-  }, [hoveredVideoId, videoId]);
+  }, [hoveredVideoId, videoId, active]);
 
   function toggleSound(e: React.MouseEvent) {
     e.stopPropagation();
