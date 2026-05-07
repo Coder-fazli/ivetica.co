@@ -2,6 +2,7 @@
 
 import dbConnect from "@/lib/mongodb";
 import { About } from "@/models/About";
+import { unstable_cache, revalidateTag } from "next/cache";
 
 export type ValueItem = { number: string; title: string; text: string };
 export type TeamMember = { name: string; role: string; photo: string; bio?: string };
@@ -49,10 +50,18 @@ const DEFAULTS: AboutData = {
   ],
 };
 
+const getCachedAbout = unstable_cache(
+  async () => {
+    await dbConnect();
+    const data = await About.findOne().lean();
+    return data ? JSON.parse(JSON.stringify(data)) : DEFAULTS;
+  },
+  ["about-data"],
+  { revalidate: 300, tags: ["about"] }
+);
+
 export async function getAbout(): Promise<AboutData> {
-  await dbConnect();
-  const data = await About.findOne().lean();
-  return data ? JSON.parse(JSON.stringify(data)) : DEFAULTS;
+  return getCachedAbout();
 }
 
 export async function updateAbout(data: AboutData): Promise<{ success: boolean }> {
@@ -63,5 +72,6 @@ export async function updateAbout(data: AboutData): Promise<{ success: boolean }
   } else {
     await About.create(data);
   }
+  revalidateTag("about");
   return { success: true };
 }

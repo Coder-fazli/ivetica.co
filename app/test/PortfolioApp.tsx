@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { getWorks } from "@/actions/works";
 import AboutPage from "./AboutPage";
 import WorkDetail from "./WorkDetail";
 import TypingAnimation from "./TypingAnimation";
@@ -53,28 +52,10 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
   }, [theme, logoDark, logoLight]);
   const cardsRef = useRef<Card[]>(initialCards);
 
-  const fetchCards = () => {
-    getWorks().then(works => {
-      const mapped: Card[] = works.map((w, i) => ({
-        id: i,
-        name: w.title,
-        desc: w.description || w.client,
-        img: w.thumbnail || "",
-        slug: w.slug,
-      }));
-      setCards(mapped);
-      cardsRef.current = mapped;
-    });
-  };
-
   useEffect(() => {
     cardsRef.current = initialCards;
-    fetchCards();
-    const onFocus = () => { fetchCards(); setDetailKey(k => k + 1); };
-    window.addEventListener("focus", onFocus);
-    return () => window.removeEventListener("focus", onFocus);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    setCards(initialCards);
+  }, [initialCards]);
 
   // Auto-open work if initialSlug provided (e.g. direct URL /slug)
   useEffect(() => {
