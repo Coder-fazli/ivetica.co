@@ -25,7 +25,7 @@ export default function VideoPlayer({ src, className = "" }: Props) {
   const [active, setActive] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [videoId] = useState(() => `video-${videoIdCounter++}`);
-  const { hoveredVideoId, lastHoveredVideoId, setHoveredVideoId, registerVideo, unregisterVideo } = useVideoContext();
+  const { hoveredVideoId, setHoveredVideoId, registerVideo, unregisterVideo } = useVideoContext();
 
   useEffect(() => {
     registerVideo(videoId);
@@ -63,16 +63,16 @@ export default function VideoPlayer({ src, className = "" }: Props) {
         setMuted(true);
         video.play().catch(() => {});
       });
-    } else if (lastHoveredVideoId === videoId && hoveredVideoId !== null) {
-      // I was the previous one and someone else is hovered now: pause
+    } else if (hoveredVideoId !== null) {
+      // Someone else is hovered: PAUSE me
       video.pause();
     } else {
-      // Default: play silently
+      // Default (nothing hovered): play silently
       video.muted = true;
       setMuted(true);
       video.play().catch(() => {});
     }
-  }, [hoveredVideoId, lastHoveredVideoId, videoId, active]);
+  }, [hoveredVideoId, videoId, active]);
 
   function toggleSound(e: React.MouseEvent) {
     e.stopPropagation();
