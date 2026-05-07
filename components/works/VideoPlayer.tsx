@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { useVideoContext } from "./VideoContext";
+import SkeletonLoader from "../SkeletonLoader";
 
 type Props = {
   src: string;
@@ -79,21 +80,12 @@ export default function VideoPlayer({ src, className = "" }: Props) {
       {active && (
         <>
           {isLoading && (
-            <div style={{
-              position: "absolute", inset: 0,
-              background: "#0d0d0d",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              zIndex: 1,
-              borderRadius: 10
-            }}>
-              <div style={{
-                width: 40, height: 40,
-                border: "3px solid rgba(255,255,255,0.1)",
-                borderTop: "3px solid rgba(255,255,255,0.4)",
-                borderRadius: "50%",
-                animation: "spin 1s linear infinite"
-              }} />
-            </div>
+            <SkeletonLoader
+              width="100%"
+              height="100%"
+              borderRadius="10px"
+              className="video-skeleton"
+            />
           )}
           <video
             ref={videoRef}
