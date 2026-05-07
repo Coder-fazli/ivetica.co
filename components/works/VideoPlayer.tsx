@@ -57,7 +57,12 @@ export default function VideoPlayer({ src, className = "" }: Props) {
       // I'm hovered: play with sound
       video.muted = false;
       setMuted(false);
-      video.play().catch(() => {});
+      video.play().catch(() => {
+        // Browser blocked unmuted autoplay - fall back to muted
+        video.muted = true;
+        setMuted(true);
+        video.play().catch(() => {});
+      });
     } else if (lastHoveredVideoId === videoId && hoveredVideoId !== null) {
       // I was the previous one and someone else is hovered now: pause
       video.pause();
