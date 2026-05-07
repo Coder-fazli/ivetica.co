@@ -104,11 +104,12 @@ html, body {
 
 
 .sidebar-about {
-  margin: 0 10px 8px;
+  margin: 0 auto 8px;
   padding: 14px 18px;
   border-radius: 10px;
   background: var(--card-bg);
   flex-shrink: 0;
+  width: 240px;
 }
 
 .sidebar-about-label {
