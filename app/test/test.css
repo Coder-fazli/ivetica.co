@@ -879,3 +879,8 @@ html.light-theme .about-tab.active {
 .layout.light .main-back-btn:hover,
 html.light-theme .main-back-btn:hover { color: var(--text-primary); }
 
+.layout.light .sidebar-logo-img,
+html.light-theme .sidebar-logo-img {
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15));
+}
+

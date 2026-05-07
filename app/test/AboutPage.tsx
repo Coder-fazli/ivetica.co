@@ -89,22 +89,24 @@ export default function AboutPage() {
               <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
                 {socialTiktok && (
                   <a href={socialTiktok} target="_blank" rel="noopener noreferrer" title="TikTok" style={{ color: "#efefef", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.68v13.7a2.85 2.85 0 1 1-5.92-2.81v3.73a6.61 6.61 0 1 0 9.61 6.05V9.91a8.26 8.26 0 0 0 3.16 1.62z"/>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M9 12a4 4 0 1 0 4 4v-7a6.04 6.04 0 0 0 3.27-.93" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </a>
                 )}
                 {socialFacebook && (
                   <a href={socialFacebook} target="_blank" rel="noopener noreferrer" title="Facebook" style={{ color: "#efefef", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4V9.5c0-.896.168-1.5 1.5-1.5h2.5V3.363c-.468-.07-2.07-.2-3.936-.2-3.94 0-6.564 2.409-6.564 6.834V8z"/>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M18 2h-3a6 6 0 0 0-6 6v3H7v4h2v8h4v-8h3l1-4h-4V8a1 1 0 0 1 1-1h3z" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </a>
                 )}
                 {socialInstagram && (
                   <a href={socialInstagram} target="_blank" rel="noopener noreferrer" title="Instagram" style={{ color: "#efefef", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1 1 12.324 0 6.162 6.162 0 0 1-12.324 0zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm4.965-10.322a1.44 1.44 0 1 1 2.881.001 1.44 1.44 0 0 1-2.881-.001z"/>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" strokeLinecap="round" strokeLinejoin="round"/>
+                      <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/>
                     </svg>
                   </a>
                 )}
