@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import AboutPage from "./AboutPage";
 import WorkDetail from "./WorkDetail";
 import TypingAnimation from "./TypingAnimation";
@@ -357,7 +358,16 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
                   onClick={() => handleCardClick(i)}
                 >
                   <div ref={(el) => { glowEls.current[i] = el; }} className="proj-card-glow" />
-                  {c.img && <img src={c.img} alt={c.name} className="proj-card-icon" />}
+                  {c.img && (
+                    <Image
+                      src={c.img}
+                      alt={c.name}
+                      width={68}
+                      height={68}
+                      className="proj-card-icon"
+                      unoptimized={c.img.includes(".gif")}
+                    />
+                  )}
                   <div className="proj-card-info">
                     <div className="proj-card-name">{c.name}</div>
                     <div className="proj-card-desc">{c.desc}</div>

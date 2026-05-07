@@ -9,6 +9,16 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // Configure remote image domains for next/image optimization
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "pub-9f82f1fa7c2d4cc6baedfb1e76b26ddb.r2.dev" },
+      { protocol: "https", hostname: "*.r2.dev" },
+      { protocol: "https", hostname: "res.cloudinary.com" },
+      { protocol: "https", hostname: "*.cloudinary.com" },
+    ],
+    formats: ["image/avif", "image/webp"],
+  },
   // Optimize webpack to reduce memory usage
   webpack: (config) => {
     config.optimization = {
