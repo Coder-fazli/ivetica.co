@@ -65,7 +65,7 @@ const getSettings = unstable_cache(
     }
   },
   ["site-settings"],
-  { revalidate: 60, tags: ["site-settings"] }
+  { revalidate: 300, tags: ["site-settings"] }
 );
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
