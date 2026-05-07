@@ -281,7 +281,7 @@ html, body {
 }
 
 /* ── About Page ── */
-.about-page { padding: 0 0 60px; }
+.about-page { padding: 36px 48px 60px; }
 
 .about-hero-img {
   width: calc(100% - 24px);
