@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useCallback, ReactNode } from "rea
 
 type VideoContextType = {
   hoveredVideoId: string | null;
+  lastHoveredVideoId: string | null;
   setHoveredVideoId: (id: string | null) => void;
   registerVideo: (id: string) => void;
   unregisterVideo: (id: string) => void;
@@ -12,8 +13,20 @@ type VideoContextType = {
 const VideoContext = createContext<VideoContextType | undefined>(undefined);
 
 export function VideoProvider({ children }: { children: ReactNode }) {
-  const [hoveredVideoId, setHoveredVideoId] = useState<string | null>(null);
+  const [hoveredVideoId, setHoveredVideoIdState] = useState<string | null>(null);
+  const [lastHoveredVideoId, setLastHoveredVideoId] = useState<string | null>(null);
   const [videoIds] = useState<Set<string>>(new Set());
+
+  const setHoveredVideoId = useCallback((id: string | null) => {
+    setHoveredVideoIdState(prev => {
+      if (id === null) {
+        setLastHoveredVideoId(null);
+      } else if (prev !== null && prev !== id) {
+        setLastHoveredVideoId(prev);
+      }
+      return id;
+    });
+  }, []);
 
   const registerVideo = useCallback((id: string) => {
     videoIds.add(id);
@@ -24,7 +37,7 @@ export function VideoProvider({ children }: { children: ReactNode }) {
   }, [videoIds]);
 
   return (
-    <VideoContext.Provider value={{ hoveredVideoId, setHoveredVideoId, registerVideo, unregisterVideo }}>
+    <VideoContext.Provider value={{ hoveredVideoId, lastHoveredVideoId, setHoveredVideoId, registerVideo, unregisterVideo }}>
       {children}
     </VideoContext.Provider>
   );
