@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { getWorkBySlug } from "@/actions/works";
 import { WorkType, Block } from "@/types";
 import VideoPlayer from "@/components/works/VideoPlayer";
+import ImageWithSkeleton from "@/components/ImageWithSkeleton";
 import Lightbox from "@/components/works/Lightbox";
 import { VideoProvider } from "@/components/works/VideoContext";
 import "@/components/works/works.css";
@@ -56,8 +57,10 @@ export default function WorkDetail({ slug, fading }: { slug: string; fading: boo
         </div>
       )
       : (
-        <img
-          src={url} alt="" className={className}
+        <ImageWithSkeleton
+          src={url}
+          alt=""
+          className={className}
           onClick={clickable ? () => openLightbox(url) : undefined}
           style={clickable ? { cursor: "zoom-in" } : undefined}
         />
