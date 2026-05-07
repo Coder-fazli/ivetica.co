@@ -3,6 +3,7 @@
 import dbConnect from "@/lib/mongodb";
 import { Work } from "@/models/Work";
 import { WorkType } from "@/types";
+import { unstable_cache } from "next/cache";
 
 function stripIds(obj: unknown): unknown {
   if (Array.isArray(obj)) return obj.map(stripIds);
@@ -17,16 +18,32 @@ function stripIds(obj: unknown): unknown {
   return obj;
 }
 
+const getCachedWorks = unstable_cache(
+  async () => {
+    await dbConnect();
+    const data = await Work.find().lean();
+    return JSON.parse(JSON.stringify(data)) as WorkType[];
+  },
+  ["all-works"],
+  { revalidate: 300, tags: ["works"] }
+);
+
+const getCachedWorkBySlug = unstable_cache(
+  async (slug: string) => {
+    await dbConnect();
+    const data = await Work.findOne({ slug }).lean();
+    return JSON.parse(JSON.stringify(data)) as WorkType | null;
+  },
+  ["work-by-slug"],
+  { revalidate: 300, tags: ["works"] }
+);
+
 export async function getWorks(): Promise<WorkType[]> {
-  await dbConnect();
-  const data = await Work.find().lean();
-  return JSON.parse(JSON.stringify(data)) as WorkType[];
+  return getCachedWorks();
 }
 
 export async function getWorkBySlug(slug: string): Promise<WorkType | null> {
-  await dbConnect();
-  const data = await Work.findOne({ slug }).lean();
-  return JSON.parse(JSON.stringify(data)) as WorkType | null;
+  return getCachedWorkBySlug(slug);
 }
 
 export async function createWork(data: Partial<WorkType>): Promise<{ success: boolean }> {
