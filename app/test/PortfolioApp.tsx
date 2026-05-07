@@ -31,7 +31,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
   const [mainOpen, setMainOpen] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [detailKey, setDetailKey] = useState(0);
-  const [logoUrl, setLogoUrl] = useState("/img/lvetica-logo.png");
+  const [logoUrl, setLogoUrl] = useState("");
   const [logoDark, setLogoDark] = useState<string | null>(null);
   const [logoLight, setLogoLight] = useState<string | null>(null);
 
@@ -40,7 +40,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
     const light = document.body.dataset.logoLight;
     if (dark) setLogoDark(dark);
     if (light) setLogoLight(light);
-    setLogoUrl(dark || "/img/lvetica-logo.png");
+    if (dark) setLogoUrl(dark);
   }, []);
 
   useEffect(() => {
@@ -286,7 +286,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
             <button className={`sidebar-theme-toggle${theme === "light" ? " is-light" : ""}`} onClick={toggleTheme} />
           </div>
           <button onClick={() => { setView("home"); setMainOpen(false); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-            <img src={logoUrl} alt="Lvetica" className="sidebar-logo-img" />
+            {logoUrl && <img src={logoUrl} alt="Lvetica" className="sidebar-logo-img" />}
           </button>
           <TypingAnimation />
         </div>
@@ -321,7 +321,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
                   />
                 </div>
                 <button onClick={() => { setView("home"); setMainOpen(false); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-                  <img src={logoUrl} alt="Lvetica" className="sidebar-logo-img" />
+                  {logoUrl && <img src={logoUrl} alt="Lvetica" className="sidebar-logo-img" />}
                 </button>
                 <TypingAnimation />
               </div>
