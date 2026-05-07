@@ -85,7 +85,7 @@ html, body {
 }
 
 .sidebar-logo-img {
-  width: 240px;
+  width: 280px;
   height: auto;
   display: block;
   margin: 0 auto -8px;
@@ -98,18 +98,18 @@ html, body {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-primary);
-  width: 240px;
+  width: 280px;
   margin: 0 auto;
+  white-space: nowrap;
 }
 
 
 .sidebar-about {
-  margin: 0 auto 8px;
+  margin: 0 10px 8px;
   padding: 14px 18px;
   border-radius: 10px;
   background: var(--card-bg);
   flex-shrink: 0;
-  width: 240px;
 }
 
 .sidebar-about-label {
