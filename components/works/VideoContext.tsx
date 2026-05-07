@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useRef, ReactNode } from "react";
 
 type VideoContextType = {
   hoveredVideoId: string | null;
@@ -16,16 +16,31 @@ export function VideoProvider({ children }: { children: ReactNode }) {
   const [hoveredVideoId, setHoveredVideoIdState] = useState<string | null>(null);
   const [lastHoveredVideoId, setLastHoveredVideoId] = useState<string | null>(null);
   const [videoIds] = useState<Set<string>>(new Set());
+  const hoveredRef = useRef<string | null>(null);
+  const clearTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const setHoveredVideoId = useCallback((id: string | null) => {
-    setHoveredVideoIdState(prev => {
-      if (id === null) {
+    // Cancel any pending "go to null" — user is hovering a new video
+    if (clearTimerRef.current) {
+      clearTimeout(clearTimerRef.current);
+      clearTimerRef.current = null;
+    }
+
+    if (id === null) {
+      // Delay the null state so a quick mouseEnter on another video can cancel it
+      clearTimerRef.current = setTimeout(() => {
+        hoveredRef.current = null;
         setLastHoveredVideoId(null);
-      } else if (prev !== null && prev !== id) {
+        setHoveredVideoIdState(null);
+      }, 60);
+    } else {
+      const prev = hoveredRef.current;
+      hoveredRef.current = id;
+      if (prev !== null && prev !== id) {
         setLastHoveredVideoId(prev);
       }
-      return id;
-    });
+      setHoveredVideoIdState(id);
+    }
   }, []);
 
   const registerVideo = useCallback((id: string) => {
