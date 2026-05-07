@@ -56,16 +56,11 @@ export default function VideoPlayer({ src, className = "" }: Props) {
     if (hoveredVideoId === videoId) {
       video.muted = false;
       setMuted(false);
-      video.play().catch(() => {});
     } else {
       video.muted = true;
       setMuted(true);
-      if (hoveredVideoId === null) {
-        video.play().catch(() => {});
-      } else {
-        video.pause();
-      }
     }
+    video.play().catch(() => {});
   }, [hoveredVideoId, videoId, active]);
 
   function toggleSound(e: React.MouseEvent) {
