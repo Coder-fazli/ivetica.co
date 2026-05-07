@@ -248,7 +248,7 @@ html, body {
 }
 .main-hero.fade { opacity: 0; }
 
-.main-body { padding: 36px 48px; }
+.main-body { padding: 36px 0; }
 
 .main-label {
   font-size: 10px; letter-spacing: 0.15em;
@@ -281,7 +281,7 @@ html, body {
 }
 
 /* ── About Page ── */
-.about-page { padding: 36px 48px 60px; }
+.about-page { padding: 0 0 60px; }
 
 .about-hero-img {
   width: calc(100% - 24px);
