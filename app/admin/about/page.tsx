@@ -25,6 +25,8 @@ const emptyData: AboutData = {
 export default function AdminAbout() {
   const [data, setData] = useState<AboutData>(emptyData);
   const [openSection, setOpenSection] = useState<string | null>("story");
+  const [openMember, setOpenMember] = useState<number | null>(null);
+  const [openOffering, setOpenOffering] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [dirty, setDirty] = useState(false);
@@ -276,28 +278,55 @@ export default function AdminAbout() {
         </div>
         {openSection === "team" && (
           <div className="admin-accordion-body">
-            {data.team.map((m, i) => (
-              <div key={i} className="admin-list-item">
-                <div className="admin-list-item-header">
-                  <strong>{m.name || `Member ${i + 1}`}</strong>
-                  <button onClick={() => removeMember(i)} className="admin-btn-remove">Remove</button>
+            {data.team.map((m, i) => {
+              const isOpen = openMember === i;
+              return (
+                <div key={i} style={{ border: "1px solid var(--admin-input-border)", borderRadius: 6, marginBottom: 8, overflow: "hidden" }}>
+                  <div
+                    style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", cursor: "pointer", background: isOpen ? "rgba(255,255,255,0.03)" : "transparent" }}
+                    onClick={() => setOpenMember(isOpen ? null : i)}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      {m.photo && <img src={m.photo} alt="" style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover", opacity: 0.85 }} />}
+                      <div>
+                        <div style={{ fontSize: 13, fontWeight: 600 }}>{m.name || `Member ${i + 1}`}</div>
+                        {m.role && <div style={{ fontSize: 11, opacity: 0.45, marginTop: 1 }}>{m.role}</div>}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); removeMember(i); }}
+                        className="admin-btn-remove"
+                        style={{ fontSize: 11, padding: "2px 8px" }}
+                      >
+                        Remove
+                      </button>
+                      <i className={`fas fa-chevron-${isOpen ? "up" : "down"}`} style={{ fontSize: 11, opacity: 0.4 }}></i>
+                    </div>
+                  </div>
+                  {isOpen && (
+                    <div style={{ padding: "14px 14px 16px", borderTop: "1px solid var(--admin-input-border)" }}>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+                        <div className="admin-field-group" style={{ marginBottom: 0 }}>
+                          <label>Name</label>
+                          <input value={m.name} onChange={(e) => updateMember(i, "name", e.target.value)} className="admin-input" />
+                        </div>
+                        <div className="admin-field-group" style={{ marginBottom: 0 }}>
+                          <label>Role</label>
+                          <input value={m.role} onChange={(e) => updateMember(i, "role", e.target.value)} className="admin-input" />
+                        </div>
+                      </div>
+                      <div className="admin-field-group">
+                        <label>Bio</label>
+                        <textarea value={m.bio || ""} onChange={(e) => updateMember(i, "bio", e.target.value)} className="admin-input" rows={3} />
+                      </div>
+                      <ImageUpload label="Photo" value={m.photo} onChange={(url) => { updateMember(i, "photo", url); setDirty(true); }} />
+                    </div>
+                  )}
                 </div>
-                <div className="admin-field-group">
-                  <label>Name</label>
-                  <input value={m.name} onChange={(e) => updateMember(i, "name", e.target.value)} className="admin-input" />
-                </div>
-                <div className="admin-field-group">
-                  <label>Role</label>
-                  <input value={m.role} onChange={(e) => updateMember(i, "role", e.target.value)} className="admin-input" />
-                </div>
-                <div className="admin-field-group">
-                  <label>Bio</label>
-                  <textarea value={m.bio || ""} onChange={(e) => updateMember(i, "bio", e.target.value)} className="admin-input" rows={3} />
-                </div>
-                <ImageUpload label="Photo" value={m.photo} onChange={(url) => { updateMember(i, "photo", url); setDirty(true); }} />
-              </div>
-            ))}
-            <button onClick={addMember} className="admin-btn-add">+ Add Member</button>
+              );
+            })}
+            <button onClick={() => { addMember(); setOpenMember(data.team.length); }} className="admin-btn-add">+ Add Member</button>
           </div>
         )}
       </div>
@@ -310,27 +339,46 @@ export default function AdminAbout() {
         </div>
         {openSection === "offerings" && (
           <div className="admin-accordion-body">
-            {(data.offerings || []).map((o, i) => (
-              <div key={i} className="admin-list-item">
-                <div className="admin-list-item-header">
-                  <strong>{o.name || `Offering ${i + 1}`}</strong>
-                  <button onClick={() => removeOffering(i)} className="admin-btn-remove">Remove</button>
+            {(data.offerings || []).map((o, i) => {
+              const isOpen = openOffering === i;
+              return (
+                <div key={i} style={{ border: "1px solid var(--admin-input-border)", borderRadius: 6, marginBottom: 8, overflow: "hidden" }}>
+                  <div
+                    style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", cursor: "pointer", background: isOpen ? "rgba(255,255,255,0.03)" : "transparent" }}
+                    onClick={() => setOpenOffering(isOpen ? null : i)}
+                  >
+                    <div style={{ fontSize: 13, fontWeight: 600 }}>{o.name || `Offering ${i + 1}`}</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); removeOffering(i); }}
+                        className="admin-btn-remove"
+                        style={{ fontSize: 11, padding: "2px 8px" }}
+                      >
+                        Remove
+                      </button>
+                      <i className={`fas fa-chevron-${isOpen ? "up" : "down"}`} style={{ fontSize: 11, opacity: 0.4 }}></i>
+                    </div>
+                  </div>
+                  {isOpen && (
+                    <div style={{ padding: "14px 14px 16px", borderTop: "1px solid var(--admin-input-border)" }}>
+                      <div className="admin-field-group">
+                        <label>Name</label>
+                        <input value={o.name} onChange={(e) => updateOffering(i, "name", e.target.value)} className="admin-input" placeholder="e.g. Strategy" />
+                      </div>
+                      <div className="admin-field-group">
+                        <label>Description</label>
+                        <textarea value={o.desc} onChange={(e) => updateOffering(i, "desc", e.target.value)} className="admin-input" rows={3} />
+                      </div>
+                      <div className="admin-field-group" style={{ marginBottom: 0 }}>
+                        <label>Services (comma-separated)</label>
+                        <textarea value={o.services} onChange={(e) => updateOffering(i, "services", e.target.value)} className="admin-input" rows={2} placeholder="Brand Strategy, Market Positioning, ..." />
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="admin-field-group">
-                  <label>Name</label>
-                  <input value={o.name} onChange={(e) => updateOffering(i, "name", e.target.value)} className="admin-input" placeholder="e.g. Strategy" />
-                </div>
-                <div className="admin-field-group">
-                  <label>Description</label>
-                  <textarea value={o.desc} onChange={(e) => updateOffering(i, "desc", e.target.value)} className="admin-input" rows={3} />
-                </div>
-                <div className="admin-field-group">
-                  <label>Services (comma-separated)</label>
-                  <textarea value={o.services} onChange={(e) => updateOffering(i, "services", e.target.value)} className="admin-input" rows={2} placeholder="Brand Strategy, Market Positioning, ..." />
-                </div>
-              </div>
-            ))}
-            <button onClick={addOffering} className="admin-btn-add">+ Add Offering</button>
+              );
+            })}
+            <button onClick={() => { addOffering(); setOpenOffering((data.offerings || []).length); }} className="admin-btn-add">+ Add Offering</button>
           </div>
         )}
       </div>
