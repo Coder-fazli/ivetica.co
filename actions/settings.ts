@@ -11,5 +11,5 @@ export const getSettings = unstable_cache(
     return s ? JSON.parse(JSON.stringify(s)) : null;
   },
   ["site-settings"],
-  { revalidate: 60, tags: ["site-settings"] }
+  { revalidate: 10, tags: ["site-settings"] }
 );
