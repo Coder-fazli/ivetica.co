@@ -52,6 +52,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLa
     if (dark) setLogoUrl(dark);
     if (tag) setTagline(tag);
     if (vid) setHomepageVideo(vid);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -72,7 +73,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLa
   // Auto-open work if initialSlug provided (e.g. direct URL /slug)
   useEffect(() => {
     if (!initialSlug || cards.length === 0) return;
-    const idx = cards.findIndex(c => c.slug === initialSlug);
+    const idx = cards.findIndex(c => c.slug.toLowerCase() === initialSlug.toLowerCase());
     if (idx !== -1) {
       setActive(idx);
       setView("work");
@@ -274,7 +275,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLa
     setView("work");
     setMainOpen(true);
     const slug = cardsRef.current[index]?.slug;
-    if (slug) window.history.pushState(null, "", `/${slug}`);
+    if (slug) window.history.pushState(null, "", `/${slug.toLowerCase()}`);
     if (index === active) return;
     setFading(true);
     setTimeout(() => { setActive(index); setFading(false); }, 200);
@@ -296,7 +297,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLa
             <button className="sidebar-show-btn" onClick={() => window.location.href = "/all"}>Show all projects</button>
             <button className={`sidebar-theme-toggle${theme === "light" ? " is-light" : ""}`} onClick={toggleTheme} />
           </div>
-          <button onClick={() => { setView("home"); setMainOpen(false); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+          <button onClick={() => { setView("home"); setMainOpen(false); window.history.pushState(null, "", "/"); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             {logoUrl && <img src={logoUrl} alt="Lvetica" className="sidebar-logo-img" />}
           </button>
           <TypingAnimation text={tagline} />
@@ -331,7 +332,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLa
                     onClick={toggleTheme}
                   />
                 </div>
-                <button onClick={() => { setView("home"); setMainOpen(false); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+                <button onClick={() => { setView("home"); setMainOpen(false); window.history.pushState(null, "", "/"); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
                   {logoUrl && <img src={logoUrl} alt="Lvetica" className="sidebar-logo-img" />}
                 </button>
                 <TypingAnimation text={tagline} />

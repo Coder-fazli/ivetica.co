@@ -36,7 +36,8 @@ export default async function TestLayout({ children }: { children: React.ReactNo
       <body
         data-logo={settings?.logoUrl || undefined}
         data-logo-light={settings?.logoUrlLight || undefined}
-        data-homepage-video={settings?.homepageVideo || undefined}
+        data-tagline={settings?.tagline || undefined}
+        data-homepage-video={(settings as Record<string, unknown>)?.homepageVideo as string || undefined}
       >
         {children}
       </body>

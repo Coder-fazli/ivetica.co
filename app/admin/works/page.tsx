@@ -326,7 +326,7 @@ export default function AdminWorks() {
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                     <div>
                       <span style={s.label}>Slug</span>
-                      <input style={s.input} value={modal.slug} onChange={(e) => field("slug", e.target.value)} placeholder="nike-run-campaign" />
+                      <input style={s.input} value={modal.slug} onChange={(e) => field("slug", e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"))} placeholder="nike-run-campaign" />
                     </div>
                     <div>
                       <span style={s.label}>Client</span>

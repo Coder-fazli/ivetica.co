@@ -3,7 +3,8 @@ import { getWorks } from "@/actions/works";
 import { getAbout } from "@/actions/about";
 
 export default async function SlugPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = rawSlug.toLowerCase();
   const [works, about] = await Promise.all([getWorks(), getAbout()]);
   const initialCards = works.map((w, i) => ({
     id: i,
