@@ -14,6 +14,9 @@ export async function POST(req: NextRequest) {
     const { filename, contentType } = await req.json();
     if (!filename || !contentType) return NextResponse.json({ error: "Missing filename or contentType" }, { status: 400 });
 
+    const ALLOWED = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif", "image/svg+xml", "video/mp4", "video/quicktime", "video/webm", "video/x-msvideo"];
+    if (!ALLOWED.includes(contentType)) return NextResponse.json({ error: "File type not allowed" }, { status: 400 });
+
     const ext = filename.split(".").pop() || "bin";
     const key = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 

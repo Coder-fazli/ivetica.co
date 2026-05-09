@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getAbout, updateAbout, AboutData, ValueItem, TeamMember, Offering } from "@/actions/about";
-import ImageUpload from "@/components/admin/ImageUpload";
+import ImageMediaPicker from "@/components/admin/ImageMediaPicker";
 import SeoMetabox from "@/components/admin/SeoMetabox";
 
 const emptyValue: ValueItem = { number: "", title: "", text: "" };
@@ -30,6 +30,8 @@ export default function AdminAbout() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [dirty, setDirty] = useState(false);
+  const dragMemberFrom = useRef<number | null>(null);
+  const dragMemberOver = useRef<number | null>(null);
 
   useEffect(() => {
     getAbout().then(setData);
@@ -84,6 +86,25 @@ export default function AdminAbout() {
   function removeMember(i: number) {
     setData((prev) => ({ ...prev, team: prev.team.filter((_, idx) => idx !== i) }));
     setDirty(true);
+  }
+
+  function handleMemberDrop() {
+    const from = dragMemberFrom.current;
+    const to = dragMemberOver.current;
+    if (from === null || to === null || from === to) return;
+    setData(prev => {
+      const team = [...prev.team];
+      const [moved] = team.splice(from, 1);
+      team.splice(to, 0, moved);
+      return { ...prev, team };
+    });
+    setDirty(true);
+    if (openMember === from) setOpenMember(to);
+    else if (openMember !== null && openMember >= Math.min(from, to) && openMember <= Math.max(from, to)) {
+      setOpenMember(from < to ? openMember - 1 : openMember + 1);
+    }
+    dragMemberFrom.current = null;
+    dragMemberOver.current = null;
   }
 
   function updateOffering(i: number, field: keyof Offering, value: string) {
@@ -230,8 +251,8 @@ export default function AdminAbout() {
               </div>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 16 }}>
-              <ImageUpload label="Section Image" value={data.story.image} onChange={(url) => { updateStory("image", url); setDirty(true); }} />
-              <ImageUpload label="Founder Avatar" value={data.story.founderAvatar} onChange={(url) => { updateStory("founderAvatar", url); setDirty(true); }} />
+              <ImageMediaPicker label="Section Image" value={data.story.image} onChange={(url) => { updateStory("image", url); setDirty(true); }} />
+              <ImageMediaPicker label="Founder Avatar" value={data.story.founderAvatar} onChange={(url) => { updateStory("founderAvatar", url); setDirty(true); }} />
             </div>
           </div>
         )}
@@ -281,32 +302,37 @@ export default function AdminAbout() {
             {data.team.map((m, i) => {
               const isOpen = openMember === i;
               return (
-                <div key={i} style={{ border: "1px solid var(--admin-input-border)", borderRadius: 6, marginBottom: 8, overflow: "hidden" }}>
+                <div
+                  key={i}
+                  draggable
+                  onDragStart={() => { dragMemberFrom.current = i; }}
+                  onDragOver={(e) => { e.preventDefault(); dragMemberOver.current = i; }}
+                  onDrop={handleMemberDrop}
+                  style={{ border: "1px solid var(--admin-input-border)", borderRadius: 6, marginBottom: 8, overflow: "hidden" }}
+                >
+                  {/* Header row */}
                   <div
-                    style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", cursor: "pointer", background: isOpen ? "rgba(255,255,255,0.03)" : "transparent" }}
+                    style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 12px", cursor: "pointer", background: isOpen ? "rgba(255,255,255,0.03)" : "transparent", userSelect: "none" }}
                     onClick={() => setOpenMember(isOpen ? null : i)}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      {m.photo && <img src={m.photo} alt="" style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover", opacity: 0.85 }} />}
-                      <div>
-                        <div style={{ fontSize: 13, fontWeight: 600 }}>{m.name || `Member ${i + 1}`}</div>
-                        {m.role && <div style={{ fontSize: 11, opacity: 0.45, marginTop: 1 }}>{m.role}</div>}
-                      </div>
+                    <span style={{ fontSize: 16, opacity: 0.25, cursor: "grab", marginRight: 2 }} title="Drag to reorder">⠿</span>
+                    {m.photo
+                      ? <img src={m.photo} alt="" style={{ width: 26, height: 26, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
+                      : <div style={{ width: 26, height: 26, borderRadius: "50%", background: "var(--admin-input-border)", flexShrink: 0 }} />
+                    }
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.2 }}>{m.name || `Member ${i + 1}`}</div>
+                      {m.role && <div style={{ fontSize: 11, opacity: 0.4, marginTop: 1 }}>{m.role}</div>}
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); removeMember(i); }}
-                        className="admin-btn-remove"
-                        style={{ fontSize: 11, padding: "2px 8px" }}
-                      >
-                        Remove
-                      </button>
-                      <i className={`fas fa-chevron-${isOpen ? "up" : "down"}`} style={{ fontSize: 11, opacity: 0.4 }}></i>
-                    </div>
+                    <button onClick={(e) => { e.stopPropagation(); removeMember(i); }} className="admin-btn-remove" style={{ fontSize: 11, padding: "2px 8px" }}>Remove</button>
+                    <i className={`fas fa-chevron-${isOpen ? "up" : "down"}`} style={{ fontSize: 11, opacity: 0.35 }} />
                   </div>
+
+                  {/* Expanded body */}
                   {isOpen && (
                     <div style={{ padding: "14px 14px 16px", borderTop: "1px solid var(--admin-input-border)" }}>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+                      {/* Name + Role row */}
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 14 }}>
                         <div className="admin-field-group" style={{ marginBottom: 0 }}>
                           <label>Name</label>
                           <input value={m.name} onChange={(e) => updateMember(i, "name", e.target.value)} className="admin-input" />
@@ -316,11 +342,14 @@ export default function AdminAbout() {
                           <input value={m.role} onChange={(e) => updateMember(i, "role", e.target.value)} className="admin-input" />
                         </div>
                       </div>
-                      <div className="admin-field-group">
-                        <label>Bio</label>
-                        <textarea value={m.bio || ""} onChange={(e) => updateMember(i, "bio", e.target.value)} className="admin-input" rows={3} />
+                      {/* Photo + Bio side by side */}
+                      <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: 14, alignItems: "start" }}>
+                        <ImageMediaPicker compact label="Photo" value={m.photo} onChange={(url) => { updateMember(i, "photo", url); setDirty(true); }} />
+                        <div className="admin-field-group" style={{ marginBottom: 0 }}>
+                          <label>Bio</label>
+                          <textarea value={m.bio || ""} onChange={(e) => updateMember(i, "bio", e.target.value)} className="admin-input" style={{ minHeight: 120, resize: "vertical", boxSizing: "border-box", width: "100%" }} />
+                        </div>
                       </div>
-                      <ImageUpload label="Photo" value={m.photo} onChange={(url) => { updateMember(i, "photo", url); setDirty(true); }} />
                     </div>
                   )}
                 </div>

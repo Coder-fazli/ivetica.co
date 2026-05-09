@@ -18,9 +18,10 @@ type Props = {
   value: string;
   onChange: (url: string) => void;
   label?: string;
+  compact?: boolean;
 };
 
-export default function ImageMediaPicker({ value, onChange, label = "Image" }: Props) {
+export default function ImageMediaPicker({ value, onChange, label = "Image", compact = false }: Props) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<"library" | "upload">("library");
   const [assets, setAssets] = useState<UploadedAsset[]>([]);
@@ -96,6 +97,39 @@ export default function ImageMediaPicker({ value, onChange, label = "Image" }: P
 
   return (
     <>
+      {compact ? (
+        <div>
+          {label && <div style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", opacity: 0.4, marginBottom: 6 }}>{label}</div>}
+          <div
+            onClick={() => setOpen(true)}
+            style={{
+              width: "100%", aspectRatio: "1", borderRadius: 6, overflow: "hidden",
+              border: "1px solid var(--admin-input-border)", cursor: "pointer",
+              background: "var(--admin-input-bg)", position: "relative",
+            }}
+          >
+            {value
+              ? <img src={value} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              : <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: 4, opacity: 0.3 }}>
+                  <span style={{ fontSize: 22 }}>+</span>
+                  <span style={{ fontSize: 10 }}>Choose photo</span>
+                </div>
+            }
+            {value && (
+              <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0)", display: "flex", alignItems: "flex-end", justifyContent: "center", padding: 6, opacity: 0, transition: "opacity 0.15s" }}
+                onMouseEnter={e => (e.currentTarget.style.opacity = "1")} onMouseLeave={e => (e.currentTarget.style.opacity = "0")}
+              >
+                <span style={{ fontSize: 10, background: "rgba(0,0,0,0.65)", color: "#fff", borderRadius: 4, padding: "2px 7px" }}>Change</span>
+              </div>
+            )}
+          </div>
+          {value && (
+            <button type="button" onClick={() => onChange("")} style={{ marginTop: 5, fontSize: 10, color: "#e53", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+              Remove
+            </button>
+          )}
+        </div>
+      ) : (
       <div className="admin-field-group">
         <label>{label}</label>
         <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
@@ -120,6 +154,7 @@ export default function ImageMediaPicker({ value, onChange, label = "Image" }: P
           </div>
         </div>
       </div>
+      )}
 
       {open && (
         <div

@@ -65,13 +65,19 @@ export default function AdminMedia() {
   async function handleDelete(asset: Asset) {
     if (!confirm("Delete this file?")) return;
     setDeleting(asset.publicId);
-    await fetch("/api/r2-media", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ publicId: asset.publicId }),
-    });
-    setAssets(prev => prev.filter(a => a.publicId !== asset.publicId));
-    setDeleting(null);
+    try {
+      const res = await fetch("/api/r2-media", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ publicId: asset.publicId }),
+      });
+      if (!res.ok) throw new Error("Delete failed");
+      setAssets(prev => prev.filter(a => a.publicId !== asset.publicId));
+    } catch {
+      alert("Failed to delete file.");
+    } finally {
+      setDeleting(null);
+    }
   }
 
   const filtered = assets.filter(a => filter === "all" || a.kind === filter);
