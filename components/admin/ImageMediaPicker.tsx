@@ -19,9 +19,10 @@ type Props = {
   onChange: (url: string) => void;
   label?: string;
   compact?: boolean;
+  accept?: "image" | "all";
 };
 
-export default function ImageMediaPicker({ value, onChange, label = "Image", compact = false }: Props) {
+export default function ImageMediaPicker({ value, onChange, label = "Image", compact = false, accept = "image" }: Props) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<"library" | "upload">("library");
   const [assets, setAssets] = useState<UploadedAsset[]>([]);
@@ -36,8 +37,8 @@ export default function ImageMediaPicker({ value, onChange, label = "Image", com
     try {
       const res = await fetch("/api/r2-media");
       const data = await res.json();
-      const images = Array.isArray(data) ? data.filter((a: ApiAsset) => a.kind === "image") : [];
-      setAssets(images.map((a: ApiAsset) => ({ url: a.url, name: a.url.split("/").pop() || "image", createdAt: a.createdAt })));
+      const filtered = Array.isArray(data) ? (accept === "all" ? data : data.filter((a: ApiAsset) => a.kind === "image")) : [];
+      setAssets(filtered.map((a: ApiAsset) => ({ url: a.url, name: a.url.split("/").pop() || "media", createdAt: a.createdAt })));
     } finally {
       setLoading(false);
     }
@@ -239,7 +240,10 @@ export default function ImageMediaPicker({ value, onChange, label = "Image", com
                             transition: "all 0.2s",
                           }}
                         >
-                          <img src={asset.url} alt={asset.name} style={{ width: "100%", height: 120, objectFit: "cover" }} />
+                          {asset.url.match(/\.(mp4|webm|mov)$/i)
+                            ? <video src={asset.url} style={{ width: "100%", height: 120, objectFit: "cover" }} muted />
+                            : <img src={asset.url} alt={asset.name} style={{ width: "100%", height: 120, objectFit: "cover" }} />
+                          }
                         </div>
                       ))}
                     </div>
@@ -249,7 +253,7 @@ export default function ImageMediaPicker({ value, onChange, label = "Image", com
 
               {tab === "upload" && (
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  <input ref={inputRef} type="file" accept="image/*" onChange={handleUpload} style={{ display: "none" }} />
+                  <input ref={inputRef} type="file" accept={accept === "all" ? "image/*,video/*,.gif" : "image/*"} onChange={handleUpload} style={{ display: "none" }} />
                   <button
                     type="button"
                     onClick={() => inputRef.current?.click()}

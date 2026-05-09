@@ -18,6 +18,7 @@ const SiteSettingsSchema = new Schema({
   socialFacebook: { type: String, default: "" },
   socialInstagram: { type: String, default: "" },
   tagline: { type: String, default: "DOING WHAT MATTERS" },
+  homepageVideo: { type: String, default: "" },
 }, { _id: false });
 
 export const SiteSettings = mongoose.models.SiteSettings || mongoose.model("SiteSettings", SiteSettingsSchema);

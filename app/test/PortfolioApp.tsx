@@ -40,15 +40,18 @@ export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLa
   const [logoDark, setLogoDark] = useState<string | null>(null);
   const [logoLight, setLogoLight] = useState<string | null>(null);
   const [tagline, setTagline] = useState("DOING WHAT MATTERS");
+  const [homepageVideo, setHomepageVideo] = useState("/energy-ball.mp4");
 
   useEffect(() => {
     const dark = document.body.dataset.logo;
     const light = document.body.dataset.logoLight;
     const tag = document.body.dataset.tagline;
+    const vid = document.body.dataset.homepageVideo;
     if (dark) setLogoDark(dark);
     if (light) setLogoLight(light);
     if (dark) setLogoUrl(dark);
     if (tag) setTagline(tag);
+    if (vid) setHomepageVideo(vid);
   }, []);
 
   useEffect(() => {
@@ -386,14 +389,9 @@ export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLa
         <button className="main-back-btn" onClick={() => { setMainOpen(false); setView("home"); window.history.pushState(null, "", "/"); }}>← Back</button>
         <div className="main-content" ref={mainContentRef}>
           {view === "home" ? (
-            <video
-              className="main-video"
-              src="/energy-ball.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-            />
+            homepageVideo.match(/\.gif$/i)
+              ? <img className="main-video" src={homepageVideo} alt="" />
+              : <video className="main-video" src={homepageVideo} autoPlay muted loop playsInline />
           ) : view === "about" ? <AboutPage /> : (
             card ? <WorkDetail key={`${card.slug}-${detailKey}`} slug={card.slug} fading={fading} /> : null
           )}

@@ -33,7 +33,11 @@ export default async function TestLayout({ children }: { children: React.ReactNo
       <head>
         <style dangerouslySetInnerHTML={{ __html: cssVars }} />
       </head>
-      <body data-logo={settings?.logoUrl || undefined} data-logo-light={settings?.logoUrlLight || undefined}>
+      <body
+        data-logo={settings?.logoUrl || undefined}
+        data-logo-light={settings?.logoUrlLight || undefined}
+        data-homepage-video={settings?.homepageVideo || undefined}
+      >
         {children}
       </body>
     </html>

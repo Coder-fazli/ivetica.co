@@ -58,6 +58,7 @@ export async function PUT(req: NextRequest) {
           socialFacebook: data.socialFacebook ?? "",
           socialInstagram: data.socialInstagram ?? "",
           tagline: data.tagline ?? "DOING WHAT MATTERS",
+          homepageVideo: data.homepageVideo ?? "",
         },
       },
       { upsert: true, new: true }

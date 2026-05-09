@@ -24,6 +24,7 @@ const defaultFontSizes: FontSizes = {
 };
 
 export default function SettingsPage() {
+  const [homepageVideo, setHomepageVideo] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
   const [logoUrlLight, setLogoUrlLight] = useState("");
   const [faviconUrl, setFaviconUrl] = useState("");
@@ -40,6 +41,7 @@ export default function SettingsPage() {
     fetch("/api/settings")
       .then(r => r.json())
       .then(d => {
+        setHomepageVideo(d.homepageVideo || "");
         setLogoUrl(d.logoUrl || "");
         setLogoUrlLight(d.logoUrlLight || "");
         setFaviconUrl(d.faviconUrl || "");
@@ -59,7 +61,7 @@ export default function SettingsPage() {
       const res = await fetch("/api/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ logoUrl, logoUrlLight, faviconUrl, tagline, fontSizes, socialTiktok, socialFacebook, socialInstagram }),
+        body: JSON.stringify({ homepageVideo, logoUrl, logoUrlLight, faviconUrl, tagline, fontSizes, socialTiktok, socialFacebook, socialInstagram }),
       });
       if (!res.ok) {
         const err = await res.json();
@@ -99,6 +101,49 @@ export default function SettingsPage() {
       </div>
         {loading ? <p style={{ padding: 24 }}>Loading...</p> : (
           <div style={{ padding: 24, maxWidth: 800 }}>
+          {/* Homepage Section */}
+          <div style={{ marginBottom: 48, paddingBottom: 48, borderBottom: "1px solid #1e1e1e" }}>
+            <h2 style={{ fontSize: 14, fontWeight: 600, marginBottom: 20, textTransform: "uppercase", letterSpacing: "0.08em", color: "#aaa" }}>
+              Homepage
+            </h2>
+            <div className="admin-field-group" style={{ marginBottom: 8 }}>
+              <label style={{ fontWeight: 600, display: "block", marginBottom: 6 }}>Main Video / GIF</label>
+              <p style={{ fontSize: 11, opacity: 0.4, marginBottom: 12 }}>Displayed on the homepage when no work is selected. Supports .mp4, .webm, .gif</p>
+              <div style={{ display: "flex", gap: 12, alignItems: "flex-start", flexWrap: "wrap" }}>
+                {homepageVideo && (
+                  <div style={{ width: 140, height: 140, borderRadius: 8, overflow: "hidden", border: "1px solid #333", flexShrink: 0 }}>
+                    {homepageVideo.match(/\.(gif)$/i)
+                      ? <img src={homepageVideo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      : <video src={homepageVideo} autoPlay muted loop playsInline style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    }
+                  </div>
+                )}
+                <div>
+                  <input
+                    value={homepageVideo}
+                    onChange={(e) => setHomepageVideo(e.target.value)}
+                    className="admin-input"
+                    placeholder="Paste URL or browse media"
+                    style={{ marginBottom: 8, minWidth: 280 }}
+                  />
+                  <div>
+                    <ImageMediaPicker
+                      label=""
+                      value={homepageVideo}
+                      onChange={setHomepageVideo}
+                      accept="all"
+                    />
+                  </div>
+                  {homepageVideo && (
+                    <button type="button" onClick={() => setHomepageVideo("")} style={{ marginTop: 6, fontSize: 11, color: "#e53", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+                      Remove
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Logo & Favicon Section */}
           <div style={{ marginBottom: 48 }}>
             <h2 style={{ fontSize: 14, fontWeight: 600, marginBottom: 20, textTransform: "uppercase", letterSpacing: "0.08em", color: "#aaa" }}>
