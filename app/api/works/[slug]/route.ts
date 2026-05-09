@@ -1,7 +1,14 @@
-import { auth } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { verifyToken } from "@clerk/nextjs/server";
+import { NextResponse, NextRequest } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import { Work } from "@/models/Work";
+
+async function checkAuth(req: NextRequest) {
+  const token = req.cookies.get("__session")?.value;
+  if (!token) return false;
+  const verified = await verifyToken(token, { secretKey: process.env.CLERK_SECRET_KEY! });
+  return !!verified;
+}
 
 function stripIds(obj: unknown): unknown {
   if (Array.isArray(obj)) return obj.map(stripIds);
@@ -16,16 +23,15 @@ function stripIds(obj: unknown): unknown {
   return obj;
 }
 
-export async function GET(_req: Request, { params }: { params: Promise<{ slug: string }> }) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   await dbConnect();
   const work = await Work.findOne({ slug }).lean();
   return NextResponse.json(JSON.parse(JSON.stringify(work)));
 }
 
-export async function PUT(req: Request, { params }: { params: Promise<{ slug: string }> }) {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  if (!(await checkAuth(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     const { slug } = await params;
@@ -40,9 +46,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ slug: st
   }
 }
 
-export async function DELETE(_req: Request, { params }: { params: Promise<{ slug: string }> }) {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  if (!(await checkAuth(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { slug } = await params;
   await dbConnect();

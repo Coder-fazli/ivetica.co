@@ -1,7 +1,14 @@
-import { auth } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { verifyToken } from "@clerk/nextjs/server";
+import { NextResponse, NextRequest } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import { Work } from "@/models/Work";
+
+async function checkAuth(req: NextRequest) {
+  const token = req.cookies.get("__session")?.value;
+  if (!token) return false;
+  const verified = await verifyToken(token, { secretKey: process.env.CLERK_SECRET_KEY! });
+  return !!verified;
+}
 
 export async function GET() {
   await dbConnect();
@@ -9,9 +16,8 @@ export async function GET() {
   return NextResponse.json(JSON.parse(JSON.stringify(works)));
 }
 
-export async function POST(req: Request) {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export async function POST(req: NextRequest) {
+  if (!(await checkAuth(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     await dbConnect();

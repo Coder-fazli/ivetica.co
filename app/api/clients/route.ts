@@ -1,8 +1,15 @@
-import { auth } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { verifyToken } from "@clerk/nextjs/server";
+import { NextResponse, NextRequest } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import { Client } from "@/models/Client";
 import { revalidateTag } from "next/cache";
+
+async function checkAuth(req: NextRequest) {
+  const token = req.cookies.get("__session")?.value;
+  if (!token) return false;
+  const verified = await verifyToken(token, { secretKey: process.env.CLERK_SECRET_KEY! });
+  return !!verified;
+}
 
 export async function GET() {
   await dbConnect();
@@ -10,9 +17,8 @@ export async function GET() {
   return NextResponse.json(JSON.parse(JSON.stringify(clients)));
 }
 
-export async function POST(req: Request) {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export async function POST(req: NextRequest) {
+  if (!(await checkAuth(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     await dbConnect();
@@ -27,9 +33,8 @@ export async function POST(req: Request) {
   }
 }
 
-export async function PUT(req: Request) {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export async function PUT(req: NextRequest) {
+  if (!(await checkAuth(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     await dbConnect();
@@ -44,9 +49,8 @@ export async function PUT(req: Request) {
   }
 }
 
-export async function DELETE(req: Request) {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export async function DELETE(req: NextRequest) {
+  if (!(await checkAuth(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     const { id } = await req.json();
