@@ -23,7 +23,12 @@ const mobileTotalH = (count: number) =>
   MOBILE_HERO_SLOT + (MOBILE_EXTRA - 1 + count) * CARD_SLOT_MOBILE;
 
 
-export default function PortfolioApp({ initialCards = [], initialSlug }: { initialCards?: Card[]; initialSlug?: string }) {
+export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLabel, sidebarDesc }: {
+  initialCards?: Card[];
+  initialSlug?: string;
+  sidebarLabel?: string;
+  sidebarDesc?: string;
+}) {
   const [cards, setCards] = useState<Card[]>(initialCards);
   const [active, setActive] = useState(0);
   const [fading, setFading] = useState(false);
@@ -34,13 +39,16 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
   const [logoUrl, setLogoUrl] = useState("");
   const [logoDark, setLogoDark] = useState<string | null>(null);
   const [logoLight, setLogoLight] = useState<string | null>(null);
+  const [tagline, setTagline] = useState("DOING WHAT MATTERS");
 
   useEffect(() => {
     const dark = document.body.dataset.logo;
     const light = document.body.dataset.logoLight;
+    const tag = document.body.dataset.tagline;
     if (dark) setLogoDark(dark);
     if (light) setLogoLight(light);
     if (dark) setLogoUrl(dark);
+    if (tag) setTagline(tag);
   }, []);
 
   useEffect(() => {
@@ -288,7 +296,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
           <button onClick={() => { setView("home"); setMainOpen(false); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             {logoUrl && <img src={logoUrl} alt="Lvetica" className="sidebar-logo-img" />}
           </button>
-          <TypingAnimation />
+          <TypingAnimation text={tagline} />
         </div>
 
         {/* Desktop-only about section */}
@@ -297,9 +305,9 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
           onClick={() => { setView("about"); setMainOpen(true); }}
           style={{ cursor: "pointer" }}
         >
-          <div className="sidebar-about-label">About us</div>
+          <div className="sidebar-about-label">{sidebarLabel || "About us"}</div>
           <div className="sidebar-about-text">
-            Lvetica connects brands with top creators for influencer marketing, UGC, and social growth.
+            {sidebarDesc || "Lvetica connects brands with top creators for influencer marketing, UGC, and social growth."}
           </div>
         </div>
 
@@ -323,7 +331,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
                 <button onClick={() => { setView("home"); setMainOpen(false); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
                   {logoUrl && <img src={logoUrl} alt="Lvetica" className="sidebar-logo-img" />}
                 </button>
-                <TypingAnimation />
+                <TypingAnimation text={tagline} />
               </div>
             </div>
 
@@ -338,8 +346,8 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
               >
                 <div ref={(el) => { mobileGlowEls.current[1] = el; }} className="proj-card-glow" />
                 <div className="proj-card-info">
-                  <div className="proj-card-name">About us</div>
-                  <div className="proj-card-desc">Lvetica connects brands with top creators for influencer marketing, UGC, and social growth.</div>
+                  <div className="proj-card-name">{sidebarLabel || "About us"}</div>
+                  <div className="proj-card-desc">{sidebarDesc || "Lvetica connects brands with top creators for influencer marketing, UGC, and social growth."}</div>
                 </div>
               </div>
             </div>
@@ -359,14 +367,9 @@ export default function PortfolioApp({ initialCards = [], initialSlug }: { initi
                 >
                   <div ref={(el) => { glowEls.current[i] = el; }} className="proj-card-glow" />
                   {c.img && (
-                    <Image
-                      src={c.img}
-                      alt={c.name}
-                      width={68}
-                      height={68}
-                      className="proj-card-icon"
-                      unoptimized={c.img.includes(".gif")}
-                    />
+                    c.img.toLowerCase().includes(".gif")
+                      ? <img src={c.img} alt={c.name} className="proj-card-icon" style={{ width: 68, height: 68, objectFit: "cover" }} />
+                      : <Image src={c.img} alt={c.name} width={68} height={68} className="proj-card-icon" />
                   )}
                   <div className="proj-card-info">
                     <div className="proj-card-name">{c.name}</div>

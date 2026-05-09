@@ -2,22 +2,27 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 import { UserButton, useClerk } from "@clerk/nextjs";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const { signOut } = useClerk();
+  const [logoUrl, setLogoUrl] = useState("");
+
+  useEffect(() => {
+    const url = document.body.dataset.logo;
+    if (url) setLogoUrl(url);
+  }, []);
 
   const links = [
     { href: "/admin/dashboard", label: "Dashboard", icon: "fas fa-th-large" },
-    { href: "/admin/homepage", label: "Homepage", icon: "fas fa-home" },
     { href: "/admin/works", label: "Works", icon: "fas fa-briefcase" },
+    { href: "/admin/clients", label: "Clients", icon: "fas fa-building" },
     { href: "/admin/tags", label: "Tags", icon: "fas fa-tags" },
-    { href: "/admin/media", label: "Media", icon: "fas fa-photo-video" },
-    { href: "/admin/services", label: "Services", icon: "fas fa-cogs" },
-    { href: "/admin/blog", label: "Blog", icon: "fas fa-pen" },
     { href: "/admin/about", label: "About", icon: "fas fa-users" },
     { href: "/admin/contact", label: "Contact", icon: "fas fa-envelope" },
+    { href: "/admin/media", label: "Media", icon: "fas fa-photo-video" },
     { href: "/admin/users", label: "Users", icon: "fas fa-user-shield" },
     { href: "/admin/settings", label: "Settings", icon: "fas fa-sliders-h" },
   ];
@@ -25,7 +30,10 @@ export default function Sidebar() {
   return (
     <aside className="admin-sidebar">
       <div className="admin-sidebar-logo">
-        <img src="/img/lvetica-logo.png" alt="lvetica" />
+        {logoUrl
+          ? <img src={logoUrl} alt="lvetica" />
+          : <span style={{ color: "#fff", fontWeight: 700, fontSize: 16, letterSpacing: "0.05em" }}>lvetica</span>
+        }
       </div>
 
       <ul className="admin-sidebar-nav">

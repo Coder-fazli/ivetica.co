@@ -58,6 +58,7 @@ const getSettings = unstable_cache(
         logoUrlLight: s?.logoUrlLight || "",
         faviconUrl: s?.faviconUrl || "",
         fontSizes: s?.fontSizes || {},
+        tagline: (s as Record<string, unknown>)?.tagline as string || "DOING WHAT MATTERS",
       };
     } catch (err) {
       console.error("[getSettings] Error fetching settings:", err instanceof Error ? err.message : String(err));
@@ -69,7 +70,7 @@ const getSettings = unstable_cache(
 );
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const { logoUrl, logoUrlLight, faviconUrl, fontSizes } = await getSettings();
+  const { logoUrl, logoUrlLight, faviconUrl, fontSizes, tagline } = await getSettings();
   const fs = fontSizes as SiteSettingsData["fontSizes"] ?? {};
 
   const cssVars = `
@@ -103,7 +104,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           {faviconUrl && <link rel="icon" href={faviconUrl} />}
           <style dangerouslySetInnerHTML={{ __html: cssVars }} />
         </head>
-        <body className={outfit.className} data-logo={logoUrl || undefined} data-logo-light={logoUrlLight || undefined}>
+        <body className={outfit.className} data-logo={logoUrl || undefined} data-logo-light={logoUrlLight || undefined} data-tagline={tagline || undefined}>
           <ChunkErrorHandler />
           {children}
         </body>

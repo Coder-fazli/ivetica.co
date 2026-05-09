@@ -27,6 +27,7 @@ export default function SettingsPage() {
   const [logoUrl, setLogoUrl] = useState("");
   const [logoUrlLight, setLogoUrlLight] = useState("");
   const [faviconUrl, setFaviconUrl] = useState("");
+  const [tagline, setTagline] = useState("DOING WHAT MATTERS");
   const [fontSizes, setFontSizes] = useState<FontSizes>(defaultFontSizes);
   const [socialTiktok, setSocialTiktok] = useState("");
   const [socialFacebook, setSocialFacebook] = useState("");
@@ -42,6 +43,7 @@ export default function SettingsPage() {
         setLogoUrl(d.logoUrl || "");
         setLogoUrlLight(d.logoUrlLight || "");
         setFaviconUrl(d.faviconUrl || "");
+        setTagline(d.tagline || "DOING WHAT MATTERS");
         setFontSizes(d.fontSizes || defaultFontSizes);
         setSocialTiktok(d.socialTiktok || "");
         setSocialFacebook(d.socialFacebook || "");
@@ -57,7 +59,7 @@ export default function SettingsPage() {
       const res = await fetch("/api/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ logoUrl, logoUrlLight, faviconUrl, fontSizes, socialTiktok, socialFacebook, socialInstagram }),
+        body: JSON.stringify({ logoUrl, logoUrlLight, faviconUrl, tagline, fontSizes, socialTiktok, socialFacebook, socialInstagram }),
       });
       if (!res.ok) {
         const err = await res.json();
@@ -102,6 +104,18 @@ export default function SettingsPage() {
             <h2 style={{ fontSize: 14, fontWeight: 600, marginBottom: 20, textTransform: "uppercase", letterSpacing: "0.08em", color: "#aaa" }}>
               Branding
             </h2>
+            <div className="admin-form-group" style={{ marginBottom: 24 }}>
+              <label style={{ fontWeight: 600, display: "block", marginBottom: 6 }}>Tagline</label>
+              <input
+                type="text"
+                value={tagline}
+                onChange={(e) => setTagline(e.target.value.toUpperCase())}
+                className="admin-input"
+                placeholder="DOING WHAT MATTERS"
+                style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}
+              />
+              <p style={{ fontSize: 11, opacity: 0.4, marginTop: 4 }}>Displayed below the logo. First word is white, rest turns yellow.</p>
+            </div>
             <ImageMediaPicker label="Site Logo (Dark Mode)" value={logoUrl} onChange={setLogoUrl} />
             <div style={{ marginBottom: 24 }} />
             <ImageMediaPicker label="Site Logo (Light Mode)" value={logoUrlLight} onChange={setLogoUrlLight} />

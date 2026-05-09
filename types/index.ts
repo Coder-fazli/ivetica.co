@@ -84,6 +84,7 @@ export type WorkType = {
   gallery?: string[];
   metrics?: WorkMetricType[];
   blocks?: Block[];
+  order?: number;
 };
 
 export type MediaItem = {

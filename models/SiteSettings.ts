@@ -17,6 +17,7 @@ const SiteSettingsSchema = new Schema({
   socialTiktok: { type: String, default: "" },
   socialFacebook: { type: String, default: "" },
   socialInstagram: { type: String, default: "" },
+  tagline: { type: String, default: "DOING WHAT MATTERS" },
 }, { _id: false });
 
 export const SiteSettings = mongoose.models.SiteSettings || mongoose.model("SiteSettings", SiteSettingsSchema);

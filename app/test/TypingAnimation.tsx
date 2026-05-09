@@ -2,115 +2,69 @@
 
 import { useState, useEffect } from "react";
 
-export default function TypingAnimation() {
-  const [charCount, setCharCount] = useState(0);
-  const [phase, setPhase] = useState<"doing" | "pause1" | "what" | "pause2" | "matters" | "done">("doing");
+type Props = { text?: string };
 
-  const fullSequence = [
-    { text: "DOING ", phase: "doing" as const, typingTime: 200, pauseAfter: 1500 },
-    { text: "WHAT ", phase: "what" as const, typingTime: 200, pauseAfter: 1200 },
-    { text: "MATTERS", phase: "matters" as const, typingTime: 200, pauseAfter: 0 },
-  ];
+export default function TypingAnimation({ text = "DOING WHAT MATTERS" }: Props) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
-    let totalDelay = 800;
-    const timeouts: NodeJS.Timeout[] = [];
+    setDisplayed("");
+    setDone(false);
 
-    fullSequence.forEach((section, idx) => {
-      const startDelay = totalDelay;
-      for (let i = 1; i <= section.text.length; i++) {
-        const charDelay = startDelay + (i - 1) * section.typingTime;
-        timeouts.push(
-          setTimeout(() => {
-            setPhase(section.phase);
-            setCharCount(i);
-          }, charDelay)
-        );
+    const words = text.trim().toUpperCase().split(/\s+/).filter(Boolean);
+    const CHAR_MS = 200;
+    const WORD_PAUSE = 900;
+    const INITIAL_DELAY = 800;
+
+    const timeouts: NodeJS.Timeout[] = [];
+    let delay = INITIAL_DELAY;
+    let built = "";
+
+    words.forEach((word, wi) => {
+      const isLast = wi === words.length - 1;
+      const chunk = isLast ? word : word + " ";
+
+      for (let i = 1; i <= chunk.length; i++) {
+        const snap = built + chunk.slice(0, i);
+        timeouts.push(setTimeout(() => setDisplayed(snap), delay));
+        delay += CHAR_MS;
       }
-      totalDelay += section.text.length * section.typingTime + section.pauseAfter;
+
+      built += chunk;
+      if (!isLast) delay += WORD_PAUSE;
     });
 
-    const finalTimeout = setTimeout(() => setPhase("done"), totalDelay);
-    timeouts.push(finalTimeout);
+    timeouts.push(setTimeout(() => setDone(true), delay + CHAR_MS));
 
     return () => timeouts.forEach(clearTimeout);
-  }, []);
+  }, [text]);
 
-  const doingText = "DOING ";
-  const whatText = "WHAT ";
-  const mattersText = "MATTERS";
+  // First word stays in default color, rest turns yellow
+  const upper = text.trim().toUpperCase();
+  const firstSpace = upper.indexOf(" ");
+  const splitAt = firstSpace === -1 ? upper.length : firstSpace + 1;
 
-  let displayed = "";
-  if (phase === "doing") {
-    displayed += doingText.slice(0, charCount);
-  } else if (["pause1", "what", "pause2", "matters", "done"].includes(phase)) {
-    displayed += doingText;
-  }
-
-  if (phase === "what") {
-    displayed += whatText.slice(0, charCount - doingText.length);
-  } else if (["pause2", "matters", "done"].includes(phase)) {
-    displayed += whatText;
-  }
-
-  if (phase === "matters") {
-    displayed += mattersText.slice(0, charCount - doingText.length - whatText.length);
-  } else if (phase === "done") {
-    displayed += mattersText;
-  }
-
-  const beforeYellow = "DOING ";
-  const yellowPart = displayed.slice(beforeYellow.length);
-
-  const isTyping = ["doing", "what", "matters"].includes(phase);
+  const whiteChars = displayed.slice(0, splitAt);
+  const yellowChars = displayed.slice(splitAt);
+  const isTyping = displayed.length < upper.length;
 
   return (
     <div className="sidebar-tagline">
-      {displayed.slice(0, beforeYellow.length)}
-      <span style={{ color: "#f4dc17" }}>{yellowPart}</span>
+      {whiteChars}
+      <span style={{ color: "#f4dc17" }}>{yellowChars}</span>
       {isTyping && (
-        <span
-          style={{
-            display: "inline-block",
-            animation: "cursor-blink 1s infinite",
-            color: "#f4dc17",
-          }}
-        >
-          |
-        </span>
+        <span style={{ display: "inline-block", animation: "cursor-blink 1s infinite", color: "#f4dc17" }}>|</span>
       )}
-      {phase === "done" && (
+      {done && (
         <>
-          <span
-            style={{
-              display: "inline-block",
-              color: "#f4dc17",
-              animation: "dot-pulse 1.5s infinite",
-            }}
-          >
-            .
-          </span>
-          <span
-            style={{
-              display: "inline-block",
-              marginLeft: "2px",
-              animation: "cursor-blink 1s infinite",
-              color: "#f4dc17",
-            }}
-          >
-            |
-          </span>
+          <span style={{ display: "inline-block", color: "#f4dc17", animation: "dot-pulse 1.5s infinite" }}>.</span>
+          <span style={{ display: "inline-block", marginLeft: "2px", animation: "cursor-blink 1s infinite", color: "#f4dc17" }}>|</span>
         </>
       )}
       <style>{`
-        @keyframes cursor-blink {
-          0%, 49% { opacity: 1; }
-          50%, 100% { opacity: 0; }
-        }
-        @keyframes dot-pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.3; }
-        }
+        @keyframes cursor-blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+        @keyframes dot-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
       `}</style>
     </div>
   );

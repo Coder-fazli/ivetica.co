@@ -3,7 +3,7 @@
 import dbConnect from "@/lib/mongodb";
 import { Work } from "@/models/Work";
 import { WorkType } from "@/types";
-import { unstable_cache } from "next/cache";
+import { unstable_cache, revalidateTag } from "next/cache";
 
 function stripIds(obj: unknown): unknown {
   if (Array.isArray(obj)) return obj.map(stripIds);
@@ -21,7 +21,7 @@ function stripIds(obj: unknown): unknown {
 const getCachedWorks = unstable_cache(
   async () => {
     await dbConnect();
-    const data = await Work.find().lean();
+    const data = await Work.find().sort({ order: 1 }).lean();
     return JSON.parse(JSON.stringify(data)) as WorkType[];
   },
   ["all-works"],
@@ -63,5 +63,12 @@ export async function updateWork(slug: string, data: Partial<WorkType>): Promise
 export async function deleteWork(slug: string): Promise<{ success: boolean }> {
   await dbConnect();
   await Work.deleteOne({ slug });
+  return { success: true };
+}
+
+export async function reorderWorks(slugs: string[]): Promise<{ success: boolean }> {
+  await dbConnect();
+  await Promise.all(slugs.map((slug, i) => Work.updateOne({ slug }, { order: i })));
+  revalidateTag("works");
   return { success: true };
 }

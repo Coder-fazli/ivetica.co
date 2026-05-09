@@ -2,25 +2,42 @@
 
 import dbConnect from "@/lib/mongodb";
 import { Contact } from "@/models/Contact";
+import { unstable_cache, revalidateTag } from "next/cache";
 
 export type ContactData = {
-  email: string;
+  emailBusiness: string;
+  emailInfluencer: string;
   phone: string;
   location: string;
   mapEmbed: string;
 };
 
 const DEFAULTS: ContactData = {
-  email:    "hello@lvetica.co",
-  phone:    "+1 514 000 0000",
-  location: "Montreal, Canada",
-  mapEmbed: "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1396.5769090312324!2d-73.6519672!3d45.5673453!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cc91f8abc30e0ff%3A0xfc6d9cbb49022e9c!2sManoir%20Saint-Joseph!5e0!3m2!1sen!2sua!4v1685485811069!5m2!1sen!2sua",
+  emailBusiness:   "salam@lvetica.co",
+  emailInfluencer: "influencer@lvetica.co",
+  phone:           "+994 10 505 06 66",
+  location:        "pr 3141 Matbuat Avenue, Baku 1000",
+  mapEmbed:        "",
 };
 
+const getCachedContact = unstable_cache(
+  async () => {
+    await dbConnect();
+    const raw = await Contact.findOne().lean() as Record<string, unknown> | null;
+    if (!raw) return DEFAULTS;
+    const data = JSON.parse(JSON.stringify(raw));
+    // Migrate old single "email" field to "emailBusiness"
+    if (!data.emailBusiness && data.email) {
+      data.emailBusiness = data.email;
+    }
+    return data as ContactData;
+  },
+  ["contact-data"],
+  { revalidate: 300, tags: ["contact"] }
+);
+
 export async function getContact(): Promise<ContactData> {
-  await dbConnect();
-  const data = await Contact.findOne().lean();
-  return data ? JSON.parse(JSON.stringify(data)) : DEFAULTS;
+  return getCachedContact();
 }
 
 export async function updateContact(data: ContactData): Promise<{ success: boolean }> {
@@ -31,5 +48,6 @@ export async function updateContact(data: ContactData): Promise<{ success: boole
   } else {
     await Contact.create(data);
   }
+  revalidateTag("contact");
   return { success: true };
 }

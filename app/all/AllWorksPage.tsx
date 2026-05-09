@@ -148,17 +148,13 @@ export default function AllWorksPage({ works, initialTag }: { works: WorkType[];
               }}
             >
               {(work.coverImage || work.thumbnail)
-                ? (
-                  <Image
-                    src={work.coverImage || work.thumbnail || ""}
-                    alt={work.title}
-                    width={400}
-                    height={300}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    style={{ width: "100%", height: "auto", display: "block", borderRadius: 8 }}
-                    unoptimized={(work.coverImage || work.thumbnail || "").includes(".gif")}
-                  />
-                )
+                ? (() => {
+                  const src = work.coverImage || work.thumbnail || "";
+                  const isGif = src.toLowerCase().includes(".gif");
+                  return isGif
+                    ? <img src={src} alt={work.title} style={{ width: "100%", height: "auto", display: "block", borderRadius: 8 }} />
+                    : <Image src={src} alt={work.title} width={400} height={300} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" style={{ width: "100%", height: "auto", display: "block", borderRadius: 8 }} />;
+                })()
                 : <div style={{ width: "100%", aspectRatio: "4/3", background: "#1a1a1a", borderRadius: 8 }} />
               }
               <div style={{ padding: "10px 4px 0" }}>

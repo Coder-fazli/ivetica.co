@@ -2,31 +2,24 @@
 
 import { useRef, useState, useEffect } from "react";
 import { getAbout, TeamMember, Offering } from "@/actions/about";
-
-const CLIENT_TABS = ["All", "Art & Culture", "Tech", "Fashion", "Entertainment", "Hospitality", "Retail", "Finance", "Non-profit"];
-
-const CLIENTS = [
-  { name: "Nike", cat: "Fashion" }, { name: "Google", cat: "Tech" }, { name: "Spotify", cat: "Tech" },
-  { name: "Apple", cat: "Tech" }, { name: "H&M", cat: "Fashion" }, { name: "Zara", cat: "Fashion" },
-  { name: "MoMA", cat: "Art & Culture" }, { name: "Tate Modern", cat: "Art & Culture" }, { name: "Guggenheim", cat: "Art & Culture" },
-  { name: "Marriott", cat: "Hospitality" }, { name: "W Hotels", cat: "Hospitality" }, { name: "Hilton", cat: "Hospitality" },
-  { name: "Netflix", cat: "Entertainment" }, { name: "Twitch", cat: "Entertainment" }, { name: "Sundance", cat: "Entertainment" },
-  { name: "Amazon", cat: "Tech" }, { name: "Meta", cat: "Tech" }, { name: "Discord", cat: "Tech" },
-  { name: "Robinhood", cat: "Finance" }, { name: "Stripe", cat: "Finance" }, { name: "Coinbase", cat: "Finance" },
-  { name: "Louis Vuitton", cat: "Fashion" }, { name: "Prada", cat: "Fashion" }, { name: "Gucci", cat: "Fashion" },
-  { name: "Republic Records", cat: "Entertainment" }, { name: "Universal Music", cat: "Entertainment" },
-  { name: "Whole Foods", cat: "Retail" }, { name: "Target", cat: "Retail" }, { name: "IKEA", cat: "Retail" },
-  { name: "WWF", cat: "Non-profit" }, { name: "UNICEF", cat: "Non-profit" },
-];
+import { getClients, ClientType } from "@/actions/clients";
+import { getContact, ContactData } from "@/actions/contact";
 
 export default function AboutPage() {
   const [clientTab, setClientTab] = useState("All");
+  const [clientTabs, setClientTabs] = useState<string[]>(["All"]);
+  const [clients, setClients] = useState<ClientType[]>([]);
   const [offeringTab, setOfferingTab] = useState("");
   const [socialTiktok, setSocialTiktok] = useState("");
   const [socialFacebook, setSocialFacebook] = useState("");
   const [socialInstagram, setSocialInstagram] = useState("");
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [offerings, setOfferings] = useState<Offering[]>([]);
+  const [contact, setContact] = useState<ContactData | null>(null);
+  const [studioTitle, setStudioTitle] = useState("");
+  const [studioText1, setStudioText1] = useState("");
+  const [studioText2, setStudioText2] = useState("");
+  const [studioText3, setStudioText3] = useState("");
   const teamScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -43,7 +36,18 @@ export default function AboutPage() {
       if (d.offerings && d.offerings.length > 0) {
         setOfferingTab(d.offerings[0].name);
       }
+      setStudioTitle(d.studioTitle || "Our Studio");
+      setStudioText1(d.studioText1 || "");
+      setStudioText2(d.studioText2 || "");
+      setStudioText3(d.studioText3 || "");
     });
+    getClients().then(data => {
+      setClients(data);
+      const allTags = new Set<string>();
+      data.forEach(c => c.tags?.forEach(t => allTags.add(t)));
+      setClientTabs(["All", ...Array.from(allTags).sort()]);
+    });
+    getContact().then(setContact);
   }, []);
 
   const offering = offerings.find((o) => o.name === offeringTab);
@@ -63,26 +67,32 @@ export default function AboutPage() {
       {/* Studio + Contact: same-height row */}
       <div className="about-top-row">
         <div className="about-card about-studio-card">
-          <div className="about-section-label">Our Studio</div>
-          <p className="about-studio-text">Lvetica connects brands with top creators for influencer marketing, UGC, and social growth.</p>
-          <p className="about-studio-text">We help brands navigate complex challenges through work that is strategically rigorous, emotionally resonant, and beautifully designed.</p>
-          <p className="about-studio-text">From large-scale rebrands to independent initiatives, our hard-working systems prove that craft and scale can coexist.</p>
+          <div className="about-section-label">{studioTitle || "Our Studio"}</div>
+          {studioText1 && <p className="about-studio-text">{studioText1}</p>}
+          {studioText2 && <p className="about-studio-text">{studioText2}</p>}
+          {studioText3 && <p className="about-studio-text">{studioText3}</p>}
         </div>
 
         <div className="about-card about-contact-card">
           <div className="about-section-label">Contact</div>
-          <div className="about-contact-group">
-            <div className="about-contact-label">New Business</div>
-            <a className="about-contact-link" href="mailto:salam@lvetica.co">salam@lvetica.co</a>
-          </div>
-          <div className="about-contact-group">
-            <div className="about-contact-label">Influencer Inquiries</div>
-            <a className="about-contact-link" href="mailto:influencer@lvetica.co">influencer@lvetica.co</a>
-          </div>
-          <div className="about-contact-group">
-            <div className="about-contact-label">Call Us</div>
-            <a className="about-contact-link" href="tel:+994105050666">+994 10 505 06 66</a>
-          </div>
+          {contact?.emailBusiness && (
+            <div className="about-contact-group">
+              <div className="about-contact-label">New Business</div>
+              <a className="about-contact-link" href={`mailto:${contact.emailBusiness}`}>{contact.emailBusiness}</a>
+            </div>
+          )}
+          {contact?.emailInfluencer && (
+            <div className="about-contact-group">
+              <div className="about-contact-label">Influencer Inquiries</div>
+              <a className="about-contact-link" href={`mailto:${contact.emailInfluencer}`}>{contact.emailInfluencer}</a>
+            </div>
+          )}
+          {contact?.phone && (
+            <div className="about-contact-group">
+              <div className="about-contact-label">Call Us</div>
+              <a className="about-contact-link" href={`tel:${contact.phone.replace(/\s/g, "")}`}>{contact.phone}</a>
+            </div>
+          )}
           {(socialTiktok || socialFacebook || socialInstagram) && (
             <div className="about-contact-group">
               <div className="about-contact-label">Follow</div>
@@ -126,13 +136,13 @@ export default function AboutPage() {
           <div className="about-card about-clients-card">
             <div className="about-section-label">Clients</div>
             <div className="about-tabs">
-              {CLIENT_TABS.map((tab) => (
+              {clientTabs.map((tab) => (
                 <button key={tab} className={`about-tab${clientTab === tab ? " active" : ""}`} onClick={() => setClientTab(tab)}>{tab}</button>
               ))}
             </div>
             <div className="about-clients-grid">
-              {CLIENTS.map((c) => {
-                const active = clientTab === "All" || c.cat === clientTab;
+              {clients.map((c) => {
+                const active = clientTab === "All" || (c.tags && c.tags.includes(clientTab));
                 return (
                   <span key={c.name} className={`about-client-name${active ? " active" : ""}`}>{c.name}</span>
                 );
@@ -189,31 +199,28 @@ export default function AboutPage() {
 
           <div className="about-card about-openings-card">
             <div className="about-section-label">Join Our Team</div>
-            <a className="about-cv-btn" href="mailto:salam@lvetica.co?subject=CV Submission">Submit Your CV</a>
+            <a className="about-cv-btn" href={`mailto:${contact?.emailBusiness || "salam@lvetica.co"}?subject=CV Submission`}>Submit Your CV</a>
           </div>
 
           {/* Map */}
-          <div className="about-card about-map-card">
-            <div className="about-section-label">Our Location</div>
-            <a
-              className="about-map-wrap"
-              href="https://www.google.com/maps/search/?api=1&query=Matbuat+Avenue+3141+Baku+Azerbaijan"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Open location in Google Maps"
-            >
-              <iframe
-                className="about-map-iframe"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=49.855%2C40.402%2C49.876%2C40.413&layer=mapnik&marker=40.4073%2C49.8651"
-                allowFullScreen
-                loading="lazy"
-              />
-              <div className="about-map-overlay">
-                <span className="about-map-open">Open in Maps ↗</span>
-              </div>
-            </a>
-            <div className="about-map-address">pr 3141 Matbuat Avenue, Baku 1000</div>
-          </div>
+          {(contact?.mapEmbed || contact?.location) && (
+            <div className="about-card about-map-card">
+              <div className="about-section-label">Our Location</div>
+              {contact.mapEmbed && (
+                <div className="about-map-wrap" style={{ cursor: "default" }}>
+                  <iframe
+                    className="about-map-iframe"
+                    src={contact.mapEmbed}
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                </div>
+              )}
+              {contact.location && (
+                <div className="about-map-address">{contact.location}</div>
+              )}
+            </div>
+          )}
 
         </div>
       </div>

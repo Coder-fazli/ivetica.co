@@ -1,8 +1,9 @@
 import PortfolioApp from "./PortfolioApp";
 import { getWorks } from "@/actions/works";
+import { getAbout } from "@/actions/about";
 
 export default async function TestPage() {
-  const works = await getWorks();
+  const [works, about] = await Promise.all([getWorks(), getAbout()]);
   const initialCards = works.map((w, i) => ({
     id: i,
     name: w.title,
@@ -10,5 +11,11 @@ export default async function TestPage() {
     img: w.thumbnail || "",
     slug: w.slug,
   }));
-  return <PortfolioApp initialCards={initialCards} />;
+  return (
+    <PortfolioApp
+      initialCards={initialCards}
+      sidebarLabel={about.sidebarLabel}
+      sidebarDesc={about.sidebarDesc}
+    />
+  );
 }

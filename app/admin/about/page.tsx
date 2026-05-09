@@ -14,6 +14,12 @@ const emptyData: AboutData = {
   values: [],
   team: [],
   offerings: [],
+  sidebarLabel: "",
+  sidebarDesc: "",
+  studioTitle: "",
+  studioText1: "",
+  studioText2: "",
+  studioText3: "",
 };
 
 export default function AdminAbout() {
@@ -124,6 +130,75 @@ export default function AdminAbout() {
           </button>
           {message && <span className="admin-save-msg">{message}</span>}
         </div>
+      </div>
+
+      {/* Sidebar & Studio Text */}
+      <div className="admin-accordion-item">
+        <div className="admin-accordion-header" onClick={() => toggle("sidebar")}>
+          <span>Sidebar &amp; Studio Text</span>
+          <i className={`fas fa-chevron-${openSection === "sidebar" ? "up" : "down"}`}></i>
+        </div>
+        {openSection === "sidebar" && (
+          <div className="admin-accordion-body">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+              <div className="admin-field-group" style={{ marginBottom: 0 }}>
+                <label>Sidebar Label</label>
+                <input
+                  value={data.sidebarLabel || ""}
+                  onChange={(e) => { setData(p => ({ ...p, sidebarLabel: e.target.value })); setDirty(true); }}
+                  className="admin-input"
+                  placeholder="About us"
+                />
+              </div>
+              <div className="admin-field-group" style={{ marginBottom: 0 }}>
+                <label>Studio Section Title</label>
+                <input
+                  value={data.studioTitle || ""}
+                  onChange={(e) => { setData(p => ({ ...p, studioTitle: e.target.value })); setDirty(true); }}
+                  className="admin-input"
+                  placeholder="Our Studio"
+                />
+              </div>
+            </div>
+            <div className="admin-field-group">
+              <label>Sidebar Description</label>
+              <textarea
+                value={data.sidebarDesc || ""}
+                onChange={(e) => { setData(p => ({ ...p, sidebarDesc: e.target.value })); setDirty(true); }}
+                className="admin-input"
+                style={{ minHeight: "unset", height: 60, resize: "vertical" }}
+                placeholder="Short text shown in the sidebar below the label"
+              />
+            </div>
+            <div className="admin-field-group">
+              <label>Studio Paragraph 1</label>
+              <textarea
+                value={data.studioText1 || ""}
+                onChange={(e) => { setData(p => ({ ...p, studioText1: e.target.value })); setDirty(true); }}
+                className="admin-input"
+                style={{ minHeight: "unset", height: 72, resize: "vertical" }}
+              />
+            </div>
+            <div className="admin-field-group">
+              <label>Studio Paragraph 2</label>
+              <textarea
+                value={data.studioText2 || ""}
+                onChange={(e) => { setData(p => ({ ...p, studioText2: e.target.value })); setDirty(true); }}
+                className="admin-input"
+                style={{ minHeight: "unset", height: 72, resize: "vertical" }}
+              />
+            </div>
+            <div className="admin-field-group" style={{ marginBottom: 0 }}>
+              <label>Studio Paragraph 3</label>
+              <textarea
+                value={data.studioText3 || ""}
+                onChange={(e) => { setData(p => ({ ...p, studioText3: e.target.value })); setDirty(true); }}
+                className="admin-input"
+                style={{ minHeight: "unset", height: 72, resize: "vertical" }}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Our Story */}

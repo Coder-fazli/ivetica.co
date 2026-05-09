@@ -1,9 +1,10 @@
 import PortfolioApp from "@/app/test/PortfolioApp";
 import { getWorks } from "@/actions/works";
+import { getAbout } from "@/actions/about";
 
 export default async function SlugPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const works = await getWorks();
+  const [works, about] = await Promise.all([getWorks(), getAbout()]);
   const initialCards = works.map((w, i) => ({
     id: i,
     name: w.title,
@@ -11,5 +12,12 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
     img: w.thumbnail || "",
     slug: w.slug,
   }));
-  return <PortfolioApp initialCards={initialCards} initialSlug={slug} />;
+  return (
+    <PortfolioApp
+      initialCards={initialCards}
+      initialSlug={slug}
+      sidebarLabel={about.sidebarLabel}
+      sidebarDesc={about.sidebarDesc}
+    />
+  );
 }

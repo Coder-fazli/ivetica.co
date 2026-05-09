@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { getWorks, updateWork, createWork, deleteWork } from "@/actions/works";
+import { useState, useEffect, useRef } from "react";
+import { getWorks, updateWork, createWork, deleteWork, reorderWorks } from "@/actions/works";
 import { WorkType, Block, MediaItem } from "@/types";
 import SeoMetabox from "@/components/admin/SeoMetabox";
 import MediaUpload from "@/components/admin/MediaUpload";
@@ -68,18 +68,25 @@ const BLOCK_TYPES: { type: Block["type"]; label: string; svg: React.ReactNode }[
 ];
 
 type Tag = { _id: string; name: string };
+type ClientItem = { _id: string; name: string };
 
 export default function AdminWorks() {
   const [works, setWorks] = useState<WorkType[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
+  const [clients, setClients] = useState<ClientItem[]>([]);
   const [modal, setModal] = useState<WorkType | null>(null);
   const [modalIdx, setModalIdx] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [filterClient, setFilterClient] = useState("");
+  const [filterTags, setFilterTags] = useState<string[]>([]);
+  const dragIdx = useRef<number | null>(null);
+  const dragOverIdx = useRef<number | null>(null);
 
   useEffect(() => {
     getWorks().then((data) => setWorks(data as WorkType[]));
     fetch("/api/tags").then(r => r.json()).then(data => setTags(Array.isArray(data) ? data : []));
+    fetch("/api/clients").then(r => r.json()).then(data => setClients(Array.isArray(data) ? data : []));
   }, []);
 
   function openNew() { setModal({ ...empty }); setModalIdx(null); }
@@ -154,6 +161,36 @@ export default function AdminWorks() {
     closeModal();
   }
 
+  function handleDragStart(i: number) {
+    dragIdx.current = i;
+  }
+
+  function handleDragOver(e: React.DragEvent, i: number) {
+    e.preventDefault();
+    dragOverIdx.current = i;
+  }
+
+  function handleDrop() {
+    const from = dragIdx.current;
+    const to = dragOverIdx.current;
+    if (from === null || to === null || from === to) return;
+    const next = [...works];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    setWorks(next);
+    dragIdx.current = null;
+    dragOverIdx.current = null;
+    reorderWorks(next.map(w => w.slug));
+  }
+
+  function toggleFilterTag(name: string) {
+    setFilterTags(prev => prev.includes(name) ? prev.filter(t => t !== name) : [...prev, name]);
+  }
+
+  const displayed = works
+    .filter(w => !filterClient || w.client === filterClient)
+    .filter(w => filterTags.length === 0 || filterTags.some(t => w.tags?.includes(t)));
+
   return (
     <>
       <div className="admin-page-header">
@@ -165,35 +202,75 @@ export default function AdminWorks() {
 
       <div className="admin-card">
         <div className="admin-card-header">
-          <h3>All Works ({works.length})</h3>
+          <h3>{filterClient || filterTags.length > 0 ? `${displayed.length} of ${works.length} works` : `All Works (${works.length})`}</h3>
           <button className="admin-btn admin-btn-secondary" onClick={openNew}>
             <i className="fas fa-plus"></i> Add Work
           </button>
         </div>
 
+        {/* Filter bar */}
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", paddingBottom: 14, borderBottom: "1px solid var(--admin-input-border)", marginBottom: 4 }}>
+          <select
+            value={filterClient}
+            onChange={e => setFilterClient(e.target.value)}
+            className="admin-input"
+            style={{ width: "auto", fontSize: 12, height: 30, padding: "0 8px" }}
+          >
+            <option value="">All clients</option>
+            {clients.map(c => <option key={c._id} value={c.name}>{c.name}</option>)}
+          </select>
+          {tags.map(tag => (
+            <button
+              key={tag._id}
+              onClick={() => toggleFilterTag(tag.name)}
+              style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, border: "1px solid var(--admin-input-border)", cursor: "pointer", background: filterTags.includes(tag.name) ? "var(--admin-accent)" : "transparent", color: filterTags.includes(tag.name) ? "#fff" : "inherit", fontWeight: 500 }}
+            >
+              {tag.name}
+            </button>
+          ))}
+          {(filterClient || filterTags.length > 0) && (
+            <button
+              onClick={() => { setFilterClient(""); setFilterTags([]); }}
+              style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, border: "1px solid #e53", color: "#e53", background: "transparent", cursor: "pointer" }}
+            >
+              × Clear
+            </button>
+          )}
+        </div>
+
         {works.length === 0 && (
           <p style={{ fontSize: 13, opacity: 0.4, padding: "12px 0" }}>No works yet.</p>
         )}
+        {displayed.length === 0 && works.length > 0 && (
+          <p style={{ fontSize: 13, opacity: 0.4, padding: "12px 0" }}>No works match the current filters.</p>
+        )}
 
-        {works.map((w, i) => (
-          <div
-            key={i}
-            onClick={() => openEdit(i)}
-            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid var(--admin-input-border)", cursor: "pointer" }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              {w.thumbnail
-                ? <img src={w.thumbnail} alt="" style={{ width: 36, height: 36, objectFit: "cover", borderRadius: 4 }} />
-                : <div style={{ width: 36, height: 36, borderRadius: 4, background: "var(--admin-input-bg)", border: "1px solid var(--admin-input-border)" }} />
-              }
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 500 }}>{w.title || "Untitled"}</div>
-                <div style={{ fontSize: 11, opacity: 0.4 }}>{w.client}{w.blocks?.length ? ` · ${w.blocks.length} blocks` : ""}</div>
+        {displayed.map((w) => {
+          const i = works.indexOf(w);
+          return (
+            <div
+              key={w.slug}
+              draggable
+              onDragStart={() => handleDragStart(i)}
+              onDragOver={(e) => handleDragOver(e, i)}
+              onDrop={handleDrop}
+              style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid var(--admin-input-border)", cursor: "grab" }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1 }} onClick={() => openEdit(i)}>
+                <span style={{ fontSize: 14, opacity: 0.25, cursor: "grab", padding: "0 4px", userSelect: "none" }} onClick={e => e.stopPropagation()}>⠿</span>
+                {w.thumbnail
+                  ? <img src={w.thumbnail} alt="" style={{ width: 36, height: 36, objectFit: "cover", borderRadius: 4 }} />
+                  : <div style={{ width: 36, height: 36, borderRadius: 4, background: "var(--admin-input-bg)", border: "1px solid var(--admin-input-border)" }} />
+                }
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 500 }}>{w.title || "Untitled"}</div>
+                  <div style={{ fontSize: 11, opacity: 0.4 }}>{w.client}{w.blocks?.length ? ` · ${w.blocks.length} blocks` : ""}</div>
+                </div>
               </div>
+              <i className="fas fa-chevron-right" style={{ fontSize: 11, opacity: 0.3 }}></i>
             </div>
-            <i className="fas fa-chevron-right" style={{ fontSize: 11, opacity: 0.3 }}></i>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <SeoMetabox page="works" />
@@ -212,45 +289,53 @@ export default function AdminWorks() {
             <div style={s.modalBody}>
 
               {/* thumbnail + basic fields */}
-              <div style={{ display: "grid", gridTemplateColumns: "110px 110px 1fr", gap: 16, alignItems: "start", marginBottom: 18 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 24, alignItems: "start", marginBottom: 20 }}>
 
-                {/* thumbnail */}
-                <div>
-                  <span style={s.label}>Thumbnail</span>
-                  <div style={{ width: 110, height: 110, borderRadius: 8, border: "1.5px dashed var(--admin-input-border)", overflow: "hidden", background: "var(--admin-input-bg)", marginBottom: 6 }}>
-                    {modal.thumbnail
-                      ? <img src={modal.thumbnail} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                      : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", opacity: 0.2, fontSize: 11 }}>Hero</div>
-                    }
-                  </div>
-                  <MediaUpload value={{ url: modal.thumbnail || "", kind: "image" }} onChange={(m) => field("thumbnail", m.url)} />
-                </div>
-
-                {/* cover image for /all page */}
-                <div>
-                  <span style={s.label}>Cover <span style={{ opacity: 0.5, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>/all</span></span>
-                  <div style={{ width: 110, height: 110, borderRadius: 8, border: "1.5px dashed var(--admin-input-border)", overflow: "hidden", background: "var(--admin-input-bg)", marginBottom: 6 }}>
-                    {modal.coverImage
-                      ? <img src={modal.coverImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                      : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", opacity: 0.2, fontSize: 11 }}>/all</div>
-                    }
-                  </div>
-                  <MediaUpload value={{ url: modal.coverImage || "", kind: "image" }} onChange={(m) => field("coverImage", m.url)} />
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 8 }}>
+                {/* left: two image pickers */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                     <div>
-                      <span style={s.label}>Title</span>
-                      <input style={s.input} value={modal.title} onChange={(e) => field("title", e.target.value)} placeholder="Nike Run" />
+                      <span style={s.label}>Thumbnail</span>
+                      <div style={{ width: "100%", aspectRatio: "1", borderRadius: 8, border: "1.5px dashed var(--admin-input-border)", overflow: "hidden", background: "var(--admin-input-bg)", marginBottom: 6 }}>
+                        {modal.thumbnail
+                          ? <img src={modal.thumbnail} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", opacity: 0.2, fontSize: 10 }}>Hero</div>
+                        }
+                      </div>
+                      <MediaUpload value={{ url: modal.thumbnail || "", kind: "image" }} onChange={(m) => field("thumbnail", m.url)} />
                     </div>
                     <div>
+                      <span style={s.label}>Cover <span style={{ opacity: 0.5, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>/all</span></span>
+                      <div style={{ width: "100%", aspectRatio: "1", borderRadius: 8, border: "1.5px dashed var(--admin-input-border)", overflow: "hidden", background: "var(--admin-input-bg)", marginBottom: 6 }}>
+                        {modal.coverImage
+                          ? <img src={modal.coverImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", opacity: 0.2, fontSize: 10 }}>/all</div>
+                        }
+                      </div>
+                      <MediaUpload value={{ url: modal.coverImage || "", kind: "image" }} onChange={(m) => field("coverImage", m.url)} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* right: text fields stacked */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <div>
+                    <span style={s.label}>Title</span>
+                    <input style={s.input} value={modal.title} onChange={(e) => field("title", e.target.value)} placeholder="Nike Run Campaign" />
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    <div>
                       <span style={s.label}>Slug</span>
-                      <input style={s.input} value={modal.slug} onChange={(e) => field("slug", e.target.value)} placeholder="nike-run" />
+                      <input style={s.input} value={modal.slug} onChange={(e) => field("slug", e.target.value)} placeholder="nike-run-campaign" />
                     </div>
                     <div>
                       <span style={s.label}>Client</span>
-                      <input style={s.input} value={modal.client} onChange={(e) => field("client", e.target.value)} placeholder="Nike" />
+                      <select style={s.input} value={modal.client || ""} onChange={(e) => field("client", e.target.value)}>
+                        <option value="">Select client...</option>
+                        {clients.map(c => (
+                          <option key={c._id} value={c.name}>{c.name}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <div>
@@ -259,14 +344,14 @@ export default function AdminWorks() {
                   </div>
                   <div>
                     <span style={s.label}>Tags</span>
-                    <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 2 }}>
                       {tags.map(tag => {
                         const active = modal.tags?.includes(tag.name) ?? false;
                         return (
                           <button
                             key={tag._id}
                             onClick={() => toggleTag(tag.name)}
-                            style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, border: "1px solid var(--admin-input-border)", cursor: "pointer", background: active ? "var(--admin-accent)" : "transparent", color: active ? "#fff" : "inherit", fontWeight: 500 }}
+                            style={{ fontSize: 11, padding: "4px 12px", borderRadius: 20, border: "1px solid var(--admin-input-border)", cursor: "pointer", background: active ? "var(--admin-accent)" : "transparent", color: active ? "#fff" : "inherit", fontWeight: 500 }}
                           >
                             {tag.name}
                           </button>

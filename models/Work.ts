@@ -14,6 +14,7 @@ const WorkSchema = new mongoose.Schema({
   gallery: [{ type: String }],
   metrics: [{ label: { type: String }, value: { type: String } }],
   blocks: [{ type: mongoose.Schema.Types.Mixed }],
+  order: { type: Number, default: 0 },
 });
 
 export const Work = mongoose.models.Work || mongoose.model("Work", WorkSchema);
