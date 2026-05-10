@@ -23,12 +23,11 @@ const mobileTotalH = (count: number) =>
   MOBILE_HERO_SLOT + (MOBILE_EXTRA - 1 + count) * CARD_SLOT_MOBILE;
 
 
-export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLabel, sidebarDesc, homepageVideo: homepageVideoProp = "" }: {
+export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLabel, sidebarDesc }: {
   initialCards?: Card[];
   initialSlug?: string;
   sidebarLabel?: string;
   sidebarDesc?: string;
-  homepageVideo?: string;
 }) {
   const [cards, setCards] = useState<Card[]>(initialCards);
   const [active, setActive] = useState(0);
@@ -41,16 +40,18 @@ export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLa
   const [logoDark, setLogoDark] = useState<string | null>(null);
   const [logoLight, setLogoLight] = useState<string | null>(null);
   const [tagline, setTagline] = useState("DOING WHAT MATTERS");
-  const homepageVideo = homepageVideoProp || "/energy-ball.mp4";
+  const [homepageVideo, setHomepageVideo] = useState("/energy-ball.mp4");
 
   useEffect(() => {
     const dark = document.body.dataset.logo;
     const light = document.body.dataset.logoLight;
     const tag = document.body.dataset.tagline;
+    const vid = document.body.dataset.homepageVideo;
     if (dark) setLogoDark(dark);
     if (light) setLogoLight(light);
     if (dark) setLogoUrl(dark);
     if (tag) setTagline(tag);
+    if (vid) setHomepageVideo(vid);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
