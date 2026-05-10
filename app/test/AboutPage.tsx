@@ -203,50 +203,21 @@ export default function AboutPage() {
           </div>
 
           {/* Map */}
-          {(contact?.mapEmbed || contact?.location || contact?.mapCoverImage) && (
-            <div className="about-card about-map-card" style={contact.mapCoverImage ? { position: "relative", overflow: "hidden", padding: 0 } : undefined}>
-              {contact.mapCoverImage ? (
-                <div style={{ position: "relative" }}>
-                  <img
-                    src={contact.mapCoverImage}
-                    alt="Location"
-                    style={{ width: "100%", objectFit: "cover", display: "block", minHeight: 180 }}
+          {(contact?.mapEmbed || contact?.location) && (
+            <div className="about-card about-map-card">
+              <div className="about-section-label">Our Location</div>
+              {contact.mapEmbed && (
+                <div className="about-map-wrap" style={{ cursor: "default" }}>
+                  <iframe
+                    className="about-map-iframe"
+                    src={contact.mapEmbed}
+                    allowFullScreen
+                    loading="lazy"
                   />
-                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%)", pointerEvents: "none" }} />
-                  <div style={{ position: "absolute", top: 14, left: 16 }}>
-                    <div className="about-section-label" style={{ margin: 0 }}>Our Location</div>
-                  </div>
-                  <div style={{ position: "absolute", bottom: 14, left: 16, right: 16 }}>
-                    {contact.location && (
-                      <div className="about-map-address" style={{ margin: "0 0 8px" }}>{contact.location}</div>
-                    )}
-                    <a
-                      href={contact.mapEmbed ? contact.mapEmbed.replace("google.com/maps/embed", "google.com/maps") : `https://maps.google.com/?q=${encodeURIComponent(contact.location || "")}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ fontSize: 11, color: "#fff", opacity: 0.7, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4 }}
-                    >
-                      Open in Maps ↗
-                    </a>
-                  </div>
                 </div>
-              ) : (
-                <>
-                  <div className="about-section-label">Our Location</div>
-                  {contact.mapEmbed && (
-                    <div className="about-map-wrap" style={{ cursor: "default" }}>
-                      <iframe
-                        className="about-map-iframe"
-                        src={contact.mapEmbed}
-                        allowFullScreen
-                        loading="lazy"
-                      />
-                    </div>
-                  )}
-                  {contact.location && (
-                    <div className="about-map-address">{contact.location}</div>
-                  )}
-                </>
+              )}
+              {contact.location && (
+                <div className="about-map-address">{contact.location}</div>
               )}
             </div>
           )}
