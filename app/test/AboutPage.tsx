@@ -204,27 +204,39 @@ export default function AboutPage() {
 
           {/* Map */}
           {(contact?.mapEmbed || contact?.location || contact?.mapCoverImage) && (
-            <div className="about-card about-map-card">
-              <div className="about-section-label">Our Location</div>
-              {contact.mapCoverImage && (
-                <img
-                  src={contact.mapCoverImage}
-                  alt="Location"
-                  style={{ width: "100%", borderRadius: 8, marginBottom: 12, objectFit: "cover", maxHeight: 180 }}
-                />
-              )}
-              {contact.mapEmbed && (
-                <div className="about-map-wrap" style={{ cursor: "default" }}>
-                  <iframe
-                    className="about-map-iframe"
-                    src={contact.mapEmbed}
-                    allowFullScreen
-                    loading="lazy"
+            <div className="about-card about-map-card" style={contact.mapCoverImage ? { position: "relative", overflow: "hidden", padding: 0 } : undefined}>
+              {contact.mapCoverImage ? (
+                <>
+                  <img
+                    src={contact.mapCoverImage}
+                    alt="Location"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", minHeight: 180 }}
                   />
-                </div>
-              )}
-              {contact.location && (
-                <div className="about-map-address">{contact.location}</div>
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.6) 100%)", pointerEvents: "none" }} />
+                  <div style={{ position: "absolute", top: 14, left: 16 }}>
+                    <div className="about-section-label" style={{ margin: 0 }}>Our Location</div>
+                  </div>
+                  {contact.location && (
+                    <div className="about-map-address" style={{ position: "absolute", bottom: 14, left: 16, right: 16, margin: 0 }}>{contact.location}</div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <div className="about-section-label">Our Location</div>
+                  {contact.mapEmbed && (
+                    <div className="about-map-wrap" style={{ cursor: "default" }}>
+                      <iframe
+                        className="about-map-iframe"
+                        src={contact.mapEmbed}
+                        allowFullScreen
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+                  {contact.location && (
+                    <div className="about-map-address">{contact.location}</div>
+                  )}
+                </>
               )}
             </div>
           )}
