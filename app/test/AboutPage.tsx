@@ -206,20 +206,25 @@ export default function AboutPage() {
           {(contact?.mapEmbed || contact?.location || contact?.mapCoverImage) && (
             <div className="about-card about-map-card" style={contact.mapCoverImage ? { position: "relative", overflow: "hidden", padding: 0 } : undefined}>
               {contact.mapCoverImage ? (
-                <>
+                <a
+                  href={contact.mapEmbed ? contact.mapEmbed.replace("google.com/maps/embed", "google.com/maps") : `https://maps.google.com/?q=${encodeURIComponent(contact.location || "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: "block", position: "relative" }}
+                >
                   <img
                     src={contact.mapCoverImage}
                     alt="Location"
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", minHeight: 180 }}
                   />
-                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.6) 100%)", pointerEvents: "none" }} />
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.65) 100%)", pointerEvents: "none" }} />
                   <div style={{ position: "absolute", top: 14, left: 16 }}>
                     <div className="about-section-label" style={{ margin: 0 }}>Our Location</div>
                   </div>
                   {contact.location && (
                     <div className="about-map-address" style={{ position: "absolute", bottom: 14, left: 16, right: 16, margin: 0 }}>{contact.location}</div>
                   )}
-                </>
+                </a>
               ) : (
                 <>
                   <div className="about-section-label">Our Location</div>
