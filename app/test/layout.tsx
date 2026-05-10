@@ -9,7 +9,7 @@ const getSettings = unstable_cache(
     return SiteSettings.findById("global").lean();
   },
   ["site-settings"],
-  { revalidate: 10, tags: ["site-settings"] }
+  { revalidate: 60, tags: ["site-settings"] }
 );
 
 export default async function TestLayout({ children }: { children: React.ReactNode }) {
