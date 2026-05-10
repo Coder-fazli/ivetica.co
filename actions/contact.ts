@@ -10,6 +10,7 @@ export type ContactData = {
   phone: string;
   location: string;
   mapEmbed: string;
+  mapCoverImage: string;
 };
 
 const DEFAULTS: ContactData = {
@@ -18,6 +19,7 @@ const DEFAULTS: ContactData = {
   phone:           "+994 10 505 06 66",
   location:        "pr 3141 Matbuat Avenue, Baku 1000",
   mapEmbed:        "",
+  mapCoverImage:   "",
 };
 
 const getCachedContact = unstable_cache(

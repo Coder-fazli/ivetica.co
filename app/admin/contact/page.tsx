@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getContact, updateContact, ContactData } from "@/actions/contact";
+import ImageMediaPicker from "@/components/admin/ImageMediaPicker";
 
 const empty: ContactData = {
   emailBusiness: "",
@@ -9,6 +10,7 @@ const empty: ContactData = {
   phone: "",
   location: "",
   mapEmbed: "",
+  mapCoverImage: "",
 };
 
 export default function AdminContact() {
@@ -114,6 +116,16 @@ export default function AdminContact() {
             <p style={{ fontSize: 11, opacity: 0.4, marginTop: 4 }}>
               Go to Google Maps → Share → Embed a map → copy the src URL from the iframe code
             </p>
+          </div>
+
+          <div className="admin-field-group" style={{ marginBottom: 0 }}>
+            <label>Map Cover Image</label>
+            <p style={{ fontSize: 11, opacity: 0.4, marginBottom: 8 }}>Displayed above the map in the About sidebar</p>
+            <ImageMediaPicker
+              label=""
+              value={data.mapCoverImage}
+              onChange={(url) => update("mapCoverImage", url)}
+            />
           </div>
 
           <div className="admin-actions">

@@ -203,9 +203,16 @@ export default function AboutPage() {
           </div>
 
           {/* Map */}
-          {(contact?.mapEmbed || contact?.location) && (
+          {(contact?.mapEmbed || contact?.location || contact?.mapCoverImage) && (
             <div className="about-card about-map-card">
               <div className="about-section-label">Our Location</div>
+              {contact.mapCoverImage && (
+                <img
+                  src={contact.mapCoverImage}
+                  alt="Location"
+                  style={{ width: "100%", borderRadius: 8, marginBottom: 12, objectFit: "cover", maxHeight: 180 }}
+                />
+              )}
               {contact.mapEmbed && (
                 <div className="about-map-wrap" style={{ cursor: "default" }}>
                   <iframe
