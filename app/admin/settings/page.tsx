@@ -58,17 +58,15 @@ export default function SettingsPage() {
     setSaving(true);
     setSaved(false);
     try {
-      const payload = { homepageVideo, logoUrl, logoUrlLight, faviconUrl, tagline, fontSizes, socialTiktok, socialFacebook, socialInstagram };
-      console.log("[Settings Save] Sending:", payload);
       const res = await fetch("/api/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ homepageVideo, logoUrl, logoUrlLight, faviconUrl, tagline, fontSizes, socialTiktok, socialFacebook, socialInstagram }),
       });
-      const resData = await res.json();
-      console.log("[Settings Save] Response:", res.status, resData);
       if (!res.ok) {
-        alert(`Save failed: ${resData.error || "Unknown error"}`);
+        const err = await res.json();
+        console.error("[Settings Save] Error:", err);
+        alert(`Save failed: ${err.error || "Unknown error"}`);
         return;
       }
       setSaved(true);
