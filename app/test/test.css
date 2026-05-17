@@ -287,12 +287,12 @@ html, body {
 .about-page { padding: 0 0 60px; }
 
 .about-hero-img {
-  width: calc(100% - 24px);
+  width: calc(100% - 32px);
   height: 58vh;
   object-fit: cover;
   display: block;
   border-radius: 10px;
-  margin: 8px 16px 16px 16px;
+  margin: 8px 16px 16px;
 }
 
 /* Studio + Contact same-height row */
@@ -300,8 +300,8 @@ html, body {
   display: grid;
   grid-template-columns: 1fr 280px;
   gap: 12px;
-  padding: 0 0 12px;
-  align-items: stretch;
+  padding: 0 16px 12px;
+  align-items: start;
 }
 
 /* Left + right rail layout */
@@ -309,7 +309,7 @@ html, body {
   display: grid;
   grid-template-columns: 1fr 280px;
   gap: 12px;
-  padding: 0;
+  padding: 0 16px;
   align-items: start;
 }
 .about-left { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
@@ -369,6 +369,7 @@ html, body {
   flex-wrap: wrap;
   gap: 6px;
   margin-bottom: 18px;
+  margin-left: -10px;
 }
 .about-tab {
   font-size: 13px;
