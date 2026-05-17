@@ -375,7 +375,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLa
                   <div ref={(el) => { glowEls.current[i] = el; }} className="proj-card-glow" />
                   {c.img && (
                     c.img.toLowerCase().includes(".gif")
-                      ? <img src={c.img} alt={c.name} className="proj-card-icon" style={{ width: 68, height: 68, objectFit: "cover" }} />
+                      ? <img src={c.img} alt={c.name} className="proj-card-icon" style={{ width: 68, height: 68, objectFit: "cover", transform: "translateZ(0)" }} />
                       : <Image src={c.img} alt={c.name} width={68} height={68} className="proj-card-icon" />
                   )}
                   <div className="proj-card-info">
