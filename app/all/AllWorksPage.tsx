@@ -44,7 +44,7 @@ export default function AllWorksPage({ works, initialTag }: { works: WorkType[];
       position: "fixed", inset: 0,
       background: "var(--bg, #0d0d0d)",
       color: "var(--text-primary, #efefef)",
-      fontFamily: '"Outfit", -apple-system, sans-serif',
+      fontFamily: 'Helvetica, Arial, sans-serif',
       display: "flex", flexDirection: "column",
       overflow: "hidden",
       zIndex: 100,

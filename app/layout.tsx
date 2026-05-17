@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
 import "./bootstrap-grid.css";
 import "./globals.css";
 import "./test/test.css";
@@ -8,11 +7,6 @@ import ChunkErrorHandler from "@/components/ChunkErrorHandler";
 import { unstable_cache } from "next/cache";
 import dbConnect from "@/lib/mongodb";
 import { SiteSettings } from "@/models/SiteSettings";
-
-const outfit = Outfit({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvetica.co";
 
@@ -104,7 +98,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           {faviconUrl && <link rel="icon" href={faviconUrl} />}
           <style dangerouslySetInnerHTML={{ __html: cssVars }} />
         </head>
-        <body className={outfit.className} data-logo={logoUrl || undefined} data-logo-light={logoUrlLight || undefined} data-tagline={tagline || undefined}>
+        <body data-logo={logoUrl || undefined} data-logo-light={logoUrlLight || undefined} data-tagline={tagline || undefined}>
           <ChunkErrorHandler />
           {children}
         </body>
