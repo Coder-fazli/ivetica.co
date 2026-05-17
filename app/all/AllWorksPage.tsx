@@ -129,35 +129,31 @@ export default function AllWorksPage({ works, initialTag }: { works: WorkType[];
         </button>
       </div>
 
-      {/* masonry grid */}
+      {/* grid */}
       <div style={{ flex: 1, overflowY: "auto", padding: "12px 12px 40px" }}>
         <div style={{
-          columns: "3 280px",
-          columnGap: 8,
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+          gap: 8,
+          alignItems: "start",
         }}>
           {filtered.map((work) => (
             <a
               key={work.slug}
               href={`/${work.slug}`}
-              style={{
-                display: "block",
-                breakInside: "avoid",
-                marginBottom: 20,
-                textDecoration: "none",
-                color: "inherit",
-              }}
+              style={{ display: "block", textDecoration: "none", color: "inherit" }}
             >
               {(work.coverImage || work.thumbnail)
                 ? (() => {
                   const src = work.coverImage || work.thumbnail || "";
                   const isGif = src.toLowerCase().includes(".gif");
                   return isGif
-                    ? <img src={src} alt={work.title} style={{ width: "100%", height: "auto", display: "block", borderRadius: 8 }} />
-                    : <Image src={src} alt={work.title} width={400} height={300} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" style={{ width: "100%", height: "auto", display: "block", borderRadius: 8 }} />;
+                    ? <img src={src} alt={work.title} loading="lazy" decoding="async" style={{ width: "100%", height: "auto", display: "block", borderRadius: 8 }} />
+                    : <Image src={src} alt={work.title} width={400} height={300} loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" style={{ width: "100%", height: "auto", display: "block", borderRadius: 8 }} />;
                 })()
                 : <div style={{ width: "100%", aspectRatio: "4/3", background: "#1a1a1a", borderRadius: 8 }} />
               }
-              <div style={{ padding: "10px 4px 0" }}>
+              <div style={{ padding: "10px 4px 0", marginBottom: 12 }}>
                 <div style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary, #efefef)", marginBottom: 2 }}>{work.title}</div>
                 <div style={{ fontSize: 12, color: "var(--text-muted, #555)" }}>{work.client}</div>
               </div>
