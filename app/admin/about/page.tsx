@@ -195,16 +195,6 @@ export default function AdminAbout() {
               </div>
             </div>
             <div className="admin-field-group">
-              <label>Sidebar Description</label>
-              <textarea
-                value={data.sidebarDesc || ""}
-                onChange={(e) => { setData(p => ({ ...p, sidebarDesc: e.target.value })); setDirty(true); }}
-                className="admin-input"
-                style={{ minHeight: "unset", height: 60, resize: "vertical" }}
-                placeholder="Short text shown in the sidebar below the label"
-              />
-            </div>
-            <div className="admin-field-group">
               <label>Studio Paragraph 1</label>
               <textarea
                 value={data.studioText1 || ""}

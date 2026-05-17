@@ -68,20 +68,22 @@ export default function AboutPage() {
 
       {/* Studio + Contact: same-height row */}
       <div className="about-top-row">
-        <div className="about-card about-studio-card">
-          <div
-            className="about-section-label"
-            style={{
-              ...(studioTitleColor ? { color: studioTitleColor } : {}),
-              ...(!studioText1 && !studioText2 && !studioText3 ? { marginBottom: 0 } : {}),
-            }}
-          >
-            {studioTitle || "Our Studio"}
+        {(studioTitle || studioText1 || studioText2 || studioText3) && (
+          <div className="about-card about-studio-card">
+            <div
+              className="about-section-label"
+              style={{
+                ...(studioTitleColor ? { color: studioTitleColor } : {}),
+                ...(!studioText1 && !studioText2 && !studioText3 ? { marginBottom: 0 } : {}),
+              }}
+            >
+              {studioTitle || "Our Studio"}
+            </div>
+            {studioText1 && <p className="about-studio-text">{studioText1}</p>}
+            {studioText2 && <p className="about-studio-text">{studioText2}</p>}
+            {studioText3 && <p className="about-studio-text">{studioText3}</p>}
           </div>
-          {studioText1 && <p className="about-studio-text">{studioText1}</p>}
-          {studioText2 && <p className="about-studio-text">{studioText2}</p>}
-          {studioText3 && <p className="about-studio-text">{studioText3}</p>}
-        </div>
+        )}
 
         <div className="about-card about-contact-card">
           <div className="about-section-label">Contact</div>

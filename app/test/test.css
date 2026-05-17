@@ -81,7 +81,7 @@ html, body {
   border-radius: 50%;
   top: 6px;
   right: 6px;
-  transition: 0.2s;
+  transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1), right 0.35s cubic-bezier(0.4, 0, 0.2, 1), background 0.35s ease;
 }
 
 .sidebar-logo-img {
@@ -874,6 +874,9 @@ html.light-theme .proj-card.visible.active { background: #f7f7f7; }
 
 .layout.light .proj-card-icon,
 html.light-theme .proj-card-icon { background: #e0e0e0; }
+
+.layout.light .proj-card-glow,
+html.light-theme .proj-card-glow { display: none; }
 
 .layout.light .about-tab.active,
 html.light-theme .about-tab.active {
