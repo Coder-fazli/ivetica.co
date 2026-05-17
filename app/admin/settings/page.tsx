@@ -11,6 +11,8 @@ type FontSizes = {
   workBody: number;
   contactLabel: number;
   contactLink: number;
+  aboutSectionLabel: number;
+  sidebarAboutLabel: number;
 };
 
 const defaultFontSizes: FontSizes = {
@@ -21,6 +23,8 @@ const defaultFontSizes: FontSizes = {
   workBody: 13,
   contactLabel: 11,
   contactLink: 14,
+  aboutSectionLabel: 10,
+  sidebarAboutLabel: 11,
 };
 
 export default function SettingsPage() {
@@ -250,6 +254,25 @@ export default function SettingsPage() {
                   hint="Email and phone"
                   value={fontSizes.contactLink}
                   onChange={(v) => updateFontSize("contactLink", v)}
+                />
+              </div>
+            </div>
+
+            {/* About Page Section */}
+            <div style={{ marginBottom: 32, paddingBottom: 24, borderBottom: "1px solid #1e1e1e" }}>
+              <h3 style={{ fontSize: 12, fontWeight: 600, marginBottom: 16, opacity: 0.6 }}>About Page</h3>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+                <FontSizeInput
+                  label="Section Labels"
+                  hint="Clients, Contact, Join Our Team..."
+                  value={fontSizes.aboutSectionLabel}
+                  onChange={(v) => updateFontSize("aboutSectionLabel", v)}
+                />
+                <FontSizeInput
+                  label="Sidebar About Label"
+                  hint="Label above sidebar description"
+                  value={fontSizes.sidebarAboutLabel}
+                  onChange={(v) => updateFontSize("sidebarAboutLabel", v)}
                 />
               </div>
             </div>

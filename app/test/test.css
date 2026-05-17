@@ -110,7 +110,7 @@ html, body {
 }
 
 .sidebar-about-label {
-  font-size: 11px;
+  font-size: var(--fs-sidebar-about, 11px);
   letter-spacing: 0.03em;
   color: var(--text-muted);
   margin-bottom: 6px;
@@ -324,7 +324,7 @@ html, body {
 }
 
 .about-section-label {
-  font-size: 10px;
+  font-size: var(--fs-about-label, 10px);
   letter-spacing: 0.05em;
   color: var(--text-muted);
   margin-bottom: 14px;

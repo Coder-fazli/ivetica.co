@@ -25,6 +25,8 @@ export default async function TestLayout({ children }: { children: React.ReactNo
       --fs-work-body: ${fs.workBody ?? 13}px;
       --fs-contact-label: ${fs.contactLabel ?? 11}px;
       --fs-contact-link: ${fs.contactLink ?? 14}px;
+      --fs-about-label: ${fs.aboutSectionLabel ?? 10}px;
+      --fs-sidebar-about: ${fs.sidebarAboutLabel ?? 11}px;
     }
   `;
 

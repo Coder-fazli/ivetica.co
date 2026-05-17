@@ -13,6 +13,8 @@ const SiteSettingsSchema = new Schema({
     workBody: { type: Number, default: 13 },
     contactLabel: { type: Number, default: 11 },
     contactLink: { type: Number, default: 14 },
+    aboutSectionLabel: { type: Number, default: 10 },
+    sidebarAboutLabel: { type: Number, default: 11 },
   },
   socialTiktok: { type: String, default: "" },
   socialFacebook: { type: String, default: "" },
