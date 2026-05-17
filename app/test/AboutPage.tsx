@@ -66,83 +66,28 @@ export default function AboutPage() {
       {/* Hero */}
       <img src="/img/works/1.jpg" alt="Our Studio" className="about-hero-img" />
 
-      {/* Studio + Contact: same-height row */}
-      <div className="about-top-row">
-        {(studioTitle || studioText1 || studioText2 || studioText3) && (
-          <div className="about-card about-studio-card">
-            <div
-              className="about-section-label"
-              style={{
-                ...(studioTitleColor ? { color: studioTitleColor } : {}),
-                ...(!studioText1 && !studioText2 && !studioText3 ? { marginBottom: 0 } : {}),
-              }}
-            >
-              {studioTitle || "Our Studio"}
-            </div>
-            {studioText1 && <p className="about-studio-text">{studioText1}</p>}
-            {studioText2 && <p className="about-studio-text">{studioText2}</p>}
-            {studioText3 && <p className="about-studio-text">{studioText3}</p>}
-          </div>
-        )}
-
-        <div className="about-card about-contact-card">
-          <div className="about-section-label">Contact</div>
-          {contact?.emailBusiness && (
-            <div className="about-contact-group">
-              <div className="about-contact-label">New Business</div>
-              <a className="about-contact-link" href={`mailto:${contact.emailBusiness}`}>{contact.emailBusiness}</a>
-            </div>
-          )}
-          {contact?.emailInfluencer && (
-            <div className="about-contact-group">
-              <div className="about-contact-label">Influencer Inquiries</div>
-              <a className="about-contact-link" href={`mailto:${contact.emailInfluencer}`}>{contact.emailInfluencer}</a>
-            </div>
-          )}
-          {contact?.phone && (
-            <div className="about-contact-group">
-              <div className="about-contact-label">Call Us</div>
-              <a className="about-contact-link" href={`tel:${contact.phone.replace(/\s/g, "")}`}>{contact.phone}</a>
-            </div>
-          )}
-          {(socialTiktok || socialFacebook || socialInstagram) && (
-            <div className="about-contact-group">
-              <div className="about-contact-label">Follow</div>
-              <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
-                {socialTiktok && (
-                  <a href={socialTiktok} target="_blank" rel="noopener noreferrer" title="TikTok" style={{ color: "#efefef", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <path d="M9 12a4 4 0 1 0 4 4v-7a6.04 6.04 0 0 0 3.27-.93" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </a>
-                )}
-                {socialFacebook && (
-                  <a href={socialFacebook} target="_blank" rel="noopener noreferrer" title="Facebook" style={{ color: "#efefef", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <path d="M18 2h-3a6 6 0 0 0-6 6v3H7v4h2v8h4v-8h3l1-4h-4V8a1 1 0 0 1 1-1h3z" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </a>
-                )}
-                {socialInstagram && (
-                  <a href={socialInstagram} target="_blank" rel="noopener noreferrer" title="Instagram" style={{ color: "#efefef", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" strokeLinecap="round" strokeLinejoin="round"/>
-                      <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/>
-                    </svg>
-                  </a>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Two-column layout: left content | right rail */}
+      {/* Two-column layout */}
       <div className="about-layout">
 
         {/* LEFT column */}
         <div className="about-left">
+
+          {(studioTitle || studioText1 || studioText2 || studioText3) && (
+            <div className="about-card about-studio-card">
+              <div
+                className="about-section-label"
+                style={{
+                  ...(studioTitleColor ? { color: studioTitleColor } : {}),
+                  ...(!studioText1 && !studioText2 && !studioText3 ? { marginBottom: 0 } : {}),
+                }}
+              >
+                {studioTitle || "Our Studio"}
+              </div>
+              {studioText1 && <p className="about-studio-text">{studioText1}</p>}
+              {studioText2 && <p className="about-studio-text">{studioText2}</p>}
+              {studioText3 && <p className="about-studio-text">{studioText3}</p>}
+            </div>
+          )}
 
           {/* Clients */}
           <div className="about-card about-clients-card">
@@ -181,7 +126,7 @@ export default function AboutPage() {
             </div>
           )}
 
-          {/* Team — horizontal scroll */}
+          {/* Team */}
           {team.length > 0 && (
             <div className="about-card about-team-card">
               <div className="about-team-header">
@@ -209,6 +154,60 @@ export default function AboutPage() {
         {/* RIGHT rail */}
         <div className="about-right">
 
+          {/* Contact */}
+          <div className="about-card about-contact-card">
+            <div className="about-section-label">Contact</div>
+            {contact?.emailBusiness && (
+              <div className="about-contact-group">
+                <div className="about-contact-label">New Business</div>
+                <a className="about-contact-link" href={`mailto:${contact.emailBusiness}`}>{contact.emailBusiness}</a>
+              </div>
+            )}
+            {contact?.emailInfluencer && (
+              <div className="about-contact-group">
+                <div className="about-contact-label">Influencer Inquiries</div>
+                <a className="about-contact-link" href={`mailto:${contact.emailInfluencer}`}>{contact.emailInfluencer}</a>
+              </div>
+            )}
+            {contact?.phone && (
+              <div className="about-contact-group">
+                <div className="about-contact-label">Call Us</div>
+                <a className="about-contact-link" href={`tel:${contact.phone.replace(/\s/g, "")}`}>{contact.phone}</a>
+              </div>
+            )}
+            {(socialTiktok || socialFacebook || socialInstagram) && (
+              <div className="about-contact-group">
+                <div className="about-contact-label">Follow</div>
+                <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
+                  {socialTiktok && (
+                    <a href={socialTiktok} target="_blank" rel="noopener noreferrer" title="TikTok" style={{ color: "var(--text-primary)", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M9 12a4 4 0 1 0 4 4v-7a6.04 6.04 0 0 0 3.27-.93" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </a>
+                  )}
+                  {socialFacebook && (
+                    <a href={socialFacebook} target="_blank" rel="noopener noreferrer" title="Facebook" style={{ color: "var(--text-primary)", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M18 2h-3a6 6 0 0 0-6 6v3H7v4h2v8h4v-8h3l1-4h-4V8a1 1 0 0 1 1-1h3z" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </a>
+                  )}
+                  {socialInstagram && (
+                    <a href={socialInstagram} target="_blank" rel="noopener noreferrer" title="Instagram" style={{ color: "var(--text-primary)", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" strokeLinecap="round" strokeLinejoin="round"/>
+                        <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/>
+                      </svg>
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Join Our Team */}
           <div className="about-card about-openings-card">
             <div className="about-section-label">Join Our Team</div>
             <a className="about-cv-btn" href={`mailto:${contact?.emailBusiness || "salam@lvetica.co"}?subject=CV Submission`}>Submit Your CV</a>
@@ -242,12 +241,7 @@ export default function AboutPage() {
                   <div className="about-section-label">Our Location</div>
                   {contact.mapEmbed && (
                     <div className="about-map-wrap" style={{ cursor: "default" }}>
-                      <iframe
-                        className="about-map-iframe"
-                        src={contact.mapEmbed}
-                        allowFullScreen
-                        loading="lazy"
-                      />
+                      <iframe className="about-map-iframe" src={contact.mapEmbed} allowFullScreen loading="lazy" />
                     </div>
                   )}
                   {contact.location && (
