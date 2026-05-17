@@ -90,7 +90,9 @@ export default function AdminMedia() {
       const res = await fetch("/api/admin/convert-gifs", { method: "POST" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Conversion failed");
-      setConvertResult(`Done — converted ${data.converted} of ${data.total} GIF(s) to MP4.`);
+      const failed = (data.results || []).filter((r: {status: string}) => r.status !== "converted");
+      const failMsg = failed.length > 0 ? ` Errors: ${failed.map((r: {key: string; status: string}) => `${r.key}: ${r.status}`).join(" | ")}` : "";
+      setConvertResult(`Done — converted ${data.converted} of ${data.total} GIF(s).${failMsg}`);
       fetchAssets();
     } catch (err) {
       setConvertResult(`Error: ${err instanceof Error ? err.message : "Unknown error"}`);
