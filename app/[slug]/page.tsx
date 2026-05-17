@@ -18,7 +18,6 @@ export default async function SlugPage({ params }: { params: Promise<{ slug: str
       initialCards={initialCards}
       initialSlug={slug}
       sidebarLabel={about.sidebarLabel}
-      sidebarDesc={about.sidebarDesc}
     />
   );
 }
