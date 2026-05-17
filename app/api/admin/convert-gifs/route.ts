@@ -38,8 +38,8 @@ async function convertGifToMp4(gifBuffer: Buffer, tmpKey: string): Promise<Buffe
       .outputOptions(["-movflags faststart", "-pix_fmt yuv420p", "-vf scale=trunc(iw/2)*2:trunc(ih/2)*2"])
       .noAudio()
       .format("mp4")
-      .on("end", resolve)
-      .on("error", reject)
+      .on("end", () => resolve())
+      .on("error", (err: Error) => reject(err))
       .save(outPath);
   });
 
