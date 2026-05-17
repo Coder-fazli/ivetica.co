@@ -6,12 +6,17 @@ import dbConnect from "@/lib/mongodb";
 import mongoose from "mongoose";
 import ffmpeg from "fluent-ffmpeg";
 import ffmpegStatic from "ffmpeg-static";
-import { writeFile, readFile, unlink } from "fs/promises";
+import { writeFile, readFile, unlink, chmod } from "fs/promises";
 import { tmpdir } from "os";
 import { join } from "path";
 import { Readable } from "stream";
 
-if (ffmpegStatic) ffmpeg.setFfmpegPath(ffmpegStatic);
+// Make ffmpeg binary executable and set path
+async function initFfmpeg() {
+  if (!ffmpegStatic) throw new Error("ffmpeg-static binary not found");
+  try { await chmod(ffmpegStatic, 0o755); } catch { /* already executable */ }
+  ffmpeg.setFfmpegPath(ffmpegStatic);
+}
 
 async function isAuthed(req: NextRequest) {
   const token = req.cookies.get("__session")?.value;
@@ -49,10 +54,28 @@ async function convertGifToMp4(gifBuffer: Buffer, tmpKey: string): Promise<Buffe
   return mp4Buffer;
 }
 
+export async function GET(req: NextRequest) {
+  if (!(await isAuthed(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    await initFfmpeg();
+    const version = await new Promise<string>((resolve, reject) => {
+      ffmpeg.getAvailableFormats((err, formats) => {
+        if (err) reject(err);
+        else resolve(`FFmpeg ready. Binary: ${ffmpegStatic}. Formats available: ${Object.keys(formats || {}).length}`);
+      });
+    });
+    return NextResponse.json({ ok: true, message: version });
+  } catch (err) {
+    return NextResponse.json({ ok: false, error: err instanceof Error ? err.message : String(err) });
+  }
+}
+
 export async function POST(req: NextRequest) {
   if (!(await isAuthed(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
+    await initFfmpeg();
+
     // 1. List all GIF objects in R2
     const list = await r2.send(new ListObjectsV2Command({ Bucket: R2_BUCKET, MaxKeys: 1000 }));
     const gifKeys = (list.Contents || [])
