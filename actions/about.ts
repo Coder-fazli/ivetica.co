@@ -22,6 +22,7 @@ export type AboutData = {
   sidebarLabel: string;
   sidebarDesc: string;
   studioTitle: string;
+  studioTitleColor: string;
   studioText1: string;
   studioText2: string;
   studioText3: string;
@@ -54,10 +55,11 @@ const DEFAULTS: AboutData = {
     { name: "Digital", desc: "We build digital experiences that bring brand systems to life — from websites and apps to interactive campaigns and digital products designed for scale.", services: "Web Design, UX/UI, Digital Campaigns, Motion Design, Prototyping" },
     { name: "Motion & 3D", desc: "We bring brands into motion through animation, 3D, and film — creating dynamic expressions that capture attention and communicate with depth and energy.", services: "Brand Animation, 3D Modeling & Rendering, Video Direction, Social Content, Title Sequences" },
   ],
-  sidebarLabel: "About us",
-  sidebarDesc:  "Lvetica connects brands with top creators for influencer marketing, UGC, and social growth.",
-  studioTitle:  "Our Studio",
-  studioText1:  "Lvetica connects brands with top creators for influencer marketing, UGC, and social growth.",
+  sidebarLabel:     "About us",
+  sidebarDesc:      "Lvetica connects brands with top creators for influencer marketing, UGC, and social growth.",
+  studioTitle:      "Our Studio",
+  studioTitleColor: "",
+  studioText1:      "Lvetica connects brands with top creators for influencer marketing, UGC, and social growth.",
   studioText2:  "We help brands navigate complex challenges through work that is strategically rigorous, emotionally resonant, and beautifully designed.",
   studioText3:  "From large-scale rebrands to independent initiatives, our hard-working systems prove that craft and scale can coexist.",
 };

@@ -35,6 +35,10 @@ export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLa
   const [view, setView] = useState<"home" | "work" | "about">("home");
   const [mainOpen, setMainOpen] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  useEffect(() => {
+    if (localStorage.getItem("theme") === "light") setTheme("light");
+  }, []);
   const [detailKey, setDetailKey] = useState(0);
   const [logoUrl, setLogoUrl] = useState("");
   const [logoDark, setLogoDark] = useState<string | null>(null);
@@ -282,7 +286,11 @@ export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLa
   };
 
   const toggleTheme = () => {
-    setTheme(prev => prev === "dark" ? "light" : "dark");
+    setTheme(prev => {
+      const next = prev === "dark" ? "light" : "dark";
+      localStorage.setItem("theme", next);
+      return next;
+    });
   };
 
   const card = cards[active];

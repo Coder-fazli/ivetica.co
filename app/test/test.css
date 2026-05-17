@@ -844,13 +844,13 @@ html.light-theme .layout,
   --end2: #f0f0f0;
 }
 
-.layout.light .sidebar-theme-toggle,
 html.light-theme .sidebar-top {
   background: #f5f5f5;
   border-radius: 12px;
   margin: 0 10px;
 }
 
+.layout.light .sidebar-theme-toggle,
 html.light-theme .sidebar-theme-toggle {
   background: #d0d0d0;
 }
@@ -871,6 +871,9 @@ html.light-theme .sidebar-theme-toggle.is-light {
 html.light-theme .proj-card.visible:hover  { background: #f7f7f7; }
 .layout.light .proj-card.visible.active,
 html.light-theme .proj-card.visible.active { background: #f7f7f7; }
+
+.layout.light .proj-card-icon,
+html.light-theme .proj-card-icon { background: #e0e0e0; }
 
 .layout.light .about-tab.active,
 html.light-theme .about-tab.active {

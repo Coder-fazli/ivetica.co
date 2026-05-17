@@ -17,6 +17,7 @@ const emptyData: AboutData = {
   sidebarLabel: "",
   sidebarDesc: "",
   studioTitle: "",
+  studioTitleColor: "",
   studioText1: "",
   studioText2: "",
   studioText3: "",
@@ -175,12 +176,22 @@ export default function AdminAbout() {
               </div>
               <div className="admin-field-group" style={{ marginBottom: 0 }}>
                 <label>Studio Section Title</label>
-                <input
-                  value={data.studioTitle || ""}
-                  onChange={(e) => { setData(p => ({ ...p, studioTitle: e.target.value })); setDirty(true); }}
-                  className="admin-input"
-                  placeholder="Our Studio"
-                />
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <input
+                    value={data.studioTitle || ""}
+                    onChange={(e) => { setData(p => ({ ...p, studioTitle: e.target.value })); setDirty(true); }}
+                    className="admin-input"
+                    placeholder="Our Studio"
+                    style={{ flex: 1 }}
+                  />
+                  <input
+                    type="color"
+                    value={data.studioTitleColor || "#ffffff"}
+                    onChange={(e) => { setData(p => ({ ...p, studioTitleColor: e.target.value })); setDirty(true); }}
+                    title="Title color"
+                    style={{ width: 36, height: 36, padding: 2, borderRadius: 6, border: "1px solid #333", background: "none", cursor: "pointer", flexShrink: 0 }}
+                  />
+                </div>
               </div>
             </div>
             <div className="admin-field-group">

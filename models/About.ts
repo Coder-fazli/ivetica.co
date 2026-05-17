@@ -25,12 +25,13 @@ const AboutSchema = new mongoose.Schema({
     desc:     { type: String, default: "" },
     services: { type: String, default: "" },
   }],
-  sidebarLabel: { type: String, default: "" },
-  sidebarDesc:  { type: String, default: "" },
-  studioTitle:  { type: String, default: "" },
-  studioText1:  { type: String, default: "" },
-  studioText2:  { type: String, default: "" },
-  studioText3:  { type: String, default: "" },
+  sidebarLabel:      { type: String, default: "" },
+  sidebarDesc:       { type: String, default: "" },
+  studioTitle:       { type: String, default: "" },
+  studioTitleColor:  { type: String, default: "" },
+  studioText1:       { type: String, default: "" },
+  studioText2:       { type: String, default: "" },
+  studioText3:       { type: String, default: "" },
 });
 
 export const About = mongoose.models.About || mongoose.model("About", AboutSchema);
