@@ -1,10 +1,11 @@
 "use client";
 
-import { useSignIn } from "@clerk/nextjs";
-import { useState } from "react";
+import { useSignIn, useAuth } from "@clerk/nextjs";
+import { useState, useEffect } from "react";
 import "../../auth.css";
 
 export default function SignInPage() {
+  const { isLoaded: authLoaded, isSignedIn } = useAuth();
   const { signIn, isLoaded, setActive } = useSignIn();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,6 +13,12 @@ export default function SignInPage() {
   const [step, setStep] = useState<"credentials" | "2fa">("credentials");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (authLoaded && isSignedIn) {
+      window.location.href = "/admin";
+    }
+  }, [authLoaded, isSignedIn]);
 
   async function handleCredentials(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
