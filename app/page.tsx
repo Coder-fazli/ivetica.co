@@ -17,7 +17,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ w
       initialCards={initialCards}
       initialSlug={slug}
       sidebarLabel={about.sidebarLabel}
-      sidebarDesc={about.sidebarDesc}
     />
   );
 }
