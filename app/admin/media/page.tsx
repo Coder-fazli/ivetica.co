@@ -17,6 +17,8 @@ export default function AdminMedia() {
   const [filter, setFilter] = useState<"all" | "image" | "video">("all");
   const [deleting, setDeleting] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState("");
+  const [converting, setConverting] = useState(false);
+  const [convertResult, setConvertResult] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   async function fetchAssets() {
@@ -80,13 +82,43 @@ export default function AdminMedia() {
     }
   }
 
+  async function handleConvertGifs() {
+    if (!confirm("This will convert all GIFs in storage to MP4 and update all database URLs. Continue?")) return;
+    setConverting(true);
+    setConvertResult("");
+    try {
+      const res = await fetch("/api/admin/convert-gifs", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Conversion failed");
+      setConvertResult(`Done — converted ${data.converted} of ${data.total} GIF(s) to MP4.`);
+      fetchAssets();
+    } catch (err) {
+      setConvertResult(`Error: ${err instanceof Error ? err.message : "Unknown error"}`);
+    } finally {
+      setConverting(false);
+    }
+  }
+
   const filtered = assets.filter(a => filter === "all" || a.kind === filter);
 
   return (
     <>
       <div className="admin-page-header">
-        <h1>Media Library</h1>
-        <p>All uploaded images and videos</p>
+        <div>
+          <h1>Media Library</h1>
+          <p>All uploaded images and videos</p>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {convertResult && <span className="admin-save-msg" style={{ color: convertResult.startsWith("Error") ? "#e53" : undefined }}>{convertResult}</span>}
+          <button
+            className="admin-btn-secondary"
+            onClick={handleConvertGifs}
+            disabled={converting}
+            title="Convert all GIFs in storage to MP4 and update database URLs"
+          >
+            {converting ? "Converting GIFs..." : "Convert GIFs → MP4"}
+          </button>
+        </div>
       </div>
 
       <div className="admin-card">

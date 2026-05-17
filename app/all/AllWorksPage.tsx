@@ -7,6 +7,28 @@ import { WorkType } from "@/types";
 
 type Tag = { _id: string; name: string };
 
+function GifCard({ gif, staticSrc, alt }: { gif: string; staticSrc?: string; alt: string }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      style={{ position: "relative", lineHeight: 0 }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {hovered ? (
+        <img src={gif} alt={alt} decoding="async" style={{ width: "100%", height: "auto", display: "block", borderRadius: 8 }} />
+      ) : staticSrc ? (
+        <Image src={staticSrc} alt={alt} width={400} height={300} loading="lazy" sizes="33vw" style={{ width: "100%", height: "auto", display: "block", borderRadius: 8 }} />
+      ) : (
+        <div style={{ width: "100%", aspectRatio: "4/3", background: "#1a1a1a", borderRadius: 8 }} />
+      )}
+      {!hovered && (
+        <span style={{ position: "absolute", bottom: 8, right: 8, background: "rgba(0,0,0,0.55)", color: "#fff", fontSize: 10, fontWeight: 600, letterSpacing: "0.05em", padding: "2px 7px", borderRadius: 4 }}>GIF</span>
+      )}
+    </div>
+  );
+}
+
 export default function AllWorksPage({ works, initialTag }: { works: WorkType[]; initialTag?: string }) {
   const router = useRouter();
   const [activeTag, setActiveTag] = useState(initialTag || "All");
