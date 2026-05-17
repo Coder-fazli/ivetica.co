@@ -6,16 +6,41 @@ import dbConnect from "@/lib/mongodb";
 import mongoose from "mongoose";
 import ffmpeg from "fluent-ffmpeg";
 import ffmpegStatic from "ffmpeg-static";
-import { writeFile, readFile, unlink, chmod } from "fs/promises";
+import { writeFile, readFile, unlink, chmod, access } from "fs/promises";
 import { tmpdir } from "os";
 import { join } from "path";
 import { Readable } from "stream";
+import { execSync } from "child_process";
 
-// Make ffmpeg binary executable and set path
+async function fileExists(p: string) {
+  try { await access(p); return true; } catch { return false; }
+}
+
 async function initFfmpeg() {
-  if (!ffmpegStatic) throw new Error("ffmpeg-static binary not found");
-  try { await chmod(ffmpegStatic, 0o755); } catch { /* already executable */ }
-  ffmpeg.setFfmpegPath(ffmpegStatic);
+  // Try common system paths first
+  const candidates = [
+    "/usr/bin/ffmpeg",
+    "/usr/local/bin/ffmpeg",
+    "/opt/homebrew/bin/ffmpeg",
+    ffmpegStatic || "",
+  ].filter(Boolean);
+
+  // Also try `which ffmpeg`
+  try {
+    const which = execSync("which ffmpeg", { timeout: 3000 }).toString().trim();
+    if (which) candidates.unshift(which);
+  } catch { /* not in PATH */ }
+
+  for (const p of candidates) {
+    if (await fileExists(p)) {
+      try { await chmod(p, 0o755); } catch { /* already executable */ }
+      ffmpeg.setFfmpegPath(p);
+      console.log("[convert-gifs] Using ffmpeg at:", p);
+      return;
+    }
+  }
+
+  throw new Error(`FFmpeg not found. Tried: ${candidates.join(", ")}`);
 }
 
 async function isAuthed(req: NextRequest) {
