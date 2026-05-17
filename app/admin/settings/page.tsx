@@ -50,7 +50,7 @@ export default function SettingsPage() {
         setLogoUrlLight(d.logoUrlLight || "");
         setFaviconUrl(d.faviconUrl || "");
         setTagline(d.tagline || "DOING WHAT MATTERS");
-        setFontSizes(d.fontSizes || defaultFontSizes);
+        setFontSizes({ ...defaultFontSizes, ...(d.fontSizes || {}) });
         setSocialTiktok(d.socialTiktok || "");
         setSocialFacebook(d.socialFacebook || "");
         setSocialInstagram(d.socialInstagram || "");
