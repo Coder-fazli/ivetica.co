@@ -1,5 +1,8 @@
 import "./test.css";
+import { Outfit } from "next/font/google";
 import dbConnect from "@/lib/mongodb";
+
+const outfit = Outfit({ subsets: ["latin"], weight: ["100","200","300","400","500","600","700","800","900"] });
 import { SiteSettings } from "@/models/SiteSettings";
 import { unstable_cache } from "next/cache";
 
@@ -34,6 +37,7 @@ export default async function TestLayout({ children }: { children: React.ReactNo
         <style dangerouslySetInnerHTML={{ __html: cssVars }} />
       </head>
       <body
+        className={outfit.className}
         data-logo={settings?.logoUrl || undefined}
         data-logo-light={settings?.logoUrlLight || undefined}
         data-tagline={settings?.tagline || undefined}
