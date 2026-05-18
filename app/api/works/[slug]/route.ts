@@ -1,5 +1,6 @@
 import { verifyToken } from "@clerk/nextjs/server";
 import { NextResponse, NextRequest } from "next/server";
+import { revalidateTag } from "next/cache";
 import dbConnect from "@/lib/mongodb";
 import { Work } from "@/models/Work";
 
@@ -39,6 +40,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
     const raw = await req.json();
     const data = stripIds(raw) as Record<string, unknown>;
     await Work.findOneAndUpdate({ slug }, { $set: data }, { new: true, runValidators: false });
+    revalidateTag("works");
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("PUT /api/works error:", err);
@@ -52,5 +54,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ s
   const { slug } = await params;
   await dbConnect();
   await Work.deleteOne({ slug });
+  revalidateTag("works");
   return NextResponse.json({ ok: true });
 }

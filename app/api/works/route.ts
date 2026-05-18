@@ -1,5 +1,6 @@
 import { verifyToken } from "@clerk/nextjs/server";
 import { NextResponse, NextRequest } from "next/server";
+import { revalidateTag } from "next/cache";
 import dbConnect from "@/lib/mongodb";
 import { Work } from "@/models/Work";
 
@@ -25,6 +26,7 @@ export async function POST(req: NextRequest) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _id, __v, ...data } = raw;
     const work = await Work.create(data);
+    revalidateTag("works");
     return NextResponse.json(JSON.parse(JSON.stringify(work)));
   } catch (err) {
     console.error("POST /api/works error:", err);
