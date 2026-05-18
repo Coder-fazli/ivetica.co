@@ -18,7 +18,7 @@ function collectMedia(blocks: Block[]): LightboxItem[] {
     } else if (block.type === "two-column" || block.type === "two-column-4-5" || block.type === "two-column-1-1") {
       if (block.left.kind !== "text") items.push({ url: block.left.url, kind: block.left.kind });
       if (block.right.kind !== "text") items.push({ url: block.right.url, kind: block.right.kind });
-    } else if (block.type === "media-text") {
+    } else if (block.type === "media-text" || block.type === "text-media") {
       if (block.media.kind !== "text") items.push({ url: block.media.url, kind: block.media.kind });
     }
   }
@@ -127,6 +127,12 @@ export default function WorkDetail({ slug, fading }: { slug: string; fading: boo
                   <div key={idx} className="work-block work-block-media-text">
                     {renderMedia(block.media.url, block.media.kind, "work-block-media")}
                     <p className="work-block-body">{block.body}</p>
+                  </div>
+                );
+                if (block.type === "text-media") return (
+                  <div key={idx} className="work-block work-block-text-media">
+                    <p className="work-block-body">{block.body}</p>
+                    {renderMedia(block.media.url, block.media.kind, "work-block-media")}
                   </div>
                 );
               })}

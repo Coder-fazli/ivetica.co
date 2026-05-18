@@ -100,5 +100,6 @@ export type Block =
 | { type: "two-column-1-1"; left: MediaItem; right: MediaItem }
 | { type: "text"; label: string; body: string }
 | { type: "media-text"; media: MediaItem; body: string }
+| { type: "text-media"; media: MediaItem; body: string }
 | { type: "text-two-col"; leftLabel: string; leftBody: string; rightLabel: string; rightBody: string }
 | { type: "text-full"; label: string; body: string };

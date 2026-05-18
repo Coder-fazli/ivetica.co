@@ -185,7 +185,19 @@ work blocks
 }
 
 .work-block-media-text .work-block-media {
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 9 / 16;
+  border-radius: 4px;
+}
+
+.work-block-text-media {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.work-block-text-media .work-block-media {
+  aspect-ratio: 9 / 16;
   border-radius: 4px;
 }
 
@@ -257,6 +269,7 @@ work blocks
   .work-block-two-col-1-1 { grid-template-columns: 1fr; }
   .work-block-text { width: 100%; }
   .work-block-media-text { grid-template-columns: 1fr; gap: 20px; }
+  .work-block-text-media { grid-template-columns: 1fr; gap: 20px; }
 }
 
 .work-block-text-full {

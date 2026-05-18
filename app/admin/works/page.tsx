@@ -54,6 +54,10 @@ const BLOCK_TYPES: { type: Block["type"]; label: string; svg: React.ReactNode }[
     svg: <svg width="40" height="30" viewBox="0 0 40 30"><rect x="1" y="1" width="17" height="28" rx="3" fill="currentColor" opacity="0.85"/><rect x="22" y="6" width="17" height="3" rx="1" fill="currentColor" opacity="0.7"/><rect x="22" y="12" width="17" height="3" rx="1" fill="currentColor" opacity="0.7"/><rect x="22" y="18" width="12" height="3" rx="1" fill="currentColor" opacity="0.7"/></svg>,
   },
   {
+    type: "text-media", label: "Text + Media",
+    svg: <svg width="40" height="30" viewBox="0 0 40 30"><rect x="1" y="6" width="17" height="3" rx="1" fill="currentColor" opacity="0.7"/><rect x="1" y="12" width="17" height="3" rx="1" fill="currentColor" opacity="0.7"/><rect x="1" y="18" width="12" height="3" rx="1" fill="currentColor" opacity="0.7"/><rect x="22" y="1" width="17" height="28" rx="3" fill="currentColor" opacity="0.85"/></svg>,
+  },
+  {
     type: "text", label: "Label + Text",
     svg: <svg width="40" height="30" viewBox="0 0 40 30"><rect x="1" y="8" width="12" height="3" rx="1" fill="currentColor" opacity="0.5"/><rect x="17" y="6" width="22" height="3" rx="1" fill="currentColor" opacity="0.85"/><rect x="17" y="12" width="22" height="3" rx="1" fill="currentColor" opacity="0.85"/><rect x="17" y="18" width="16" height="3" rx="1" fill="currentColor" opacity="0.85"/></svg>,
   },
@@ -114,6 +118,7 @@ export default function AdminWorks() {
     else if (type === "text") b = { type: "text", label: "", body: "" };
     else if (type === "text-full") b = { type: "text-full", label: "", body: "" };
     else if (type === "text-two-col") b = { type: "text-two-col", leftLabel: "", leftBody: "", rightLabel: "", rightBody: "" };
+    else if (type === "text-media") b = { type: "text-media", media: emptyMedia, body: "" };
     else b = { type: "media-text", media: emptyMedia, body: "" };
     field("blocks", [...(modal?.blocks || []), b]);
   }
@@ -402,8 +407,14 @@ export default function AdminWorks() {
                     )}
                     {block.type === "media-text" && (
                       <>
-                        <MediaUpload label="Media" value={block.media} onChange={(m) => updateBlock(bi, { media: m })} />
+                        <MediaUpload label="Media (9:16 left)" value={block.media} onChange={(m) => updateBlock(bi, { media: m })} />
                         <textarea style={{ ...s.textarea, marginTop: 8 }} rows={2} placeholder="Text (right side)" value={block.body} onChange={(e) => updateBlock(bi, { body: e.target.value })} />
+                      </>
+                    )}
+                    {block.type === "text-media" && (
+                      <>
+                        <textarea style={{ ...s.textarea, marginBottom: 8 }} rows={2} placeholder="Text (left side)" value={block.body} onChange={(e) => updateBlock(bi, { body: e.target.value })} />
+                        <MediaUpload label="Media (9:16 right)" value={block.media} onChange={(m) => updateBlock(bi, { media: m })} />
                       </>
                     )}
                     {block.type === "text" && (
