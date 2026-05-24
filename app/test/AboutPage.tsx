@@ -18,6 +18,10 @@ export default function AboutPage() {
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [offerings, setOfferings] = useState<Offering[]>([]);
   const [contact, setContact] = useState<ContactData | null>(null);
+  const [studioTitle, setStudioTitle] = useState("");
+  const [studioTitleColor, setStudioTitleColor] = useState("");
+  const [studioText2, setStudioText2] = useState("");
+  const [studioText3, setStudioText3] = useState("");
   const teamScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -35,6 +39,10 @@ export default function AboutPage() {
       if (d.offerings && d.offerings.length > 0) {
         setOfferingTab(d.offerings[0].name);
       }
+      setStudioTitle(d.studioTitle || "");
+      setStudioTitleColor(d.studioTitleColor || "");
+      setStudioText2(d.studioText2 || "");
+      setStudioText3(d.studioText3 || "");
     });
     getClients().then(data => {
       setClients(data);
@@ -64,6 +72,22 @@ export default function AboutPage() {
 
         {/* LEFT column */}
         <div className="about-left">
+
+          {(studioTitle || studioText2 || studioText3) && (
+            <div className="about-card about-studio-card">
+              <div
+                className="about-section-label"
+                style={{
+                  ...(studioTitleColor ? { color: studioTitleColor } : {}),
+                  ...(!studioText2 && !studioText3 ? { marginBottom: 0 } : {}),
+                }}
+              >
+                {studioTitle || "Our Studio"}
+              </div>
+              {studioText2 && <p className="about-studio-text">{studioText2}</p>}
+              {studioText3 && <p className="about-studio-text">{studioText3}</p>}
+            </div>
+          )}
 
           {/* Clients */}
           <div className="about-card about-clients-card">
