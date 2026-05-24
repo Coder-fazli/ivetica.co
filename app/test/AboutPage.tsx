@@ -18,11 +18,6 @@ export default function AboutPage() {
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [offerings, setOfferings] = useState<Offering[]>([]);
   const [contact, setContact] = useState<ContactData | null>(null);
-  const [studioTitle, setStudioTitle] = useState("");
-  const [studioTitleColor, setStudioTitleColor] = useState("");
-  const [studioText1, setStudioText1] = useState("");
-  const [studioText2, setStudioText2] = useState("");
-  const [studioText3, setStudioText3] = useState("");
   const teamScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -40,11 +35,6 @@ export default function AboutPage() {
       if (d.offerings && d.offerings.length > 0) {
         setOfferingTab(d.offerings[0].name);
       }
-      setStudioTitle(d.studioTitle || "Our Studio");
-      setStudioTitleColor(d.studioTitleColor || "");
-      setStudioText1(d.studioText1 || "");
-      setStudioText2(d.studioText2 || "");
-      setStudioText3(d.studioText3 || "");
     });
     getClients().then(data => {
       setClients(data);
@@ -74,23 +64,6 @@ export default function AboutPage() {
 
         {/* LEFT column */}
         <div className="about-left">
-
-          {(studioTitle || studioText1 || studioText2 || studioText3) && (
-            <div className="about-card about-studio-card">
-              <div
-                className="about-section-label"
-                style={{
-                  ...(studioTitleColor ? { color: studioTitleColor } : {}),
-                  ...(!studioText1 && !studioText2 && !studioText3 ? { marginBottom: 0 } : {}),
-                }}
-              >
-                {studioTitle || "Our Studio"}
-              </div>
-              {studioText1 && <p className="about-studio-text">{studioText1}</p>}
-              {studioText2 && <p className="about-studio-text">{studioText2}</p>}
-              {studioText3 && <p className="about-studio-text">{studioText3}</p>}
-            </div>
-          )}
 
           {/* Clients */}
           <div className="about-card about-clients-card">
