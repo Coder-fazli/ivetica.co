@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { getAbout, updateAbout, AboutData, ValueItem, TeamMember, Offering } from "@/actions/about";
+import { getAbout, updateAbout, AboutData, TeamMember, Offering } from "@/actions/about";
 import ImageMediaPicker from "@/components/admin/ImageMediaPicker";
 import SeoMetabox from "@/components/admin/SeoMetabox";
 
-const emptyValue: ValueItem = { number: "", title: "", text: "" };
 const emptyMember: TeamMember = { name: "", role: "", photo: "", bio: "" };
 const emptyOffering: Offering = { name: "", desc: "", services: "" };
 
@@ -45,30 +44,6 @@ export default function AdminAbout() {
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
   }, [dirty]);
-
-  function updateStory(field: keyof AboutData["story"], value: string) {
-    setData((prev) => ({ ...prev, story: { ...prev.story, [field]: value } }));
-    setDirty(true);
-  }
-
-  function updateValue(i: number, field: keyof ValueItem, value: string) {
-    setData((prev) => {
-      const values = [...prev.values];
-      values[i] = { ...values[i], [field]: value };
-      return { ...prev, values };
-    });
-    setDirty(true);
-  }
-
-  function addValue() {
-    setData((prev) => ({ ...prev, values: [...prev.values, { ...emptyValue }] }));
-    setDirty(true);
-  }
-
-  function removeValue(i: number) {
-    setData((prev) => ({ ...prev, values: prev.values.filter((_, idx) => idx !== i) }));
-    setDirty(true);
-  }
 
   function updateMember(i: number, field: keyof TeamMember, value: string) {
     setData((prev) => {
@@ -221,73 +196,6 @@ export default function AdminAbout() {
                 style={{ minHeight: "unset", height: 72, resize: "vertical" }}
               />
             </div>
-          </div>
-        )}
-      </div>
-
-      {/* Our Story */}
-      <div className="admin-accordion-item">
-        <div className="admin-accordion-header" onClick={() => toggle("story")}>
-          <span>Our Story</span>
-          <i className={`fas fa-chevron-${openSection === "story" ? "up" : "down"}`}></i>
-        </div>
-        {openSection === "story" && (
-          <div className="admin-accordion-body">
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <div className="admin-field-group" style={{ marginBottom: 0 }}>
-                <label>Section Title</label>
-                <input value={data.story.title} onChange={(e) => updateStory("title", e.target.value)} className="admin-input" />
-              </div>
-              <div className="admin-field-group" style={{ marginBottom: 0 }}>
-                <label>Founder Quote</label>
-                <input value={data.story.founderQuote} onChange={(e) => updateStory("founderQuote", e.target.value)} className="admin-input" />
-              </div>
-              <div className="admin-field-group" style={{ marginBottom: 0 }}>
-                <label>Paragraph 1</label>
-                <textarea value={data.story.description1} onChange={(e) => updateStory("description1", e.target.value)} className="admin-input" style={{ minHeight: "unset", height: 72, resize: "vertical" }} />
-              </div>
-              <div className="admin-field-group" style={{ marginBottom: 0 }}>
-                <label>Paragraph 2</label>
-                <textarea value={data.story.description2} onChange={(e) => updateStory("description2", e.target.value)} className="admin-input" style={{ minHeight: "unset", height: 72, resize: "vertical" }} />
-              </div>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 16 }}>
-              <ImageMediaPicker label="Section Image" value={data.story.image} onChange={(url) => { updateStory("image", url); setDirty(true); }} />
-              <ImageMediaPicker label="Founder Avatar" value={data.story.founderAvatar} onChange={(url) => { updateStory("founderAvatar", url); setDirty(true); }} />
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Mission & Values */}
-      <div className="admin-accordion-item">
-        <div className="admin-accordion-header" onClick={() => toggle("values")}>
-          <span>Mission &amp; Values</span>
-          <i className={`fas fa-chevron-${openSection === "values" ? "up" : "down"}`}></i>
-        </div>
-        {openSection === "values" && (
-          <div className="admin-accordion-body">
-            {data.values.map((v, i) => (
-              <div key={i} className="admin-list-item">
-                <div className="admin-list-item-header">
-                  <strong>{v.title || `Value ${i + 1}`}</strong>
-                  <button onClick={() => removeValue(i)} className="admin-btn-remove">Remove</button>
-                </div>
-                <div className="admin-field-group">
-                  <label>Number (e.g. 01)</label>
-                  <input value={v.number} onChange={(e) => updateValue(i, "number", e.target.value)} className="admin-input" />
-                </div>
-                <div className="admin-field-group">
-                  <label>Title</label>
-                  <input value={v.title} onChange={(e) => updateValue(i, "title", e.target.value)} className="admin-input" />
-                </div>
-                <div className="admin-field-group">
-                  <label>Description</label>
-                  <textarea value={v.text} onChange={(e) => updateValue(i, "text", e.target.value)} className="admin-input" rows={3} />
-                </div>
-              </div>
-            ))}
-            <button onClick={addValue} className="admin-btn-add">+ Add Value</button>
           </div>
         )}
       </div>

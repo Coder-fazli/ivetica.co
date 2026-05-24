@@ -68,7 +68,13 @@ const getCachedAbout = unstable_cache(
   async () => {
     await dbConnect();
     const data = await About.findOne().lean();
-    return data ? JSON.parse(JSON.stringify(data)) : DEFAULTS;
+    if (!data) return DEFAULTS;
+    const raw = JSON.parse(JSON.stringify(data));
+    return {
+      ...DEFAULTS,
+      ...raw,
+      story: { ...DEFAULTS.story, ...(raw.story || {}) },
+    } as AboutData;
   },
   ["about-data"],
   { revalidate: 300, tags: ["about"] }

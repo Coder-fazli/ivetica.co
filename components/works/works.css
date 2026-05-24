@@ -134,10 +134,9 @@ work blocks
 }
 
 .work-block-portrait {
-  width: 50%;
+  width: 38%;
   margin: 0 auto;
   aspect-ratio: 9 / 16;
-  max-height: 65vh;
   overflow: hidden;
   border-radius: 4px;
 }
@@ -146,13 +145,13 @@ work blocks
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+  max-width: 520px;
+  margin: 0 auto;
 }
 
 .work-block-two-col .work-block-media {
   aspect-ratio: 9 / 16;
   border-radius: 4px;
-  max-height: 65vh;
-  overflow: hidden;
 }
 
 .work-block-text {
@@ -182,7 +181,7 @@ work blocks
 
 .work-block-media-text {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 280px 1fr;
   gap: 40px;
   align-items: center;
 }
@@ -190,13 +189,11 @@ work blocks
 .work-block-media-text .work-block-media {
   aspect-ratio: 9 / 16;
   border-radius: 4px;
-  max-height: 60vh;
-  overflow: hidden;
 }
 
 .work-block-text-media {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 280px;
   gap: 40px;
   align-items: center;
 }
@@ -204,8 +201,6 @@ work blocks
 .work-block-text-media .work-block-media {
   aspect-ratio: 9 / 16;
   border-radius: 4px;
-  max-height: 60vh;
-  overflow: hidden;
 }
 
 /* 2-Column Vertical 4:5 */
@@ -271,7 +266,7 @@ work blocks
 
 @media (max-width: 768px) {
   .work-block-portrait { width: 100%; }
-  .work-block-two-col { grid-template-columns: 1fr; }
+  .work-block-two-col { grid-template-columns: 1fr; max-width: 100%; }
   .work-block-two-col-4-5 { grid-template-columns: 1fr; }
   .work-block-two-col-1-1 { grid-template-columns: 1fr; }
   .work-block-text { width: 100%; }
