@@ -189,7 +189,10 @@ export default function AboutPage() {
                         onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
                         onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}
                       >
-                        <span dangerouslySetInnerHTML={{ __html: link.iconSvg }} style={{ display: "flex", alignItems: "center" }} />
+                        {link.iconSvg.trim().startsWith("<")
+                          ? <span dangerouslySetInnerHTML={{ __html: link.iconSvg }} style={{ display: "flex", alignItems: "center", width: 20, height: 20 }} />
+                          : <img src={link.iconSvg} alt={link.name} style={{ width: 20, height: 20, objectFit: "contain" }} />
+                        }
                       </a>
                     ))
                   ) : (

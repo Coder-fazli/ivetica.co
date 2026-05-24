@@ -304,9 +304,6 @@ export default function SettingsPage() {
                   + Add Link
                 </button>
               </div>
-              <p style={{ fontSize: 11, opacity: 0.4, marginBottom: 16 }}>
-                Paste any SVG icon code in the Icon field. Icons are rendered as-is at 20×20px.
-              </p>
               {socialLinks.length === 0 && (
                 <p style={{ fontSize: 12, opacity: 0.3, fontStyle: "italic" }}>No social links yet. Click "Add Link" to add one.</p>
               )}
@@ -316,10 +313,9 @@ export default function SettingsPage() {
                     <span style={{ fontSize: 11, opacity: 0.4, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em" }}>Link {i + 1}</span>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       {link.iconSvg && (
-                        <span
-                          dangerouslySetInnerHTML={{ __html: link.iconSvg }}
-                          style={{ display: "flex", alignItems: "center", color: "#aaa", width: 20, height: 20 }}
-                        />
+                        link.iconSvg.trim().startsWith("<")
+                          ? <span dangerouslySetInnerHTML={{ __html: link.iconSvg }} style={{ display: "flex", alignItems: "center", color: "#aaa", width: 20, height: 20 }} />
+                          : <img src={link.iconSvg} alt="" style={{ width: 20, height: 20, objectFit: "contain" }} />
                       )}
                       <button
                         type="button"
@@ -352,16 +348,29 @@ export default function SettingsPage() {
                       />
                     </div>
                   </div>
-                  <div className="admin-form-group" style={{ margin: 0 }}>
-                    <label style={{ fontSize: 10, opacity: 0.5, display: "block", marginBottom: 4 }}>SVG Icon Code</label>
-                    <textarea
-                      value={link.iconSvg}
-                      onChange={(e) => setSocialLinks(prev => prev.map((l, idx) => idx === i ? { ...l, iconSvg: e.target.value } : l))}
-                      className="admin-input"
-                      placeholder={`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" ...>...</svg>`}
-                      rows={3}
-                      style={{ resize: "vertical", fontFamily: "monospace", fontSize: 11 }}
-                    />
+                  {/* Icon: upload or paste SVG */}
+                  <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 12, alignItems: "start" }}>
+                    <div>
+                      <label style={{ fontSize: 10, opacity: 0.5, display: "block", marginBottom: 4 }}>Upload Icon</label>
+                      <ImageMediaPicker
+                        label=""
+                        value={link.iconSvg.trim().startsWith("<") ? "" : link.iconSvg}
+                        onChange={(url) => setSocialLinks(prev => prev.map((l, idx) => idx === i ? { ...l, iconSvg: url } : l))}
+                        accept="all"
+                        compact
+                      />
+                    </div>
+                    <div className="admin-form-group" style={{ margin: 0 }}>
+                      <label style={{ fontSize: 10, opacity: 0.5, display: "block", marginBottom: 4 }}>Or paste SVG code</label>
+                      <textarea
+                        value={link.iconSvg.trim().startsWith("<") ? link.iconSvg : ""}
+                        onChange={(e) => setSocialLinks(prev => prev.map((l, idx) => idx === i ? { ...l, iconSvg: e.target.value } : l))}
+                        className="admin-input"
+                        placeholder={`<svg xmlns="..." viewBox="0 0 24 24">...</svg>`}
+                        rows={2}
+                        style={{ resize: "vertical", fontFamily: "monospace", fontSize: 11 }}
+                      />
+                    </div>
                   </div>
                 </div>
               ))}
