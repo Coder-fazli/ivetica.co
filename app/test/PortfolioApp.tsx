@@ -23,10 +23,11 @@ const mobileTotalH = (count: number) =>
   MOBILE_HERO_SLOT + (MOBILE_EXTRA - 1 + count) * CARD_SLOT_MOBILE;
 
 
-export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLabel }: {
+export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLabel, sidebarDesc }: {
   initialCards?: Card[];
   initialSlug?: string;
   sidebarLabel?: string;
+  sidebarDesc?: string;
 }) {
   const [cards, setCards] = useState<Card[]>(initialCards);
   const [active, setActive] = useState(0);
@@ -317,6 +318,7 @@ export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLa
           style={{ cursor: "pointer" }}
         >
           <div className="sidebar-about-label">{sidebarLabel || "About us"}</div>
+          {sidebarDesc && <p className="sidebar-about-text">{sidebarDesc}</p>}
         </div>
 
         <div className="carousel-window" ref={windowRef}>

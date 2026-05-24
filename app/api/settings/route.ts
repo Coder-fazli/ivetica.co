@@ -57,6 +57,7 @@ export async function PUT(req: NextRequest) {
           socialTiktok: data.socialTiktok ?? "",
           socialFacebook: data.socialFacebook ?? "",
           socialInstagram: data.socialInstagram ?? "",
+          socialLinks: data.socialLinks ?? [],
           tagline: data.tagline ?? "DOING WHAT MATTERS",
           homepageVideo: data.homepageVideo ?? "",
         },

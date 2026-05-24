@@ -50,6 +50,7 @@ export async function createWork(data: Partial<WorkType>): Promise<{ success: bo
   await dbConnect();
   const clean = stripIds(data) as Partial<WorkType>;
   await Work.create(clean);
+  revalidateTag("works");
   return { success: true };
 }
 
@@ -57,12 +58,14 @@ export async function updateWork(slug: string, data: Partial<WorkType>): Promise
   await dbConnect();
   const clean = stripIds(data) as Partial<WorkType>;
   await Work.findOneAndUpdate({ slug }, { $set: clean }, { runValidators: false });
+  revalidateTag("works");
   return { success: true };
 }
 
 export async function deleteWork(slug: string): Promise<{ success: boolean }> {
   await dbConnect();
   await Work.deleteOne({ slug });
+  revalidateTag("works");
   return { success: true };
 }
 

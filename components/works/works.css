@@ -137,6 +137,7 @@ work blocks
   width: 50%;
   margin: 0 auto;
   aspect-ratio: 9 / 16;
+  max-height: 65vh;
   overflow: hidden;
   border-radius: 4px;
 }
@@ -150,6 +151,8 @@ work blocks
 .work-block-two-col .work-block-media {
   aspect-ratio: 9 / 16;
   border-radius: 4px;
+  max-height: 65vh;
+  overflow: hidden;
 }
 
 .work-block-text {
@@ -187,6 +190,8 @@ work blocks
 .work-block-media-text .work-block-media {
   aspect-ratio: 9 / 16;
   border-radius: 4px;
+  max-height: 60vh;
+  overflow: hidden;
 }
 
 .work-block-text-media {
@@ -199,6 +204,8 @@ work blocks
 .work-block-text-media .work-block-media {
   aspect-ratio: 9 / 16;
   border-radius: 4px;
+  max-height: 60vh;
+  overflow: hidden;
 }
 
 /* 2-Column Vertical 4:5 */

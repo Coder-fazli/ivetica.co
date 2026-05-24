@@ -13,6 +13,8 @@ export default function AboutPage() {
   const [socialTiktok, setSocialTiktok] = useState("");
   const [socialFacebook, setSocialFacebook] = useState("");
   const [socialInstagram, setSocialInstagram] = useState("");
+  type SocialLink = { name: string; url: string; iconSvg: string };
+  const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [offerings, setOfferings] = useState<Offering[]>([]);
   const [contact, setContact] = useState<ContactData | null>(null);
@@ -30,6 +32,7 @@ export default function AboutPage() {
         setSocialTiktok(d.socialTiktok || "");
         setSocialFacebook(d.socialFacebook || "");
         setSocialInstagram(d.socialInstagram || "");
+        setSocialLinks(d.socialLinks && d.socialLinks.length > 0 ? d.socialLinks : []);
       });
     getAbout().then(d => {
       setTeam(d.team || []);
@@ -175,32 +178,38 @@ export default function AboutPage() {
                 <a className="about-contact-link" href={`tel:${contact.phone.replace(/\s/g, "")}`}>{contact.phone}</a>
               </div>
             )}
-            {(socialTiktok || socialFacebook || socialInstagram) && (
+            {(socialLinks.length > 0 || socialTiktok || socialFacebook || socialInstagram) && (
               <div className="about-contact-group">
                 <div className="about-contact-label">Follow</div>
                 <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
-                  {socialTiktok && (
-                    <a href={socialTiktok} target="_blank" rel="noopener noreferrer" title="TikTok" style={{ color: "var(--text-primary)", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <path d="M9 12a4 4 0 1 0 4 4v-7a6.04 6.04 0 0 0 3.27-.93" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </a>
-                  )}
-                  {socialFacebook && (
-                    <a href={socialFacebook} target="_blank" rel="noopener noreferrer" title="Facebook" style={{ color: "var(--text-primary)", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <path d="M18 2h-3a6 6 0 0 0-6 6v3H7v4h2v8h4v-8h3l1-4h-4V8a1 1 0 0 1 1-1h3z" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </a>
-                  )}
-                  {socialInstagram && (
-                    <a href={socialInstagram} target="_blank" rel="noopener noreferrer" title="Instagram" style={{ color: "var(--text-primary)", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" strokeLinecap="round" strokeLinejoin="round"/>
-                        <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/>
-                      </svg>
-                    </a>
+                  {socialLinks.length > 0 ? (
+                    socialLinks.filter(l => l.url).map((link, i) => (
+                      <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" title={link.name}
+                        style={{ color: "var(--text-primary)", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }}
+                        onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+                        onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}
+                      >
+                        <span dangerouslySetInnerHTML={{ __html: link.iconSvg }} style={{ display: "flex", alignItems: "center" }} />
+                      </a>
+                    ))
+                  ) : (
+                    <>
+                      {socialTiktok && (
+                        <a href={socialTiktok} target="_blank" rel="noopener noreferrer" title="TikTok" style={{ color: "var(--text-primary)", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 12a4 4 0 1 0 4 4v-7a6.04 6.04 0 0 0 3.27-.93" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                        </a>
+                      )}
+                      {socialFacebook && (
+                        <a href={socialFacebook} target="_blank" rel="noopener noreferrer" title="Facebook" style={{ color: "var(--text-primary)", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M18 2h-3a6 6 0 0 0-6 6v3H7v4h2v8h4v-8h3l1-4h-4V8a1 1 0 0 1 1-1h3z" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                        </a>
+                      )}
+                      {socialInstagram && (
+                        <a href={socialInstagram} target="_blank" rel="noopener noreferrer" title="Instagram" style={{ color: "var(--text-primary)", opacity: 0.7, transition: "opacity 0.2s", display: "flex", alignItems: "center" }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" strokeLinecap="round" strokeLinejoin="round"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" strokeLinecap="round" strokeLinejoin="round"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+                        </a>
+                      )}
+                    </>
                   )}
                 </div>
               </div>

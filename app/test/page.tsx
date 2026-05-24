@@ -15,6 +15,7 @@ export default async function TestPage() {
     <PortfolioApp
       initialCards={initialCards}
       sidebarLabel={about.sidebarLabel}
+      sidebarDesc={about.studioText1}
     />
   );
 }

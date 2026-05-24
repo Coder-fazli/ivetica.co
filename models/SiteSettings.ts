@@ -19,6 +19,11 @@ const SiteSettingsSchema = new Schema({
   socialTiktok: { type: String, default: "" },
   socialFacebook: { type: String, default: "" },
   socialInstagram: { type: String, default: "" },
+  socialLinks: [{
+    name: { type: String, default: "" },
+    url: { type: String, default: "" },
+    iconSvg: { type: String, default: "" },
+  }],
   tagline: { type: String, default: "DOING WHAT MATTERS" },
   homepageVideo: { type: String, default: "" },
 }, { _id: false });
