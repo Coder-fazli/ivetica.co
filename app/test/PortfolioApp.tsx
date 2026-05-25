@@ -5,6 +5,7 @@ import Image from "next/image";
 import AboutPage from "./AboutPage";
 import WorkDetail from "./WorkDetail";
 import TypingAnimation from "./TypingAnimation";
+import { getAbout } from "@/actions/about";
 
 const CARD_SLOT_DESKTOP = 110;
 const CARD_SLOT_MOBILE = 84;
@@ -45,6 +46,15 @@ export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLa
   const [logoLight, setLogoLight] = useState<string | null>(null);
   const [tagline, setTagline] = useState("DOING WHAT MATTERS");
   const [homepageVideo, setHomepageVideo] = useState("/energy-ball.mp4");
+  const [sidebarLabelClient, setSidebarLabelClient] = useState(sidebarLabel || "");
+  const [sidebarDescClient, setSidebarDescClient] = useState(sidebarDesc || "");
+
+  useEffect(() => {
+    getAbout().then(d => {
+      if (d.sidebarLabel) setSidebarLabelClient(d.sidebarLabel);
+      if (d.studioText1) setSidebarDescClient(d.studioText1);
+    });
+  }, []);
 
   useEffect(() => {
     const dark = document.body.dataset.logo;
@@ -317,8 +327,8 @@ export default function PortfolioApp({ initialCards = [], initialSlug, sidebarLa
           onClick={() => { setView("about"); setMainOpen(true); }}
           style={{ cursor: "pointer" }}
         >
-          <div className="sidebar-about-label">{sidebarLabel || "About us"}</div>
-          {sidebarDesc && <p className="sidebar-about-text">{sidebarDesc}</p>}
+          <div className="sidebar-about-label">{sidebarLabelClient || "About us"}</div>
+          {sidebarDescClient && <p className="sidebar-about-text">{sidebarDescClient}</p>}
         </div>
 
         <div className="carousel-window" ref={windowRef}>
