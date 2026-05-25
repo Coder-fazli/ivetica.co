@@ -70,11 +70,13 @@ const getCachedAbout = unstable_cache(
     const data = await About.findOne().lean();
     if (!data) return DEFAULTS;
     const raw = JSON.parse(JSON.stringify(data));
-    return {
-      ...DEFAULTS,
-      ...raw,
-      story: { ...DEFAULTS.story, ...(raw.story || {}) },
-    } as AboutData;
+    const merged: Record<string, unknown> = { ...DEFAULTS };
+    for (const key of Object.keys(raw)) {
+      const v = raw[key];
+      if (v !== undefined && v !== null && v !== "") merged[key] = v;
+    }
+    merged.story = { ...DEFAULTS.story, ...(raw.story || {}) };
+    return merged as AboutData;
   },
   ["about-data"],
   { revalidate: 300, tags: ["about"] }
