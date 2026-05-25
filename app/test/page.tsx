@@ -2,6 +2,8 @@ import PortfolioApp from "./PortfolioApp";
 import { getWorks } from "@/actions/works";
 import { getAbout } from "@/actions/about";
 
+export const dynamic = "force-dynamic";
+
 export default async function TestPage() {
   const [works, about] = await Promise.all([getWorks(), getAbout()]);
   const initialCards = works.map((w, i) => ({

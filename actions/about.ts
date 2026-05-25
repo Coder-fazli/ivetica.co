@@ -2,7 +2,7 @@
 
 import dbConnect from "@/lib/mongodb";
 import { About } from "@/models/About";
-import { unstable_cache, revalidateTag } from "next/cache";
+import { unstable_cache, revalidateTag, revalidatePath } from "next/cache";
 
 export type ValueItem = { number: string; title: string; text: string };
 export type TeamMember = { name: string; role: string; photo: string; bio?: string };
@@ -78,7 +78,7 @@ const getCachedAbout = unstable_cache(
     merged.story = { ...DEFAULTS.story, ...(raw.story || {}) };
     return merged as AboutData;
   },
-  ["about-data"],
+  ["about-data-v2"],
   { revalidate: 300, tags: ["about"] }
 );
 
@@ -95,5 +95,6 @@ export async function updateAbout(data: AboutData): Promise<{ success: boolean }
     await About.create(data);
   }
   revalidateTag("about");
+  revalidatePath("/test");
   return { success: true };
 }
